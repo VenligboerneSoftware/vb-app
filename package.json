@@ -1,0 +1,57 @@
+{
+  "name": "venligboerneapp",
+  "version": "0.0.0",
+  "description": "The official Venligboerne App!",
+  "author": "Mitchell Sayer, Ben Hannel, Brendan Edelson, Ethan Brown",
+  "private": true,
+  "devDependencies": {
+    "eslint": "^4.3.0",
+    "eslint-plugin-flowtype": "^2.35.0",
+    "eslint-plugin-prettier": "^2.1.2",
+    "eslint-plugin-react": "^7.1.0",
+    "eslint-plugin-react-native": "^3.0.1",
+    "react-native-scripts": "0.0.31"
+  },
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "react-native-scripts start",
+    "eject": "react-native-scripts eject",
+    "android": "react-native-scripts android",
+    "ios": "react-native-scripts ios",
+    "test": "node node_modules/jest/bin/jest.js --watch"
+  },
+  "rnpm": {
+    "assets": [
+      "./assets/fonts/"
+    ]
+  },
+  "jest": {
+    "preset": "jest-expo"
+  },
+  "dependencies": {
+    "bit-interleave": "^1.0.0",
+    "expo": "^19.0.0",
+    "firebase": "^4.2.0",
+    "geolib": "^2.0.23",
+    "he": "^1.1.1",
+    "moment-range": "git+https://github.com/rotaready/moment-range.git",
+    "query-string": "^5.0.0",
+    "react": "16.0.0-alpha.12",
+    "react-native": "^0.46.1",
+    "react-native-calendars": "^1.5.6",
+    "react-native-communications": "^2.2.1",
+    "react-native-dates": "^2.0.4",
+    "react-native-google-maps-directions": "git+https://github.com/VenligboerneSoftware/react-native-google-maps-directions.git",
+    "react-native-google-places-autocomplete": "git+https://github.com/ujwal-setlur/react-native-google-places-autocomplete.git",
+    "react-native-htmlview": "^0.12.0",
+    "react-native-keyboard-aware-view": "0.0.12",
+    "react-native-modal": "^2.5.0",
+    "react-native-progress": "^3.3.0",
+    "react-native-side-menu": "^1.0.2",
+    "react-native-swiper": "^1.5.10",
+    "react-native-tab-navigator": "^0.3.3",
+    "react-native-tab-view": "0.0.68",
+    "react-native-vector-icons": "^4.3.0",
+    "react-router-native": "^4.1.1"
+  }
+}

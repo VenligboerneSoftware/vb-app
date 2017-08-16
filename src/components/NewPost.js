@@ -1,0 +1,680 @@
+import { ImagePicker } from 'expo';
+import {
+	StyleSheet,
+	View,
+	Text,
+	Image,
+	TouchableOpacity,
+	FlatList,
+	ScrollView,
+	TextInput
+} from 'react-native';
+import Dates from 'react-native-dates';
+import Modal from 'react-native-modal';
+import React from 'react';
+import * as firebase from 'firebase';
+import geolib from 'geolib';
+
+import { FontAwesome } from '@expo/vector-icons';
+import { translate } from 'venligboerneapp/src/utils/internationalization.js';
+import Colors from 'venligboerneapp/src/styles/Colors.js';
+import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
+import moment from 'moment';
+
+import MapWithCircle from './MapWithCircle.js';
+import SearchLocation from './SearchLocation.js';
+import TopBar from './TopBar.js';
+import mortonize from '../utils/mortonize';
+import pushNotify from '../utils/pushNotify';
+
+const initialState = {
+	newEvent: {},
+	datepickerVisible: false,
+	searchModalVisible: false,
+	base64: null
+};
+
+export default class NewPost extends React.Component {
+	constructor(props) {
+		super(props);
+
+		this.state = initialState;
+
+		// Make the resolve function externally accessible so it can be Called
+		// in the onLayout of renderRemaining.
+		this.onScroll = new Promise((resolve, reject) => {
+			this.onLayout = {
+				resolve: resolve,
+				reject: reject
+			};
+		});
+
+		global.editPost = post => {
+			this.setState({
+				newEvent: post
+			});
+			firebase.database().ref('images').child(post.key).once('value', snap => {
+				if (snap.exists()) {
+					this.setState({ base64: snap.val() });
+				}
+			});
+		};
+	}
+
+	componentWillReceiveProps(props) {
+		// Clear all the data every time we leave and come back
+		this.setState(initialState);
+	}
+
+	/* _onIconPressed
+  --------------------------------------------------
+  Stores the selected icon and scrolls down to the rest of the form. */
+	_onIconPressed = icon => {
+		this._notifySubscribers({
+			latitude: 12,
+			longitude: 12,
+			icon: icon,
+			key: '-KrVR7FIGUAnCPUmHrIt'
+		});
+		this.setState({ newEvent: { ...this.state.newEvent, icon: icon } }, () => {
+			// When the user clicks an icon scroll down automatically
+			// Use .then to wait for the lower half to be laid out
+			this.onScroll.then(y => {
+				this.scrollView.scrollTo({
+					x: 0,
+					y: y,
+					animated: true
+				});
+			});
+		});
+	};
+
+	/* _titleChange
+  --------------------------------------------------
+  Stores the title in the state.  Called from title TextInput onChangeText*/
+	_titleChange = title => {
+		this.setState({ newEvent: { ...this.state.newEvent, title: title } });
+	};
+
+	/* _descriptionChange
+  --------------------------------------------------
+  Stores the description in the state.  Called from description TextInput onChangeText*/
+	_descriptionChange = description => {
+		this.setState({
+			newEvent: { ...this.state.newEvent, description: description }
+		});
+	};
+
+	/* _onDateSelected
+  --------------------------------------------------
+  Stores the selected date in the state.  Called from datepicker */
+	_onDateSelected = date => {
+		this.setState({
+			datepickerVisible: false,
+			newEvent: {
+				...this.state.newEvent,
+				datetime: new Date(date.date).getTime()
+			}
+		});
+	};
+
+	// _addNoise
+	// --------------------------------------------------------------------------
+	// Adds noise to the given latitude and longitude such that the result is
+	// uniformly distributed in a square of radius *distance* (in meters) around
+	// the initial point.
+	_addNoise(latitude, longitude, distance) {
+		// the maximum noise distance in degrees latitude
+		const latitudeMaxNoise = distance / 4e7 * 360;
+		// the maximum noise distance in degrees longitude
+		const longitudeMaxNoise = latitudeMaxNoise / Math.cos(latitude);
+		return {
+			latitude: latitude + (Math.random() * 2 - 1) * latitudeMaxNoise,
+			longitude: longitude + (Math.random() * 2 - 1) * longitudeMaxNoise
+		};
+	}
+
+	// _onSearchLocation
+	// ---------------------------------------------------------------------------
+	// Triggered when the user selects a location from the address picker.
+	_onSearchLocation = (data, details) => {
+		console.log('location picked', details);
+		this.setState({
+			searchModalVisible: false,
+			newEvent: {
+				...this.state.newEvent,
+				...this._addNoise(
+					details.geometry.location.lat,
+					details.geometry.location.lng,
+					1000
+				),
+				// Current location has an undefined formatted_address, so set it
+				// to the description 'Current location' (firebase doesn't like undefined)
+				formatted_address: details.formatted_address || details.description
+			}
+		});
+	};
+
+	_pickPhoto = async pickMethod => {
+		// pickMethod is expected to be one of
+		// Expo.ImagePicker.launchCameraAsync or Expo.ImagePicker.launchImageLibraryAsync
+		// https://docs.expo.io/versions/v15.0.0/sdk/imagepicker.html
+		const result = await pickMethod({
+			allowsEditing: true,
+			base64: true
+		});
+
+		if (!result.cancelled) {
+			// Let the user see a preview
+			// https://docs.expo.io/versions/latest/sdk/imagepicker.html
+			console.log('Setting base64', result.base64.length);
+			this.setState({
+				base64: 'data:image/jpg;base64,' + result.base64
+			});
+		}
+	};
+
+	/* _isDateBlocked
+  --------------------------------------------------
+  Returns true if the date is in the past */
+	_isDateBlocked = date => {
+		return date.isBefore(moment(), 'day');
+	};
+
+	/* _renderIcon
+  --------------------------------------------------
+  Renders an icon in the icon list */
+	_renderIcon = ({ item }) => {
+		const isSelected = this.state.newEvent.icon === item.key;
+		return (
+			<TouchableOpacity
+				onPress={this._onIconPressed.bind(this, item.key)}
+				style={[
+					{
+						backgroundColor: isSelected ? Colors.blue.light : Colors.grey.light
+					},
+					styles.iconButton
+				]}
+			>
+				<Text
+					style={[
+						{ color: isSelected ? Colors.blue.dark : Colors.grey.dark },
+						styles.iconText
+					]}
+				>
+					{translate(item.title)}
+				</Text>
+				<Image
+					style={[
+						{ tintColor: isSelected ? Colors.blue.dark : Colors.grey.dark },
+						styles.iconImage
+					]}
+					source={{ uri: item.iconURL }}
+				/>
+			</TouchableOpacity>
+		);
+	};
+
+	/* _submitPressed
+  --------------------------------------------------
+  Checks all required fields and adds the item to FireBase */
+	_submitPressed = async () => {
+		// Check that all of the mandatory fields are filled out
+		// TODO maybe scroll to/highlight the relevant component
+		if (!this.state.newEvent.icon) {
+			alert(translate('Please select a category'));
+			return;
+		}
+		if (!this.state.newEvent.title) {
+			alert(translate('Please enter a title'));
+			return;
+		}
+		if (!this.state.newEvent.description) {
+			alert(translate('Please enter a description'));
+			return;
+		}
+		if (!this.state.newEvent.latitude || !this.state.newEvent.longitude) {
+			alert(translate('Please select a location'));
+			return;
+		}
+
+		const ref = firebase.database().ref('posts');
+
+		const newEvent = {
+			...this.state.newEvent,
+			index: mortonize(
+				this.state.newEvent.latitude,
+				this.state.newEvent.longitude
+			),
+			creationTime: Date.now(),
+			owner: firebase.auth().currentUser.uid
+		};
+		console.log('newEvent', newEvent);
+
+		// If we are editing, then overwrite the old index. If we are creating
+		// a new post, push a new entry to the database.
+		let eventKey = null;
+		if (newEvent.key) {
+			// if the key is present, we are editing
+
+			// This is fancy Babel syntax. newEvent.key is put into the key constant
+			// and the other properties are put into uploadableEvent.
+			// https://stackoverflow.com/questions/34698905/clone-a-js-object-except-for-one-key
+			const { key, ...uploadableEvent } = newEvent;
+			eventKey = key;
+			ref.child(eventKey).update(uploadableEvent);
+			console.log('Updating post', newEvent, eventKey);
+		} else {
+			eventKey = ref.push(newEvent).key;
+			this._notifySubscribers(newEvent);
+		}
+
+		if (this.state.base64) {
+			// Upload the image to Firebase under the same ID as the post
+			firebase.database().ref('images').child(eventKey).set(this.state.base64);
+		}
+
+		// Switch to MapViewPage and zoom in to new event
+		global.changeTab('Map', () => {
+			global.setRegion({
+				latitude: newEvent.latitude,
+				longitude: newEvent.longitude,
+				latitudeDelta: 0.05,
+				longitudeDelta: 0.05
+			});
+		});
+	};
+
+	_notifySubscribers = async event => {
+		const subs = await firebase
+			.database()
+			.ref('subscriptions')
+			.orderByChild('icon')
+			.equalTo(event.icon)
+			.once('value');
+
+		// There are no matching subscriptions
+		if (!subs.exists()) {
+			return;
+		}
+
+		Promise.all(
+			Object.values(subs.val()).map(async sub => {
+				// Get the push token if the subscription covers this post
+				// Otherwise return null
+				if (geolib.getDistance(sub, event) < sub.radius * 1000) {
+					return (await firebase
+						.database()
+						.ref('users')
+						.child(sub.owner)
+						.child('pushToken')
+						.once('value')).val();
+				}
+				return null;
+			})
+		).then(tokens => {
+			tokens = tokens.filter(token => token !== null);
+			if (tokens.length > 0) {
+				// Notify all of the users who match the subscription
+				console.log('Notifying', tokens, 'of this new post', event);
+				pushNotify(tokens, 'New post!', {
+					url: '+post/' + event.key
+				});
+			}
+		});
+	};
+
+	//removes selected date from state
+	_cancelDate = () => {
+		this.setState({ newEvent: { ...this.state.newEvent, datetime: null } });
+	};
+
+	//removes selected photo from state
+	_cancelPhoto = () => {
+		this.setState({
+			base64: null
+		});
+	};
+
+	renderRemaining = () =>
+		<View
+			onLayout={event => {
+				this.onLayout.resolve(event.nativeEvent.layout.y);
+			}}
+		>
+			<Text style={{ color: Colors.red, alignSelf: 'center' }}>
+				*{translate('required field')}
+			</Text>
+
+			<View>
+				{/* Enter Title */}
+				<View style={styles.horizontalLayout}>
+					<TextInput
+						ref={titleInput => {
+							this.titleInput = titleInput;
+						}}
+						style={[styles.title, styles.textInput]}
+						onChangeText={this._titleChange}
+						defaultValue={this.state.newEvent.title}
+						multiline={false}
+						maxLength={45}
+						returnKeyType="done"
+						blurOnSubmit={true}
+						placeholder={translate('Enter Event Title Here...')}
+						onSubmitEditing={event => {
+							this.descriptionInput.focus();
+						}}
+					/>
+					<FontAwesome name={'asterisk'} size={6} style={styles.asterisk} />
+				</View>
+
+				{/* Enter Description */}
+				<View style={styles.horizontalLayout}>
+					<TextInput
+						ref={descriptionInput => {
+							this.descriptionInput = descriptionInput;
+						}}
+						style={[styles.description, styles.textInput]}
+						onChangeText={this._descriptionChange}
+						defaultValue={this.state.newEvent.description}
+						multiline={true}
+						blurOnSubmit={true}
+						returnKeyType="done"
+						placeholder={translate('Enter Event Description Here...')}
+					/>
+					<FontAwesome name={'asterisk'} size={6} style={styles.asterisk} />
+				</View>
+			</View>
+
+			{/* Search Bar */}
+			<View style={styles.horizontalLayout}>
+				<TouchableOpacity
+					style={styles.searchBar}
+					activeOpacity={0.4}
+					onPress={() => {
+						this.setState({ searchModalVisible: true });
+					}}
+				>
+					<FontAwesome name={'map-marker'} size={22} style={styles.pinIcon} />
+					<Text>
+						{this.state.newEvent.formatted_address
+							? this.state.newEvent.formatted_address
+							: translate('Select Event Location')}
+					</Text>
+
+					<Modal
+						visible={this.state.searchModalVisible}
+						style={SharedStyles.fullscreen}
+					>
+						<SearchLocation
+							onPress={this._onSearchLocation}
+							hide={() => {
+								this.setState({ searchModalVisible: false });
+							}}
+						/>
+					</Modal>
+				</TouchableOpacity>
+				<FontAwesome name={'asterisk'} size={6} style={styles.asterisk} />
+			</View>
+
+			{/*Display selected location*/}
+			{this.state.newEvent.latitude && this.state.newEvent.longitude
+				? <MapWithCircle
+						latitude={this.state.newEvent.latitude}
+						longitude={this.state.newEvent.longitude}
+					/>
+				: null}
+
+			{/* Date Picker */}
+			<View style={styles.horizontalLayout}>
+				<TouchableOpacity
+					style={styles.datetime}
+					activeOpacity={0.4}
+					onPress={() =>
+						this.setState({
+							datepickerVisible: !this.state.datepickerVisible
+						})}
+				>
+					<FontAwesome name={'calendar'} size={22} style={styles.pinIcon} />
+					{this.state.newEvent.datetime
+						? <View>
+								<Text>
+									{new Date(this.state.newEvent.datetime).toLocaleDateString([
+										'en-GB'
+									])}
+								</Text>
+							</View>
+						: <Text>
+								{this.state.datepickerVisible
+									? translate('Choose Date')
+									: translate('Optional Date')}
+							</Text>}
+				</TouchableOpacity>
+				{/* cancel button */}
+				{this.state.newEvent.datetime
+					? <TouchableOpacity
+							style={{ paddingTop: 10, paddingRight: 15 }}
+							onPress={this._cancelDate}
+						>
+							<FontAwesome name="times" size={30} />
+						</TouchableOpacity>
+					: null}
+			</View>
+			{/* Date Picker */}
+			{this.state.datepickerVisible
+				? <Dates
+						date={new Date(this.state.newEvent.datetime)}
+						onDatesChange={this._onDateSelected}
+						isDateBlocked={this._isDateBlocked}
+						locale={'en'}
+					/>
+				: null}
+
+			{/* Photo Selection */}
+			<View style={styles.cameraContainer}>
+				<TouchableOpacity
+					style={styles.camera}
+					activeOpacity={0.4}
+					onPress={this._pickPhoto.bind(this, ImagePicker.launchCameraAsync)}
+				>
+					<FontAwesome name={'camera'} size={44} />
+					<Text style={{ fontSize: 15 }}>
+						{translate('Take a Picture')}
+					</Text>
+				</TouchableOpacity>
+
+				<TouchableOpacity
+					style={styles.camera}
+					activeOpacity={0.4}
+					onPress={this._pickPhoto.bind(
+						this,
+						ImagePicker.launchImageLibraryAsync
+					)}
+				>
+					<FontAwesome name={'photo'} size={44} />
+					<Text style={{ fontSize: 15 }}>
+						{translate('Select a Picture')}
+					</Text>
+				</TouchableOpacity>
+			</View>
+
+			{/*Display selected image*/}
+			{this.state.base64
+				? <View style={styles.horizontalLayout}>
+						<Image
+							source={{ uri: this.state.base64 }}
+							style={{
+								width: 300,
+								height: 300,
+								margin: 20,
+								resizeMode: 'contain',
+								alignSelf: 'center'
+							}}
+						/>
+						{/* Cancel button */}
+						<TouchableOpacity
+							style={{ paddingTop: 10, paddingRight: 15 }}
+							onPress={this._cancelPhoto}
+						>
+							<FontAwesome name="times" size={40} />
+						</TouchableOpacity>
+					</View>
+				: null}
+
+			{/* Submit Button */}
+			<TouchableOpacity
+				style={styles.submit}
+				activeOpacity={0.4}
+				onPress={this._submitPressed}
+			>
+				<Text style={{ color: Colors.white, fontSize: 30 }}>
+					{translate('Finish')}
+				</Text>
+			</TouchableOpacity>
+		</View>;
+
+	render() {
+		return (
+			<View style={styles.container}>
+				<TopBar title={translate('New Post')} />
+				<ScrollView
+					ref={scrollView => {
+						this.scrollView = scrollView;
+					}}
+					keyboardDismissMode={'on-drag'}
+				>
+					<View style={[styles.horizontalLayout, { marginTop: 5 }]}>
+						<Text style={{ fontSize: 16 }}>
+							{translate('Choose a Category')}
+						</Text>
+						<FontAwesome name={'asterisk'} size={6} style={styles.asterisk} />
+					</View>
+
+					{/* List of icons */}
+					<FlatList
+						style={styles.list}
+						data={Object.values(global.db.categories).filter(
+							icon => icon.key !== 'center'
+						)}
+						numColumns={2}
+						scrollEnabled={false}
+						renderItem={this._renderIcon}
+					/>
+					{this.state.newEvent.icon ? this.renderRemaining() : null}
+				</ScrollView>
+			</View>
+		);
+	}
+}
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		justifyContent: 'flex-start',
+		padding: 0,
+		backgroundColor: Colors.white
+	},
+	list: {
+		padding: 10
+	},
+	iconButton: {
+		width: '48%',
+		margin: '1%',
+		height: 90,
+		flexDirection: 'row',
+		alignItems: 'center',
+		borderRadius: 10,
+		padding: 10
+	},
+	iconText: {
+		width: '65%',
+		fontSize: 16
+	},
+	iconImage: {
+		width: '35%',
+		height: '100%',
+		resizeMode: 'contain'
+	},
+	textInput: {
+		flex: 1,
+		backgroundColor: Colors.white,
+		fontSize: 18,
+		marginLeft: 20,
+		marginBottom: 10,
+		padding: 10,
+		borderWidth: 1,
+		borderColor: Colors.grey.dark,
+		borderRadius: 10
+	},
+	description: {
+		height: 140,
+		textAlignVertical: 'top'
+	},
+	title: {
+		height: 40
+	},
+	searchBar: {
+		flex: 1,
+		marginLeft: 20,
+		height: 40,
+		alignSelf: 'center',
+		backgroundColor: Colors.grey.light,
+		flexDirection: 'row',
+		alignItems: 'center',
+		borderRadius: 10
+	},
+	pinIcon: {
+		marginLeft: 5,
+		marginRight: 10
+	},
+	cameraContainer: {
+		marginTop: 15,
+		marginBottom: 15,
+		marginLeft: 20,
+		marginRight: 25,
+		flexDirection: 'row',
+		justifyContent: 'space-between'
+	},
+	datetime: {
+		flex: 1,
+		padding: 15,
+		marginLeft: 20,
+		marginRight: 25,
+		backgroundColor: Colors.grey.light,
+		borderRadius: 10,
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
+		alignSelf: 'center',
+		marginTop: 15
+	},
+	camera: {
+		width: '45%',
+		height: 100,
+		alignSelf: 'center',
+		backgroundColor: Colors.grey.light,
+		flexDirection: 'column',
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderRadius: 10
+	},
+	submit: {
+		height: 108,
+		width: '100%',
+		backgroundColor: Colors.blue.dark,
+		marginTop: 10,
+		marginBottom: 20,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	horizontalLayout: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	asterisk: {
+		color: Colors.red,
+		marginRight: 20,
+		alignSelf: 'flex-start'
+	}
+});

@@ -1,0 +1,16 @@
+This file contains a spec for all global variables used in Venligboerne App New.
+
+global.db - Stores cached Firebase tables. See loading code in App.js
+  Subitems - language, icon, and centers
+
+global.language - The current language setting
+
+global.token
+
+global.openMenu - Function in HomePage.js. When called, opens the slideout menu on the left. Accepts an optional callback, called on completion.
+
+global.changeTab - Function in HomePage.js. Takes a string (the name of the tab to change to). Accepts an optional callback, called on completion.
+
+global.editPost - Function in NewPost.js. Takes a post object. Loads the object into the New Post form.
+
+global.onLanguageChange - An array of functions, all of which are called when the user changes the language via the LanguageMenu. Updates UI in Homepage.js and Profile.js
