@@ -29,12 +29,33 @@ export default class ViewApplications extends React.Component {
 		};
 	}
 
+	/**
+ * Callback function for Array.sort which sorts elements by their status
+ * leaving applicants with status applied at the top, then accepted applicants,
+ * then rejected applicants
+ * @param {Object} obj1 The first object
+ * @param {Object} obj2 The second object
+ * @returns {Number} 1, -1, or 0 depending on how the two elements compare
+ */
+	_statussort = (obj1, obj2) => {
+		if (obj1.status === obj2.status) {
+			return 0;
+		} else if (obj1.status === 'Applied') {
+			return -1;
+		} else if (obj2.status === 'Applied' || obj1.status > obj2.status) {
+			return 1;
+		} else {
+			return -1;
+		}
+	};
+
 	componentDidMount() {
 		// Load all of the applications of this post, only if the set of
 		// applications is non empty.
 		Promise.all(
 			Object.keys(this.props.post.applications).map(this._getApplicationByKey)
 		).then(applications => {
+			applications = applications.sort(this._statussort);
 			this.setState({ applications: applications });
 		});
 	}
