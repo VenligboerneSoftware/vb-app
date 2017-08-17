@@ -13,9 +13,11 @@ import * as firebase from 'firebase';
 
 import { FontAwesome } from '@expo/vector-icons';
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
-
-import history from '../utils/history.js';
 import APIKeys from 'venligboerneapp/src/utils/APIKeys.js';
+
+import Colors from '../styles/Colors';
+import LanguageMenu from './LanguageMenu';
+import history from '../utils/history.js';
 
 export default class FacebookAuth extends React.Component {
 	constructor(props) {
@@ -82,10 +84,14 @@ export default class FacebookAuth extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
+				<Image
+					source={require('../../assets/images/logo.png')}
+					style={styles.logo}
+				/>
 				<View style={styles.textContainer}>
 					<Text style={styles.text}>
 						{translate(
-							'Your Facebook profile will only be visible to people you choose to show it to. The purpose of this login is to verify that you are a member of Venligboerne. If you apply to an event, your profile will be visible to the event owner. If someone applies to your event, once you accept their application they will be able to see your profile.'
+							'In order to use the app, you must log in to Facebook for security reasons.  Your Facebook profile and information will only be visible to the people you choose to show it to. If you apply to an event, your profile will be visible to the event owner. If someone applies to your event, once you accept their application they will be able to see your profile.'
 						)}
 					</Text>
 				</View>
@@ -108,10 +114,10 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: 'column',
-		backgroundColor: 'white'
+		backgroundColor: Colors.grey.medium
 	},
 	textContainer: {
-		flex: 1,
+		flex: 2,
 		padding: 15,
 		justifyContent: 'center'
 	},
@@ -121,7 +127,7 @@ const styles = StyleSheet.create({
 	},
 	buttonContainer: {
 		backgroundColor: '#3b5998',
-		justifyContent: 'center',
+		justifyContent: 'space-around',
 		margin: 25,
 		borderRadius: 6,
 		flexDirection: 'row',
@@ -129,12 +135,19 @@ const styles = StyleSheet.create({
 	},
 	loginButton: {
 		color: 'white',
-		fontSize: 20,
-		textAlign: 'center'
+		fontSize: 18,
+		textAlign: 'center',
+		backgroundColor: 'transparent'
 	},
 	facebookIcon: {
 		color: 'white',
-		margin: 10,
-		paddingRight: 15
+		margin: 10
+	},
+	logo: {
+		width: '85%',
+		flex: 1,
+		resizeMode: 'contain',
+		alignSelf: 'center',
+		marginTop: 75
 	}
 });
