@@ -1,12 +1,14 @@
 import Moment from 'moment';
 import * as firebase from 'firebase';
 
+//returns the datetime of the next coming date in the dates array
 export function getNextDate(dates) {
 	let sortedDates = getSortedUpcomingDates(dates);
 
 	return sortedDates ? sortedDates[0] : null;
 }
 
+//returns a sorted array of next coming dates
 export function getSortedUpcomingDates(dates) {
 	if (!dates) {
 		return null;
@@ -23,17 +25,20 @@ export function getSortedUpcomingDates(dates) {
 	return sortedDates;
 }
 
+//returns a string formatted like DD/MM/YYYY
 export function formatDate(timestamp) {
 	return Moment.unix(timestamp / 1000).format('DD/MM/YYYY');
 }
 
+//returns a sorted string of dates separated by a comma
 export function sortedDatesString(dates) {
 	let sortedDates = getSortedUpcomingDates(dates);
 	return sortedDates.map(date => formatDate(date)).join(', ');
 }
 
+//returns a true if the filters arent set or if there is at least one date
+//that is in the date range
 export function checkFilters(dates, start, end) {
-	// console.log(dates, start, end);
 	if (!start || !end) {
 		return true;
 	}
@@ -55,6 +60,7 @@ export function checkFilters(dates, start, end) {
 	return dates.length > 0;
 }
 
+//Firebase Util code that converts all datetimes to arrays of datetimes.
 export function datetimeToDates() {
 	firebase.database().ref('posts').once('value', snap => {
 		snap.forEach(post => {

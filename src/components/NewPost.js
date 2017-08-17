@@ -119,7 +119,7 @@ export default class NewPost extends React.Component {
 
 	/* _onDateSelected
   --------------------------------------------------
-  Stores the selected date in the state.  Called from datepicker */
+  Stores the selected dates in the state.  Called from datepicker */
 	_onDateSelected = date => {
 		const datetime = new Date(date.timestamp).getTime();
 
@@ -127,7 +127,8 @@ export default class NewPost extends React.Component {
 			? this.state.newPost.dates.indexOf(datetime)
 			: -1;
 
-		//adds date if not present, removes if present, creates new array if empty
+		//adds date if not present, removes if present, creates new array if
+		//dates doesn't yet exist
 		const dates = this.state.newPost.dates
 			? dateIndex === -1
 				? [...this.state.newPost.dates, datetime]
@@ -144,6 +145,7 @@ export default class NewPost extends React.Component {
 	};
 
 	//converts an array of datetimes into an object of format {"yyyy-mm-dd"}
+	//for use by the Calendar component
 	_getSelectedDates = () => {
 		let dates = this.state.newPost.dates
 			? this.state.newPost.dates.reduce((obj, date) => {
@@ -216,13 +218,6 @@ export default class NewPost extends React.Component {
 				base64: 'data:image/jpg;base64,' + result.base64
 			});
 		}
-	};
-
-	/* _isDateBlocked
-  --------------------------------------------------
-  Returns true if the date is in the past */
-	_isDateBlocked = date => {
-		return date.isBefore(moment(), 'day');
 	};
 
 	/* _renderIcon
