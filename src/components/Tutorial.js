@@ -1,7 +1,6 @@
 import Swiper from 'react-native-swiper';
 
-import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { StyleSheet, TouchableOpacity, View, Text, Image } from 'react-native';
 import React, { Component } from 'react';
 import history from '../utils/history.js';
 import Colors from '../styles/Colors';
@@ -11,13 +10,13 @@ export default class ExitBar extends Component {
 		super(props);
 
 		this.state = {
-			isLastSlide: false
+			isLastSlide: false,
+			finishedLoading: false
 		};
 	}
 
 	_checkLastSlide = index => {
-		const lastSlide = 2;
-		this.setState({ isLastSlide: index === lastSlide ? true : false });
+		this.setState({ isLastSlide: index === numSlides - 1 ? true : false });
 	};
 
 	_goHome = () => {
@@ -44,15 +43,24 @@ export default class ExitBar extends Component {
 						</View>
 					}
 				>
-					<View style={styles.slide1}>
-						<Text style={styles.text}>Hello Swiper</Text>
-					</View>
-					<View style={styles.slide2}>
-						<Text style={styles.text}>Beautiful</Text>
-					</View>
-					<View style={styles.slide3}>
-						<Text style={styles.text}>And simple</Text>
-					</View>
+					{slides.map(slide =>
+						<View key={slide.num} style={styles.container}>
+							<Text style={{ position: 'absolute', top: '49%', fontSize: 25 }}>
+								Loading...
+							</Text>
+							<Image
+								style={styles.screenshot}
+								resizeMode={'contain'}
+								source={slide.image}
+							/>
+							<Text style={styles.textBig}>
+								{slide.textBig}
+							</Text>
+							<Text style={styles.textSmall}>
+								{slide.textSmall}
+							</Text>
+						</View>
+					)}
 				</Swiper>
 				<TouchableOpacity
 					style={this.state.isLastSlide ? styles.doneButton : styles.skipButton}
@@ -72,35 +80,143 @@ export default class ExitBar extends Component {
 		);
 	}
 }
+const numSlides = 16;
+const slides = [
+	{
+		num: 0,
+		image: require('../../assets/images/tutorial/0.png'),
+		textBig: 'Text Big Test',
+		textSmall: 'Text Small Test'
+	},
+	{
+		num: 1,
+		image: require('../../assets/images/tutorial/1.png'),
+		textBig: 'Text Big Test',
+		textSmall: 'Text Small Test'
+	},
+	{
+		num: 2,
+		image: require('../../assets/images/tutorial/2.png'),
+		textBig: 'Text Big Test',
+		textSmall: 'Text Small Test'
+	},
+	{
+		num: 3,
+		image: require('../../assets/images/tutorial/3.png'),
+		textBig: 'Text Big Test',
+		textSmall: 'Text Small Test'
+	},
+	{
+		num: 4,
+		image: require('../../assets/images/tutorial/4.png'),
+		textBig: 'Text Big Test',
+		textSmall: 'Text Small Test'
+	},
+	{
+		num: 5,
+		image: require('../../assets/images/tutorial/5.png'),
+		textBig: 'Text Big Test',
+		textSmall: 'Text Small Test'
+	},
+	{
+		num: 6,
+		image: require('../../assets/images/tutorial/6.png'),
+		textBig: 'Text Big Test',
+		textSmall: 'Text Small Test'
+	},
+	{
+		num: 7,
+		image: require('../../assets/images/tutorial/7.png'),
+		textBig: 'Text Big Test',
+		textSmall: 'Text Small Test'
+	},
+	{
+		num: 8,
+		image: require('../../assets/images/tutorial/8.png'),
+		textBig: 'Text Big Test',
+		textSmall: 'Text Small Test'
+	},
+	{
+		num: 9,
+		image: require('../../assets/images/tutorial/9.png'),
+		textBig: 'Text Big Test',
+		textSmall: 'Text Small Test'
+	},
+	{
+		num: 10,
+		image: require('../../assets/images/tutorial/10.png'),
+		textBig: 'Text Big Test',
+		textSmall: 'Text Small Test'
+	},
+	{
+		num: 11,
+		image: require('../../assets/images/tutorial/11.png'),
+		textBig: 'Text Big Test',
+		textSmall: 'Text Small Test'
+	},
+	{
+		num: 12,
+		image: require('../../assets/images/tutorial/12.png'),
+		textBig: 'Text Big Test',
+		textSmall: 'Text Small Test'
+	},
+	{
+		num: 13,
+		image: require('../../assets/images/tutorial/13.png'),
+		textBig: 'Text Big Test',
+		textSmall: 'Text Small Test'
+	},
+	{
+		num: 14,
+		image: require('../../assets/images/tutorial/14.png'),
+		textBig: 'Text Big Test',
+		textSmall: 'Text Small Test'
+	},
+	{
+		num: 15,
+		image: require('../../assets/images/tutorial/15.png'),
+		textBig: 'Text Big Test',
+		textSmall: 'Text Small Test'
+	}
+];
 
 const styles = StyleSheet.create({
 	wrapper: {},
-	slide1: {
+	container: {
 		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#9DD6EB'
+		// backgroundColor: Colors.grey.light,
+		width: '100%',
+		height: '100%',
+		backgroundColor: 'transparent',
+		justifyContent: 'space-around',
+		alignItems: 'center'
 	},
-	slide2: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#97CAE5'
+	screenshot: {
+		width: '80%'
 	},
-	slide3: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#92BBD9'
+	textBig: {
+		width: '75%',
+		zIndex: 10,
+		position: 'absolute',
+		top: '15%',
+		color: Colors.white,
+		fontSize: 24,
+		fontWeight: 'bold',
+		textAlign: 'center'
 	},
-	text: {
-		color: '#fff',
-		fontSize: 30,
-		fontWeight: 'bold'
+	textSmall: {
+		width: '80%',
+		zIndex: 10,
+		position: 'absolute',
+		top: '65%',
+		color: Colors.white,
+		fontSize: 16,
+		fontWeight: 'bold',
+		textAlign: 'center'
 	},
 	skipButton: {
 		position: 'absolute',
-		bottom: 20,
+		top: 20,
 		right: 20,
 		zIndex: 10,
 		backgroundColor: 'rgba(52, 52, 52, 0.2)',
@@ -108,13 +224,13 @@ const styles = StyleSheet.create({
 	},
 	skipButtonText: {
 		fontSize: 16,
-		color: '#fff',
+		color: 'black',
 		paddingVertical: 12,
 		paddingHorizontal: 20
 	},
 	doneButton: {
 		position: 'absolute',
-		bottom: 50,
+		bottom: 80,
 		zIndex: 10,
 		alignSelf: 'center',
 		backgroundColor: 'rgba(52, 52, 52, 0.2)',
