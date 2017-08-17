@@ -28,7 +28,7 @@ import mortonize from '../utils/mortonize';
 import pushNotify from '../utils/pushNotify';
 
 const initialState = {
-	newEvent: {},
+	newPost: {},
 	datepickerVisible: false,
 	searchModalVisible: false,
 	base64: null
@@ -51,7 +51,7 @@ export default class NewPost extends React.Component {
 
 		global.editPost = post => {
 			this.setState({
-				newEvent: post
+				newPost: post
 			});
 			firebase.database().ref('images').child(post.key).once('value', snap => {
 				if (snap.exists()) {
@@ -76,7 +76,7 @@ export default class NewPost extends React.Component {
 			icon: icon,
 			key: '-KrVR7FIGUAnCPUmHrIt'
 		});
-		this.setState({ newEvent: { ...this.state.newEvent, icon: icon } }, () => {
+		this.setState({ newPost: { ...this.state.newPost, icon: icon } }, () => {
 			// When the user clicks an icon scroll down automatically
 			// Use .then to wait for the lower half to be laid out
 			this.onScroll.then(y => {
@@ -93,7 +93,7 @@ export default class NewPost extends React.Component {
   --------------------------------------------------
   Stores the title in the state.  Called from title TextInput onChangeText*/
 	_titleChange = title => {
-		this.setState({ newEvent: { ...this.state.newEvent, title: title } });
+		this.setState({ newPost: { ...this.state.newPost, title: title } });
 	};
 
 	/* _descriptionChange
@@ -101,7 +101,7 @@ export default class NewPost extends React.Component {
   Stores the description in the state.  Called from description TextInput onChangeText*/
 	_descriptionChange = description => {
 		this.setState({
-			newEvent: { ...this.state.newEvent, description: description }
+			newPost: { ...this.state.newPost, description: description }
 		});
 	};
 
@@ -111,8 +111,8 @@ export default class NewPost extends React.Component {
 	_onDateSelected = date => {
 		this.setState({
 			datepickerVisible: false,
-			newEvent: {
-				...this.state.newEvent,
+			newPost: {
+				...this.state.newPost,
 				datetime: new Date(date.date).getTime()
 			}
 		});
@@ -141,8 +141,8 @@ export default class NewPost extends React.Component {
 		console.log('location picked', details);
 		this.setState({
 			searchModalVisible: false,
-			newEvent: {
-				...this.state.newEvent,
+			newPost: {
+				...this.state.newPost,
 				...this._addNoise(
 					details.geometry.location.lat,
 					details.geometry.location.lng,
@@ -185,7 +185,7 @@ export default class NewPost extends React.Component {
   --------------------------------------------------
   Renders an icon in the icon list */
 	_renderIcon = ({ item }) => {
-		const isSelected = this.state.newEvent.icon === item.key;
+		const isSelected = this.state.newPost.icon === item.key;
 		return (
 			<TouchableOpacity
 				onPress={this._onIconPressed.bind(this, item.key)}
@@ -221,52 +221,52 @@ export default class NewPost extends React.Component {
 	_submitPressed = async () => {
 		// Check that all of the mandatory fields are filled out
 		// TODO maybe scroll to/highlight the relevant component
-		if (!this.state.newEvent.icon) {
+		if (!this.state.newPost.icon) {
 			alert(translate('Please select a category'));
 			return;
 		}
-		if (!this.state.newEvent.title) {
+		if (!this.state.newPost.title) {
 			alert(translate('Please enter a title'));
 			return;
 		}
-		if (!this.state.newEvent.description) {
+		if (!this.state.newPost.description) {
 			alert(translate('Please enter a description'));
 			return;
 		}
-		if (!this.state.newEvent.latitude || !this.state.newEvent.longitude) {
+		if (!this.state.newPost.latitude || !this.state.newPost.longitude) {
 			alert(translate('Please select a location'));
 			return;
 		}
 
 		const ref = firebase.database().ref('posts');
 
-		const newEvent = {
-			...this.state.newEvent,
+		const newPost = {
+			...this.state.newPost,
 			index: mortonize(
-				this.state.newEvent.latitude,
-				this.state.newEvent.longitude
+				this.state.newPost.latitude,
+				this.state.newPost.longitude
 			),
 			creationTime: Date.now(),
 			owner: firebase.auth().currentUser.uid
 		};
-		console.log('newEvent', newEvent);
+		console.log('newPost', newPost);
 
 		// If we are editing, then overwrite the old index. If we are creating
 		// a new post, push a new entry to the database.
 		let eventKey = null;
-		if (newEvent.key) {
+		if (newPost.key) {
 			// if the key is present, we are editing
 
-			// This is fancy Babel syntax. newEvent.key is put into the key constant
+			// This is fancy Babel syntax. newPost.key is put into the key constant
 			// and the other properties are put into uploadableEvent.
 			// https://stackoverflow.com/questions/34698905/clone-a-js-object-except-for-one-key
-			const { key, ...uploadableEvent } = newEvent;
+			const { key, ...uploadableEvent } = newPost;
 			eventKey = key;
 			ref.child(eventKey).update(uploadableEvent);
-			console.log('Updating post', newEvent, eventKey);
+			console.log('Updating post', newPost, eventKey);
 		} else {
-			eventKey = ref.push(newEvent).key;
-			this._notifySubscribers(newEvent);
+			eventKey = ref.push(newPost).key;
+			this._notifySubscribers(newPost);
 		}
 
 		if (this.state.base64) {
@@ -277,8 +277,8 @@ export default class NewPost extends React.Component {
 		// Switch to MapViewPage and zoom in to new event
 		global.changeTab('Map', () => {
 			global.setRegion({
-				latitude: newEvent.latitude,
-				longitude: newEvent.longitude,
+				latitude: newPost.latitude,
+				longitude: newPost.longitude,
 				latitudeDelta: 0.05,
 				longitudeDelta: 0.05
 			});
@@ -326,7 +326,7 @@ export default class NewPost extends React.Component {
 
 	//removes selected date from state
 	_cancelDate = () => {
-		this.setState({ newEvent: { ...this.state.newEvent, datetime: null } });
+		this.setState({ newPost: { ...this.state.newPost, datetime: null } });
 	};
 
 	//removes selected photo from state
@@ -355,12 +355,12 @@ export default class NewPost extends React.Component {
 						}}
 						style={[styles.title, styles.textInput]}
 						onChangeText={this._titleChange}
-						defaultValue={this.state.newEvent.title}
+						defaultValue={this.state.newPost.title}
 						multiline={false}
 						maxLength={45}
 						returnKeyType="done"
 						blurOnSubmit={true}
-						placeholder={translate('Enter Event Title Here...')}
+						placeholder={translate('Enter Post Title Here...')}
 						onSubmitEditing={event => {
 							this.descriptionInput.focus();
 						}}
@@ -376,11 +376,11 @@ export default class NewPost extends React.Component {
 						}}
 						style={[styles.description, styles.textInput]}
 						onChangeText={this._descriptionChange}
-						defaultValue={this.state.newEvent.description}
+						defaultValue={this.state.newPost.description}
 						multiline={true}
 						blurOnSubmit={true}
 						returnKeyType="done"
-						placeholder={translate('Enter Event Description Here...')}
+						placeholder={translate('Enter Post Description Here...')}
 					/>
 					<FontAwesome name={'asterisk'} size={6} style={styles.asterisk} />
 				</View>
@@ -397,8 +397,8 @@ export default class NewPost extends React.Component {
 				>
 					<FontAwesome name={'map-marker'} size={22} style={styles.pinIcon} />
 					<Text>
-						{this.state.newEvent.formatted_address
-							? this.state.newEvent.formatted_address
+						{this.state.newPost.formatted_address
+							? this.state.newPost.formatted_address
 							: translate('Select Event Location')}
 					</Text>
 
@@ -418,8 +418,9 @@ export default class NewPost extends React.Component {
 								backgroundColor: 'white'
 							}}
 						>
-							{ translate('This post will appear somewhere within 1 kilometer of
-							the location you select, to protect your privacy.') }
+							{translate(
+								'This post will appear somewhere within 1 kilometer of the location you select, to protect your privacy.'
+							)}
 						</Text>
 					</Modal>
 				</TouchableOpacity>
@@ -427,10 +428,10 @@ export default class NewPost extends React.Component {
 			</View>
 
 			{/*Display selected location*/}
-			{this.state.newEvent.latitude && this.state.newEvent.longitude
+			{this.state.newPost.latitude && this.state.newPost.longitude
 				? <MapWithCircle
-						latitude={this.state.newEvent.latitude}
-						longitude={this.state.newEvent.longitude}
+						latitude={this.state.newPost.latitude}
+						longitude={this.state.newPost.longitude}
 					/>
 				: null}
 
@@ -445,10 +446,10 @@ export default class NewPost extends React.Component {
 						})}
 				>
 					<FontAwesome name={'calendar'} size={22} style={styles.pinIcon} />
-					{this.state.newEvent.datetime
+					{this.state.newPost.datetime
 						? <View>
 								<Text>
-									{new Date(this.state.newEvent.datetime).toLocaleDateString([
+									{new Date(this.state.newPost.datetime).toLocaleDateString([
 										'en-GB'
 									])}
 								</Text>
@@ -460,7 +461,7 @@ export default class NewPost extends React.Component {
 							</Text>}
 				</TouchableOpacity>
 				{/* cancel button */}
-				{this.state.newEvent.datetime
+				{this.state.newPost.datetime
 					? <TouchableOpacity
 							style={{ paddingTop: 10, paddingRight: 15 }}
 							onPress={this._cancelDate}
@@ -472,7 +473,7 @@ export default class NewPost extends React.Component {
 			{/* Date Picker */}
 			{this.state.datepickerVisible
 				? <Dates
-						date={new Date(this.state.newEvent.datetime)}
+						date={new Date(this.state.newPost.datetime)}
 						onDatesChange={this._onDateSelected}
 						isDateBlocked={this._isDateBlocked}
 						locale={'en'}
@@ -569,7 +570,7 @@ export default class NewPost extends React.Component {
 						scrollEnabled={false}
 						renderItem={this._renderIcon}
 					/>
-					{this.state.newEvent.icon ? this.renderRemaining() : null}
+					{this.state.newPost.icon ? this.renderRemaining() : null}
 				</ScrollView>
 			</View>
 		);
