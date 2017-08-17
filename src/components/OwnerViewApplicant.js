@@ -6,14 +6,16 @@ import {
 	TouchableOpacity,
 	View
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
+
+import { Ionicons } from '@expo/vector-icons';
 
 import { translate } from '../utils/internationalization';
 import ApplicationStatus from './ApplicationStatus.js';
 import Colors from '../styles/Colors';
 import ExitBar from './ExitBar';
 import FacebookContactButton from './FacebookContactButton.js';
+import FlagContent from './FlagContent';
 import MapWithCircle from './MapWithCircle';
 import SharedStyles from '../styles/SharedStyles';
 import Time from './Time';
@@ -129,6 +131,7 @@ export default class OwnerViewApplicant extends React.Component {
 							latitude={this.props.post.latitude}
 							longitude={this.props.post.longitude}
 						/>
+						<FlagContent />
 					</View>
 				</ScrollView>
 				<FacebookContactButton
@@ -185,19 +188,10 @@ const styles = StyleSheet.create({
 	},
 	rejectText: {
 		color: 'red',
+		fontWeight: '600',
 		marginTop: 5,
 		alignSelf: 'center',
 		marginBottom: 10,
 		fontSize: 18
-	},
-	deleteButton: {
-		backgroundColor: Colors.grey.light,
-		width: 250,
-		paddingVertical: 5,
-		borderRadius: 10,
-		flexDirection: 'row',
-		justifyContent: 'space-around',
-		marginBottom: 15,
-		alignSelf: 'center'
 	}
 });
