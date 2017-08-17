@@ -66,7 +66,7 @@ export default class Menu extends React.Component {
 					<Text
 						style={styles.menuText}
 						onPress={() =>
-							WebBrowser.openBrowserAsync('http://venligboerne.org/')}
+							WebBrowser.openBrowserAsync('http://venligboerne.dk/')} //TODO: add language symbol
 					>
 						{translate('About Venligboerne')}
 					</Text>
