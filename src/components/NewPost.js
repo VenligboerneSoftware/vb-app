@@ -422,7 +422,8 @@ export default class NewPost extends React.Component {
 					textAlign: 'center',
 					backgroundColor: 'white',
 					margin: 10,
-					marginBottom: 0
+					marginBottom: 0,
+					marginTop: 20
 				}}
 			>
 				{translate(

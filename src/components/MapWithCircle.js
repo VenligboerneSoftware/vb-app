@@ -25,7 +25,7 @@ export default class MapWithCircle extends React.Component {
 				rotateEnabled={false}
 			>
 				<MapView.Circle
-					//force iOS refresh
+					//key forces iOS refresh
 					key={(this.props.latitude + this.props.longitude).toString()}
 					center={{
 						latitude: this.props.latitude,
