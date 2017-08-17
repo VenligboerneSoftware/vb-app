@@ -13,6 +13,11 @@ import { translate } from '../utils/internationalization.js';
 import APIKeys from '../utils/APIKeys';
 
 export default class SearchLocation extends React.Component {
+	constructor(props) {
+		super(props);
+		console.log(this.props.location);
+	}
+
 	render() {
 		return (
 			<GooglePlacesAutocomplete
@@ -30,7 +35,10 @@ export default class SearchLocation extends React.Component {
 					// available options: https://developers.google.com/places/web-service/autocomplete
 					key: APIKeys.googleTranslateKey,
 					language: getCode(global.language),
-					components: 'country:dk'
+					location: this.props.location
+						? this.props.location.latitude + ',' + this.props.location.longitude
+						: '55.6761,12.5683', //Default to Copenhagen
+					radius: 2500 //TODO: test and decide radius / if needed
 				}}
 				styles={{
 					container: {
