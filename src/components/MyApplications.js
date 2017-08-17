@@ -54,7 +54,6 @@ export default class MyApplications extends React.Component {
 				this.applications &&
 				this.applications[applicationKey]
 			) {
-				console.log('Updating application status', applicationKey, snap.val());
 				this.applications[applicationKey].status = snap.val();
 				this.setState({ applications: this.applications });
 			}
@@ -110,7 +109,6 @@ export default class MyApplications extends React.Component {
 			.child('applications')
 			.on('value', applicationKeys => {
 				// Remove all of the status change listeners
-				console.log('Removing old listeners');
 				Object.values(this.state.applications).forEach(app => {
 					app.removeListener();
 				});
