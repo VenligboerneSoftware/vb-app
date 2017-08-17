@@ -15,7 +15,6 @@ import APIKeys from '../utils/APIKeys';
 export default class SearchLocation extends React.Component {
 	constructor(props) {
 		super(props);
-		console.log(this.props.location);
 	}
 
 	render() {
