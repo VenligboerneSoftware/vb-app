@@ -188,19 +188,10 @@ const styles = StyleSheet.create({
 	},
 	rejectText: {
 		color: 'red',
+		fontWeight: '600',
 		marginTop: 5,
 		alignSelf: 'center',
 		marginBottom: 10,
 		fontSize: 18
-	},
-	deleteButton: {
-		backgroundColor: Colors.grey.light,
-		width: 250,
-		paddingVertical: 5,
-		borderRadius: 10,
-		flexDirection: 'row',
-		justifyContent: 'space-around',
-		marginBottom: 15,
-		alignSelf: 'center'
 	}
 });

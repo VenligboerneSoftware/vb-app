@@ -15,7 +15,7 @@ export default class FlagContent extends React.Component {
 	_flagPost = () => {
 		Alert.alert(
 			translate('Are you sure you want to report this content?'),
-			translate('Moderators will review this post'),
+			translate('It will be reviewed by moderators'),
 			[{ text: translate('No') }, { text: translate('Yes') }],
 			{ cancelable: false }
 		);
