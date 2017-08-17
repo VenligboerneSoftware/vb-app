@@ -6,14 +6,16 @@ import {
 	TouchableOpacity,
 	View
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
+
+import { Ionicons } from '@expo/vector-icons';
 
 import { translate } from '../utils/internationalization';
 import ApplicationStatus from './ApplicationStatus.js';
 import Colors from '../styles/Colors';
 import ExitBar from './ExitBar';
 import FacebookContactButton from './FacebookContactButton.js';
+import FlagContent from './FlagContent';
 import MapWithCircle from './MapWithCircle';
 import SharedStyles from '../styles/SharedStyles';
 import Time from './Time';
@@ -129,6 +131,7 @@ export default class OwnerViewApplicant extends React.Component {
 							latitude={this.props.post.latitude}
 							longitude={this.props.post.longitude}
 						/>
+						<FlagContent />
 					</View>
 				</ScrollView>
 				<FacebookContactButton
