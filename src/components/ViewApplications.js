@@ -144,7 +144,8 @@ export default class ViewApplications extends React.Component {
 				? <Text style={{ alignSelf: 'center', marginTop: 10 }}>
 						{translate('There are no applications to display')}
 					</Text>
-				: <FlatList
+				: //actually render flatlist
+					<FlatList
 						data={listData}
 						ItemSeparatorComponent={() => <View style={SharedStyles.divider} />}
 						renderItem={({ item }) => this.renderApplication(item)}
