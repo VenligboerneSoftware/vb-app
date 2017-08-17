@@ -70,7 +70,7 @@ export default class ViewSingleApplication extends React.Component {
 							{translate('Your Application') + ':'} {this.props.app.message}
 						</Text>
 						<View style={SharedStyles.divider} />
-						<Time datetime={this.props.app.postData.datetime} />
+						<Time dates={this.props.app.postData.dates} />
 						<View style={SharedStyles.divider} />
 						<MapWithCircle
 							style={{ flex: 1 }}

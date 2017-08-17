@@ -20,13 +20,14 @@ import { FontAwesome } from '@expo/vector-icons';
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
 import Colors from 'venligboerneapp/src/styles/Colors.js';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
-import moment from 'moment';
+import Moment from 'moment';
 
 import MapWithCircle from './MapWithCircle.js';
 import SearchLocation from './SearchLocation.js';
 import TopBar from './TopBar.js';
 import mortonize from '../utils/mortonize';
 import pushNotify from '../utils/pushNotify';
+import { getNextDate, formatDate } from '../utils/dates';
 
 const initialState = {
 	newPost: {},
@@ -146,12 +147,12 @@ export default class NewPost extends React.Component {
 	_getSelectedDates = () => {
 		let dates = this.state.newPost.dates
 			? this.state.newPost.dates.reduce((obj, date) => {
-					date = new Date(date).toISOString().split('T')[0];
+					date = Moment.unix(date / 1000).format('YYYY-MM-DD');
 					obj[date] = { selected: true };
 					return obj;
 				}, {})
 			: null;
-		console.log('filtered', dates);
+		console.log('SELECTED DATES', dates);
 		return dates;
 	};
 
@@ -504,7 +505,7 @@ export default class NewPost extends React.Component {
 						? <View>
 								<Text>
 									{this.state.newPost.dates.map(date => {
-										return new Date(date).toLocaleDateString(['en-GB']) + ' ';
+										return formatDate(date) + ' ';
 									})}
 								</Text>
 							</View>
@@ -527,32 +528,12 @@ export default class NewPost extends React.Component {
 			{/* Date Picker */}
 			{this.state.datepickerVisible
 				? <View>
-						{/* <Dates
-							dates={
-								this.state.newPost.dates
-									? new Date(this.state.newPost.dates[0])
-									: null
-							}
-							onDatesChange={this._onDateSelected}
-							isDateBlocked={this._isDateBlocked}
-							locale={'en'}
-						/> */}
-
 						<Calendar
-							// Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-							minDate={new Date()}
-							// Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-							// maxDate={'2012-05-30'}
-							// Handler which gets executed on day press. Default = undefined
+							minDate={Moment.now()}
 							onDayPress={this._onDateSelected}
-							// Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
 							monthFormat={'MMM yyyy'}
-							// Hide month navigation arrows. Default = false
 							hideArrows={false}
-							// Do not show days of other months in month page. Default = false
 							hideExtraDays={true}
-							// If hideArrows=false and hideExtraDays=false do not swich month when tapping on greyed out
-							// day from another month that is visible in calendar page. Default = false
 							disableMonthChange={false}
 							firstDay={0}
 							markedDates={this._getSelectedDates()}
@@ -657,7 +638,6 @@ export default class NewPost extends React.Component {
 		</View>;
 
 	render() {
-		console.log('before', this.state.newPost.dates);
 		return (
 			<View style={styles.container}>
 				<TopBar
