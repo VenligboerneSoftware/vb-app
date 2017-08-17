@@ -66,6 +66,7 @@ export default class FilterBar extends React.Component {
 		this.mySetState({
 			start: null,
 			end: null,
+			focusedInput: null,
 			isDatePickerVisible: false
 		});
 	};
