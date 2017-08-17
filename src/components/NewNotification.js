@@ -138,9 +138,9 @@ export default class NewNotification extends React.Component {
 					<Text style={styles.questionText}>Choose A Category</Text>
 					<FlatList
 						style={styles.list}
-						data={Object.values(global.db.categories).filter(
-							icon => icon.key !== 'center'
-						)}
+						data={Object.values(global.db.categories)
+							.filter(icon => icon.key !== 'center')
+							.sort((a, b) => a.order - b.order)}
 						numColumns={4}
 						scrollEnabled={false}
 						renderItem={this._renderIcon}
