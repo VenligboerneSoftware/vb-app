@@ -1,3 +1,6 @@
+// docs:
+//https://www.npmjs.com/package/react-native-google-places-autocomplete
+
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { TouchableOpacity } from 'react-native';
 import React from 'react';
@@ -12,7 +15,6 @@ import APIKeys from '../utils/APIKeys';
 export default class SearchLocation extends React.Component {
 	render() {
 		return (
-			// docs: https://www.npmjs.com/package/react-native-google-places-autocomplete
 			<GooglePlacesAutocomplete
 				placeholder="Search"
 				minLength={2} // minimum length of text to search

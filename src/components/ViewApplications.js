@@ -1,9 +1,10 @@
 import {
-	StyleSheet,
+	ActivityIndicator,
 	FlatList,
+	StyleSheet,
 	Text,
-	View,
-	TouchableOpacity
+	TouchableOpacity,
+	View
 } from 'react-native';
 import React from 'react';
 import * as firebase from 'firebase';
@@ -25,7 +26,8 @@ export default class ViewApplications extends React.Component {
 		this.state = {
 			applications: [],
 			applicantClicked: false,
-			applicant: null
+			applicant: null,
+			applicationsLoaded: false
 		};
 	}
 
@@ -35,7 +37,7 @@ export default class ViewApplications extends React.Component {
 		Promise.all(
 			Object.keys(this.props.post.applications).map(this._getApplicationByKey)
 		).then(applications => {
-			this.setState({ applications: applications });
+			this.setState({ applications: applications, applicationsLoaded: true });
 		});
 	}
 
@@ -137,13 +139,20 @@ export default class ViewApplications extends React.Component {
 	// ---------------------------------
 	// Returns a Flatlist containing applicants from the data source passed in
 	applicantList = listData => {
-		return this.state.applications.length === 0
-			? null // <Text>There are no applications to display</Text> //TODO: change text and translate
-			: <FlatList
-					data={listData}
-					ItemSeparatorComponent={() => <View style={SharedStyles.divider} />}
-					renderItem={({ item }) => this.renderApplication(item)}
-				/>;
+		return this.state.applicationsLoaded
+			? listData.length === 0
+				? <Text style={{ alignSelf: 'center', marginTop: 10 }}>
+						{translate('There are no applications to display')}
+					</Text>
+				: //actually render flatlist
+					<FlatList
+						data={listData}
+						ItemSeparatorComponent={() => <View style={SharedStyles.divider} />}
+						renderItem={({ item }) => this.renderApplication(item)}
+					/>
+			: <View style={{ justifyContent: 'center', marginTop: 10 }}>
+					<ActivityIndicator animating={true} size={'large'} />
+				</View>;
 	};
 
 	render() {

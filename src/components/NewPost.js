@@ -412,20 +412,24 @@ export default class NewPost extends React.Component {
 								this.setState({ searchModalVisible: false });
 							}}
 						/>
-						<Text
-							style={{
-								textAlign: 'center',
-								backgroundColor: 'white'
-							}}
-						>
-							{translate(
-								'This post will appear somewhere within 1 kilometer of the location you select, to protect your privacy.'
-							)}
-						</Text>
 					</Modal>
 				</TouchableOpacity>
 				<FontAwesome name={'asterisk'} size={6} style={styles.asterisk} />
 			</View>
+
+			<Text
+				style={{
+					textAlign: 'center',
+					backgroundColor: 'white',
+					margin: 10,
+					marginBottom: 0,
+					marginTop: 20
+				}}
+			>
+				{translate(
+					'This post will appear somewhere within 1 kilometer of the location you select, to protect your privacy.'
+				)}
+			</Text>
 
 			{/*Display selected location*/}
 			{this.state.newPost.latitude && this.state.newPost.longitude
