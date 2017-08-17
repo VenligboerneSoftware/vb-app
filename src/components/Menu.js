@@ -6,12 +6,14 @@ import {
 	AsyncStorage
 } from 'react-native';
 import { WebBrowser } from 'expo';
+import Modal from 'react-native-modal';
 import React from 'react';
 
 import { FontAwesome } from '@expo/vector-icons';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
 
 import { getLanguageSymbol, translate } from '../utils/internationalization';
+import ManageNotifications from './ManageNotifications';
 import history from '../utils/history.js';
 
 export default class Menu extends React.Component {
@@ -35,13 +37,13 @@ export default class Menu extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				{/* <Modal
+				<Modal
 					isVisible={this.state.manageNotificationsModal}
 					animationIn={'zoomIn'}
 					animationOut={'zoomOut'}
 				>
 					<ManageNotifications hide={this._hideModal} />
-				</Modal> */}
+				</Modal>
 
 				<TouchableOpacity
 					style={{ alignSelf: 'flex-end', marginRight: 10 }}
@@ -51,13 +53,13 @@ export default class Menu extends React.Component {
 				</TouchableOpacity>
 
 				{/*Manage Notifications*/}
-				{/* <TouchableOpacity onPress={this._showModal}>
+				<TouchableOpacity onPress={this._showModal}>
 					<Text style={[styles.menuText]}>
 						{translate('Manage Notifications')}
 					</Text>
 				</TouchableOpacity>
 
-				<View style={SharedStyles.divider} /> */}
+				<View style={SharedStyles.divider} />
 
 				{/*About Venligboerne*/}
 				<TouchableOpacity>
