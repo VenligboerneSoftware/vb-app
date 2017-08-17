@@ -10,6 +10,7 @@ import {
 	TextInput
 } from 'react-native';
 import Dates from 'react-native-dates';
+import { Calendar } from 'react-native-calendars';
 import Modal from 'react-native-modal';
 import React from 'react';
 import * as firebase from 'firebase';
@@ -109,12 +110,44 @@ export default class NewPost extends React.Component {
   --------------------------------------------------
   Stores the selected date in the state.  Called from datepicker */
 	_onDateSelected = date => {
+		const datetime = new Date(date.timestamp).getTime();
+
+		const dateIndex = this.state.newPost.dates //-1 if not yet in array
+			? this.state.newPost.dates.indexOf(datetime)
+			: -1;
+
+		//adds date if not present, removes if present, creates new array if empty
+		const dates = this.state.newPost.dates
+			? dateIndex === -1
+				? [...this.state.newPost.dates, datetime]
+				: this.state.newPost.dates.filter((value, arrIndex) => {
+						return dateIndex !== arrIndex;
+					})
+			: [datetime];
 		this.setState({
-			datepickerVisible: false,
 			newPost: {
 				...this.state.newPost,
-				datetime: new Date(date.date).getTime()
+				dates: dates
 			}
+		});
+	};
+
+	//converts an array of datetimes into an object of format {"yyyy-mm-dd"}
+	_getSelectedDates = () => {
+		let dates = this.state.newPost.dates
+			? this.state.newPost.dates.reduce((obj, date) => {
+					date = new Date(date).toISOString().split('T')[0];
+					obj[date] = { selected: true };
+					return obj;
+				}, {})
+			: null;
+		console.log('filtered', dates);
+		return dates;
+	};
+
+	_calendarDonePressed = () => {
+		this.setState({
+			datepickerVisible: false
 		});
 	};
 
@@ -450,12 +483,12 @@ export default class NewPost extends React.Component {
 						})}
 				>
 					<FontAwesome name={'calendar'} size={22} style={styles.pinIcon} />
-					{this.state.newPost.datetime
+					{this.state.newPost.dates
 						? <View>
 								<Text>
-									{new Date(this.state.newPost.datetime).toLocaleDateString([
-										'en-GB'
-									])}
+									{this.state.newPost.dates.map(date => {
+										return new Date(date).toLocaleDateString(['en-GB']) + ' ';
+									})}
 								</Text>
 							</View>
 						: <Text>
@@ -476,12 +509,67 @@ export default class NewPost extends React.Component {
 			</View>
 			{/* Date Picker */}
 			{this.state.datepickerVisible
-				? <Dates
-						date={new Date(this.state.newPost.datetime)}
-						onDatesChange={this._onDateSelected}
-						isDateBlocked={this._isDateBlocked}
-						locale={'en'}
-					/>
+				? <View>
+						{/* <Dates
+							dates={
+								this.state.newPost.dates
+									? new Date(this.state.newPost.dates[0])
+									: null
+							}
+							onDatesChange={this._onDateSelected}
+							isDateBlocked={this._isDateBlocked}
+							locale={'en'}
+						/> */}
+
+						<Calendar
+							// Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
+							minDate={new Date()}
+							// Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
+							// maxDate={'2012-05-30'}
+							// Handler which gets executed on day press. Default = undefined
+							onDayPress={this._onDateSelected}
+							// Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
+							monthFormat={'MMM yyyy'}
+							// Hide month navigation arrows. Default = false
+							hideArrows={false}
+							// Do not show days of other months in month page. Default = false
+							hideExtraDays={true}
+							// If hideArrows=false and hideExtraDays=false do not swich month when tapping on greyed out
+							// day from another month that is visible in calendar page. Default = false
+							disableMonthChange={false}
+							firstDay={0}
+							markedDates={this._getSelectedDates()}
+							theme={{
+								calendarBackground: '#ffffff',
+								textSectionTitleColor: '#b6c1cd',
+								selectedDayBackgroundColor: '#00adf5',
+								selectedDayTextColor: '#ffffff',
+								todayTextColor: '#00adf5',
+								dayTextColor: '#2d4150',
+								textDisabledColor: '#d9e1e8',
+								textDayFontSize: 16,
+								textMonthFontSize: 16,
+								textDayHeaderFontSize: 16
+							}}
+						/>
+
+						<TouchableOpacity
+							style={{
+								backgroundColor: Colors.grey.medium,
+								paddingVertical: 10
+							}}
+							onPress={() => this._calendarDonePressed()}
+						>
+							<Text
+								style={{ fontSize: 16, color: 'black', alignSelf: 'center' }}
+							>
+								{!this.state.newPost.dates ||
+								this.state.newPost.dates.length === 1
+									? 'Select Date'
+									: 'Select Dates'}
+							</Text>
+						</TouchableOpacity>
+					</View>
 				: null}
 
 			{/* Photo Selection */}
@@ -548,6 +636,7 @@ export default class NewPost extends React.Component {
 		</View>;
 
 	render() {
+		console.log('before', this.state.newPost.dates);
 		return (
 			<View style={styles.container}>
 				<TopBar
