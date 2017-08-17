@@ -1,4 +1,11 @@
-import { Linking, Platform, StatusBar, StyleSheet, View } from 'react-native';
+import {
+	Alert,
+	Linking,
+	Platform,
+	StatusBar,
+	StyleSheet,
+	View
+} from 'react-native';
 import { Permissions, Notifications } from 'expo';
 import React from 'react';
 import SideMenu from 'react-native-side-menu';
@@ -21,7 +28,8 @@ export default class HomePage extends React.Component {
 		this.state = {
 			selectedTab: 'Map',
 			tabStyle: styles.tabStyleSelected,
-			isOpen: false
+			isOpen: false,
+			meNotifications: 0
 		};
 
 		global.openMenu = () => {
@@ -87,6 +95,11 @@ export default class HomePage extends React.Component {
 		}
 	}
 
+	_incrementMeBadge = () => {
+		var currNotifications = this.state.meNotifications + 1;
+		this.setState({ meNotifications: currNotifications });
+	};
+
 	_handleNotification = notification => {
 		if (Platform.OS === 'android') {
 			// TODO make all notification actions use deep linking
@@ -104,7 +117,12 @@ export default class HomePage extends React.Component {
 				}
 			}
 		} else {
-			//ios Code need to add badges
+			//iOS specific code
+			if (notification.data.url) {
+				//TODO
+			} else {
+				this._incrementMeBadge();
+			}
 		}
 	};
 
@@ -213,8 +231,17 @@ export default class HomePage extends React.Component {
 								renderSelectedIcon={() =>
 									<FontAwesome name={tab.icon} size={30} />}
 								onPress={() => {
-									this.setState({ selectedTab: tab.key });
+									if (tab.key === 'Me') {
+										this.setState({ selectedTab: tab.key, meNotifications: 0 });
+									} else {
+										this.setState({ selectedTab: tab.key });
+									}
 								}}
+								badgeText={
+									tab.key === 'Me' && this.state.meNotifications > 0
+										? this.state.meNotifications.toString()
+										: null
+								}
 							>
 								{tab.component}
 							</TabNavigator.Item>

@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: 'column',
-		backgroundColor: Colors.grey.medium
+		backgroundColor: Colors.blue.medium
 	},
 	textContainer: {
 		flex: 2,
