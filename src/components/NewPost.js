@@ -565,9 +565,9 @@ export default class NewPost extends React.Component {
 					{/* List of icons */}
 					<FlatList
 						style={styles.list}
-						data={Object.values(global.db.categories).filter(
-							icon => icon.key !== 'center'
-						)}
+						data={Object.values(global.db.categories)
+							.filter(icon => icon.key !== 'center')
+							.sort((a, b) => a.order - b.order)}
 						numColumns={2}
 						scrollEnabled={false}
 						renderItem={this._renderIcon}
