@@ -1,42 +1,47 @@
 import {
 	FlatList,
-	ScrollView,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
 	View
 } from 'react-native';
-import React, { Component } from 'react';
 import Modal from 'react-native-modal';
+import React, { Component } from 'react';
+import firebase from 'firebase';
 
 import { Entypo } from '@expo/vector-icons';
-import firebase from 'firebase';
 
 import Colors from '../styles/Colors';
 import ExitBar from './ExitBar';
 import NewNotification from './NewNotification';
+import SharedStyles from '../styles/SharedStyles';
 
 export default class ManageNotifications extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			subscriptions: null,
+			subscriptions: {},
 			newNotificationVisible: false
 		};
-
-		this._loadSubscriptions();
 	}
 
-	_loadSubscriptions = async () => {
-		// let subscriptions = (await firebase
-		// 	.database()
-		// 	.ref('subscriptions')
-		// 	.child('owner')
-		// 	.equalTo(firebase.auth().currentUser)
-		// 	.once('value')).val();
-		//
-		//TODO: FINISH
-	};
+	async componentDidMount() {
+		// TODO fuckity fuck fuck permissions
+		firebase
+			.database()
+			.ref('subscriptions')
+			.orderByChild('owner')
+			.equalTo(firebase.auth().currentUser.uid)
+			.on('value', snap => {
+				let subscriptions = snap.val();
+				for (key in subscriptions) {
+					subscriptions[key].key = key;
+				}
+				this.setState({
+					subscriptions: subscriptions
+				});
+			});
+	}
 
 	render() {
 		return (
@@ -50,25 +55,16 @@ export default class ManageNotifications extends Component {
 						hide={() => this.setState({ newNotificationVisible: false })}
 					/>
 				</Modal>
+
 				<ExitBar title={'Manage Notifications'} hide={this.props.hide} />
-				<ScrollView
-					ref={scrollView => {
-						this.scrollView = scrollView;
-					}}
-				>
-					<FlatList
-						data={this.props.listData}
-						scrollEnabled={false}
-						ItemSeparatorComponent={() => <View style={SharedStyles.divider} />}
-						renderItem={({ item }) =>
-							<TouchableOpacity
-								onPress={() => {
-									this._showModal(item);
-								}}
-								style={styles.rowStyles}
-							/>}
-					/>
-				</ScrollView>
+				<FlatList
+					data={Object.values(this.state.subscriptions)}
+					ItemSeparatorComponent={() => <View style={SharedStyles.divider} />}
+					renderItem={({ item }) =>
+						<Text key={item.key}>
+							{JSON.stringify(item)}
+						</Text> /* TODO figure out UI */}
+				/>
 				<View style={styles.bottomBar}>
 					<TouchableOpacity
 						style={styles.addCircle}

@@ -1,4 +1,4 @@
-import { ImagePicker } from 'expo';
+import { ImagePicker, Location, Permissions } from 'expo';
 import {
 	StyleSheet,
 	View,
@@ -32,7 +32,8 @@ const initialState = {
 	newPost: {},
 	datepickerVisible: false,
 	searchModalVisible: false,
-	base64: null
+	base64: null,
+	location: null
 };
 
 export default class NewPost extends React.Component {
@@ -67,16 +68,25 @@ export default class NewPost extends React.Component {
 		this.setState(initialState);
 	}
 
+	async componentDidMount() {
+		let { status } = await Permissions.askAsync(Permissions.LOCATION);
+		if (status === 'granted') {
+			const location = await Location.getCurrentPositionAsync({});
+			this.setState({ location: location });
+		}
+	}
+
 	/* _onIconPressed
   --------------------------------------------------
   Stores the selected icon and scrolls down to the rest of the form. */
 	_onIconPressed = icon => {
-		this._notifySubscribers({
-			latitude: 12,
-			longitude: 12,
-			icon: icon,
-			key: '-KrVR7FIGUAnCPUmHrIt'
-		});
+		// console.log('Notifying on icon press');
+		// this._notifySubscribers({
+		// 	latitude: 55.6583076,
+		// 	longitude: 12.6274396,
+		// 	icon: icon,
+		// 	key: '-KrVR7FIGUAnCPUmHrIt'
+		// });
 		this.setState({ newPost: { ...this.state.newPost, icon: icon } }, () => {
 			// When the user clicks an icon scroll down automatically
 			// Use .then to wait for the lower half to be laid out
@@ -335,7 +345,11 @@ export default class NewPost extends React.Component {
 			Object.values(subs.val()).map(async sub => {
 				// Get the push token if the subscription covers this post
 				// Otherwise return null
-				if (geolib.getDistance(sub, event) < sub.radius * 1000) {
+				if (
+					geolib.getDistance(sub, event) < sub.radius * 1000 &&
+					sub.owner !== firebase.auth().currentUser.uid
+					// Don't notify self
+				) {
 					return (await firebase
 						.database()
 						.ref('users')
@@ -347,9 +361,9 @@ export default class NewPost extends React.Component {
 			})
 		).then(tokens => {
 			tokens = tokens.filter(token => token !== null);
+			console.log('Notifying', tokens, 'of this new post', event);
 			if (tokens.length > 0) {
 				// Notify all of the users who match the subscription
-				console.log('Notifying', tokens, 'of this new post', event);
 				pushNotify(tokens, 'New post!', {
 					url: '+post/' + event.key
 				});
@@ -444,6 +458,9 @@ export default class NewPost extends React.Component {
 							hide={() => {
 								this.setState({ searchModalVisible: false });
 							}}
+							location={
+								this.state.location !== null ? this.state.location.coords : null
+							}
 						/>
 					</Modal>
 				</TouchableOpacity>
@@ -606,19 +623,23 @@ export default class NewPost extends React.Component {
 						<Image
 							source={{ uri: this.state.base64 }}
 							style={{
-								width: 300,
-								height: 300,
-								margin: 20,
+								width: '35%',
+								height: 150,
 								resizeMode: 'contain',
 								alignSelf: 'center'
 							}}
 						/>
 						{/* Cancel button */}
 						<TouchableOpacity
-							style={{ paddingTop: 10, paddingRight: 15 }}
+							style={{
+								backgroundColor: '#F95F62',
+								padding: 20,
+								borderRadius: 10,
+								marginLeft: 25
+							}}
 							onPress={this._cancelPhoto}
 						>
-							<FontAwesome name="times" size={40} />
+							<Text style={{ color: 'white' }}>Remove Photo</Text>
 						</TouchableOpacity>
 					</View>
 				: null}

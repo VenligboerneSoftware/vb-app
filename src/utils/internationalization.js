@@ -22,6 +22,11 @@ export function translate(word, language) {
 	// Default to global language setting
 	language = language || global.language;
 
+	if (!(typeof word === 'string')) {
+		console.error('Non string input to translate', word);
+		return '';
+	}
+
 	// Certain characters are illegal in Firebase keys. Strip them.
 	let key = word
 		.replace(/\./g, '')

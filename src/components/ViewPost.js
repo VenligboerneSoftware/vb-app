@@ -50,16 +50,6 @@ export default class ViewPost extends Component {
 					this.setState({ image: snap.val() });
 				}
 			});
-
-		// When the keyboard pops up, scroll the the bottom so the TextInput is visible
-		this.keyboardDidShow = Keyboard.addListener(
-			'keyboardDidShow',
-			this._scrollToBottom
-		);
-		this.keyboardDidHide = Keyboard.addListener(
-			'keyboardDidHide',
-			this._scrollToBottom
-		);
 	}
 
 	componentDidMount() {
@@ -78,6 +68,16 @@ export default class ViewPost extends Component {
 					}
 				});
 		});
+
+		// When the keyboard pops up, scroll the the bottom so the TextInput is visible
+		this.keyboardDidShow = Keyboard.addListener(
+			'keyboardDidShow',
+			this._scrollToBottom
+		);
+		this.keyboardDidHide = Keyboard.addListener(
+			'keyboardDidHide',
+			this._scrollToBottom
+		);
 	}
 
 	// Clean up the keyboard listeners on exit
@@ -332,7 +332,10 @@ export default class ViewPost extends Component {
 									/>}
 
 							{!this.isOwner && !this.state.applyClicked
-								? <FlagContent />
+								? <FlagContent
+										flaggedUser={this.props.post.owner}
+										postID={this.props.post.key}
+									/>
 								: null}
 						</View>
 					</ScrollView>
