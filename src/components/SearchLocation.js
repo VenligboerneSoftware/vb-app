@@ -38,7 +38,7 @@ export default class SearchLocation extends React.Component {
 					location: this.props.location
 						? this.props.location.latitude + ',' + this.props.location.longitude
 						: '55.6761,12.5683', //Default to Copenhagen
-					radius: 1000 //TODO: test and decide radius / if needed
+					radius: 2500 //TODO: test and decide radius / if needed
 				}}
 				styles={{
 					container: {
