@@ -142,8 +142,8 @@ export default class ViewApplications extends React.Component {
 		return this.state.applicationsLoaded
 			? listData.length === 0
 				? <Text style={{ alignSelf: 'center', marginTop: 10 }}>
-						There are no applications to display
-					</Text> //TODO: change text and translate
+						{translate('There are no applications to display')}
+					</Text>
 				: <FlatList
 						data={listData}
 						ItemSeparatorComponent={() => <View style={SharedStyles.divider} />}
