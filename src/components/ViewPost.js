@@ -10,10 +10,10 @@ import {
 	View
 } from 'react-native';
 import { KeyboardAwareView } from 'react-native-keyboard-aware-view';
-import { FontAwesome } from '@expo/vector-icons';
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
 
+import { FontAwesome } from '@expo/vector-icons';
 import {
 	createApplication,
 	deleteApplication
@@ -23,6 +23,7 @@ import Colors from 'venligboerneapp/src/styles/Colors.js';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
 
 import ExitBar from './ExitBar.js';
+import FlagContent from './FlagContent.js';
 import MapWithCircle from './MapWithCircle.js';
 import ShareButton from './ShareButton.js';
 import Time from './Time';
@@ -329,6 +330,10 @@ export default class ViewPost extends Component {
 										latitude={this.props.post.latitude}
 										longitude={this.props.post.longitude}
 									/>}
+
+							{!this.isOwner && !this.state.applyClicked
+								? <FlagContent />
+								: null}
 						</View>
 					</ScrollView>
 					<View style={SharedStyles.fixedBottomButton}>
