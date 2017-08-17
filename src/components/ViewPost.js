@@ -332,7 +332,10 @@ export default class ViewPost extends Component {
 									/>}
 
 							{!this.isOwner && !this.state.applyClicked
-								? <FlagContent />
+								? <FlagContent
+										flaggedUser={this.props.post.owner}
+										postID={this.props.post.key}
+									/>
 								: null}
 						</View>
 					</ScrollView>
