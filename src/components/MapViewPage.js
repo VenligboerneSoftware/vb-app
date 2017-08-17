@@ -9,17 +9,14 @@ export default class MapViewPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			isPostModalVisible: false,
-			mapRegion: props.mapRegion
+			mapRegion: props.mapRegion,
+			isPostModalVisible: false
 		};
-		this.initialRegion = props.mapRegion;
 	}
 
-	setRegion = region => {
-		// TODO Handling the region could be done more cleanly with animateToRegion
-		// https://github.com/airbnb/react-native-maps/blob/master/docs/mapview.md
-		this.setState({ mapRegion: region });
-	};
+	componentWillReceiveProps(props) {
+		this.setState({ mapRegion: props.mapRegion });
+	}
 
 	_showModal = () => this.setState({ isPostModalVisible: true });
 
@@ -39,12 +36,18 @@ export default class MapViewPage extends React.Component {
 					region={this.state.mapRegion}
 					onRegionChange={mapRegion => {
 						this.state.mapRegion = mapRegion;
+
+						// Use intervals to detect the end of the drag.
+						// Don't use onRegionChangeComplete because it produces
+						// weird events for no reason.
+						if (this.regionChange) clearInterval(this.regionChange);
+						this.regionChange = setTimeout(() => {
+							this.props.onRegionChange(this.state.mapRegion);
+						}, 200);
+						// TODO fiddle with this timing parameter
 					}}
 					onRegionChangeComplete={mapRegion => {
 						this.state.mapRegion = mapRegion;
-						if (mapRegion !== this.initialRegion) {
-							this.props.onRegionChange(mapRegion);
-						}
 					}}
 					showsUserLocation={true}
 					userLocationAnnotationTitle={''}
