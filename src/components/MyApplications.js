@@ -22,7 +22,8 @@ export default class MyApplications extends React.Component {
 		super();
 		this.state = {
 			isModalVisible: false,
-			selectedApp: null
+			selectedApp: null,
+			applications: {}
 		};
 		this._loadApplications();
 	}
@@ -40,6 +41,28 @@ export default class MyApplications extends React.Component {
 			.child(applicationKey)
 			.once('value')).val();
 		application.key = applicationKey;
+
+		// Listen for application status changes
+		const ref = firebase
+			.database()
+			.ref('applications')
+			.child(applicationKey)
+			.child('status');
+		const callback = ref.on('value', snap => {
+			if (
+				snap.exists() &&
+				this.applications &&
+				this.applications[applicationKey]
+			) {
+				console.log('Updating application status', applicationKey, snap.val());
+				this.applications[applicationKey].status = snap.val();
+				this.setState({ applications: this.applications });
+			}
+		});
+		// Store the on listener so it can be removed later
+		application.removeListener = () => {
+			ref.off('value', callback);
+		};
 
 		// Get the information about the original post
 		application.postData = (await firebase
@@ -86,15 +109,24 @@ export default class MyApplications extends React.Component {
 			.child(firebase.auth().currentUser.uid)
 			.child('applications')
 			.on('value', applicationKeys => {
+				// Remove all of the status change listeners
+				console.log('Removing old listeners');
+				Object.values(this.state.applications).forEach(app => {
+					app.removeListener();
+				});
+
 				applicationKeys = applicationKeys.val() || {};
 
 				// Load all of the peripheral data about the applications
 				Promise.all(
 					Object.keys(applicationKeys).map(this._getApplicationByKey)
 				).then(applications => {
+					applications.forEach(app => {
+						applicationKeys[app.key] = app;
+					});
 					// Once it is loaded, sort it and set the state
-					applications = applications.sort(this._alphabetize);
-					this.setState({ applications: applications });
+					this.applications = applicationKeys;
+					this.setState({ applications: this.applications });
 				});
 			});
 	};
@@ -117,10 +149,11 @@ export default class MyApplications extends React.Component {
 						app={this.state.selectedApp}
 					/>
 				</Modal>
-				{this.state.applications &&
-				Object.values(this.state.applications).length > 0
+				{Object.values(this.state.applications).length > 0
 					? <FlatList
-							data={Object.values(this.state.applications)}
+							data={Object.values(this.state.applications).sort(
+								this._alphabetize
+							)}
 							ItemSeparatorComponent={() =>
 								<View style={SharedStyles.divider} />}
 							renderItem={({ item }) =>
