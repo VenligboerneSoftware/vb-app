@@ -551,7 +551,9 @@ export default class NewPost extends React.Component {
 							}}
 							onPress={this._cancelPhoto}
 						>
-							<Text style={{ color: 'white' }}>Remove Photo</Text>
+							<Text style={{ color: 'white' }}>
+								{translate('Remove Photo')}
+							</Text>
 						</TouchableOpacity>
 					</View>
 				: null}
