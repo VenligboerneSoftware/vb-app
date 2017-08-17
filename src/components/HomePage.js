@@ -29,7 +29,8 @@ export default class HomePage extends React.Component {
 			selectedTab: 'Map',
 			tabStyle: styles.tabStyleSelected,
 			isOpen: false,
-			meNotifications: 0
+			meNotifications: 0,
+			mapNotifications: 0
 		};
 
 		global.openMenu = () => {
@@ -100,6 +101,11 @@ export default class HomePage extends React.Component {
 		this.setState({ meNotifications: currNotifications });
 	};
 
+	_incrementMapBadge = () => {
+		var currNotifications = this.state.mapNotifications + 1;
+		this.setState({ mapNotifications: currNotifications });
+	};
+
 	_handleNotification = notification => {
 		if (Platform.OS === 'android' && notification.origin === 'selected') {
 			// TODO make all notification actions use deep linking
@@ -119,7 +125,7 @@ export default class HomePage extends React.Component {
 		} else {
 			//iOS specific code
 			if (notification.data.url) {
-				//TODO
+				this._incrementMapBadge();
 			} else {
 				this._incrementMeBadge();
 			}
@@ -173,6 +179,11 @@ export default class HomePage extends React.Component {
 							onPress={() => {
 								this.setState({ selectedTab: 'Map' });
 							}}
+							badgeText={
+								this.state.mapNotifications > 0
+									? this.state.mapNotifications.toString()
+									: null
+							}
 						>
 							<ViewPosts mode={this.state.selectedTab} />
 						</TabNavigator.Item>
