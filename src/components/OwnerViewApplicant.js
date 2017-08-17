@@ -131,7 +131,10 @@ export default class OwnerViewApplicant extends React.Component {
 							latitude={this.props.post.latitude}
 							longitude={this.props.post.longitude}
 						/>
-						<FlagContent />
+						<FlagContent
+							applicationID={this.props.application.key}
+							flaggedUser={this.props.application.applicant}
+						/>
 					</View>
 				</ScrollView>
 				<FacebookContactButton
