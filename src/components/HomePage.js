@@ -88,7 +88,7 @@ export default class HomePage extends React.Component {
 	}
 
 	_handleNotification = notification => {
-		if (Platform.OS === 'android') {
+		if (Platform.OS === 'android' && notification.origin === 'selected') {
 			// TODO make all notification actions use deep linking
 			if (notification.data.url) {
 				this._link(notification.data.url);
