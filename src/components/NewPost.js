@@ -70,12 +70,13 @@ export default class NewPost extends React.Component {
   --------------------------------------------------
   Stores the selected icon and scrolls down to the rest of the form. */
 	_onIconPressed = icon => {
-		this._notifySubscribers({
-			latitude: 12,
-			longitude: 12,
-			icon: icon,
-			key: '-KrVR7FIGUAnCPUmHrIt'
-		});
+		// console.log('Notifying on icon press');
+		// this._notifySubscribers({
+		// 	latitude: 55.6583076,
+		// 	longitude: 12.6274396,
+		// 	icon: icon,
+		// 	key: '-KrVR7FIGUAnCPUmHrIt'
+		// });
 		this.setState({ newPost: { ...this.state.newPost, icon: icon } }, () => {
 			// When the user clicks an icon scroll down automatically
 			// Use .then to wait for the lower half to be laid out
@@ -302,7 +303,11 @@ export default class NewPost extends React.Component {
 			Object.values(subs.val()).map(async sub => {
 				// Get the push token if the subscription covers this post
 				// Otherwise return null
-				if (geolib.getDistance(sub, event) < sub.radius * 1000) {
+				if (
+					geolib.getDistance(sub, event) < sub.radius * 1000 &&
+					sub.owner !== firebase.auth().currentUser.uid
+					// Don't notify self
+				) {
 					return (await firebase
 						.database()
 						.ref('users')
@@ -314,9 +319,9 @@ export default class NewPost extends React.Component {
 			})
 		).then(tokens => {
 			tokens = tokens.filter(token => token !== null);
+			console.log('Notifying', tokens, 'of this new post', event);
 			if (tokens.length > 0) {
 				// Notify all of the users who match the subscription
-				console.log('Notifying', tokens, 'of this new post', event);
 				pushNotify(tokens, 'New post!', {
 					url: '+post/' + event.key
 				});
