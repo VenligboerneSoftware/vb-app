@@ -170,7 +170,6 @@ export default class NewPost extends React.Component {
 		// Expo.ImagePicker.launchCameraAsync or Expo.ImagePicker.launchImageLibraryAsync
 		// https://docs.expo.io/versions/v15.0.0/sdk/imagepicker.html
 		const result = await pickMethod({
-			allowsEditing: true,
 			base64: true
 		});
 
