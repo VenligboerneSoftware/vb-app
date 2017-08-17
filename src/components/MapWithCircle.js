@@ -6,6 +6,10 @@ import { StyleSheet } from 'react-native';
 import React from 'react';
 
 export default class MapWithCircle extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+
 	render() {
 		return (
 			<MapView
@@ -21,6 +25,8 @@ export default class MapWithCircle extends React.Component {
 				rotateEnabled={false}
 			>
 				<MapView.Circle
+					//key forces iOS refresh
+					key={(this.props.latitude + this.props.longitude).toString()}
 					center={{
 						latitude: this.props.latitude,
 						longitude: this.props.longitude

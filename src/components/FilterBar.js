@@ -66,6 +66,7 @@ export default class FilterBar extends React.Component {
 		this.mySetState({
 			start: null,
 			end: null,
+			focusedInput: null,
 			isDatePickerVisible: false
 		});
 	};
@@ -91,7 +92,9 @@ export default class FilterBar extends React.Component {
 			<View style={styles.container}>
 				<FlatList
 					style={styles.list}
-					data={Object.values(global.db.categories)}
+					data={Object.values(global.db.categories).sort(
+						(a, b) => a.order - b.order
+					)}
 					scrollEnabled={true}
 					horizontal={true}
 					renderItem={this._renderIcon}
