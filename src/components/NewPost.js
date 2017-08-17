@@ -604,7 +604,7 @@ export default class NewPost extends React.Component {
 						<Image
 							source={{ uri: this.state.base64 }}
 							style={{
-								width: '35%',
+								width: '40%',
 								height: 150,
 								resizeMode: 'contain',
 								alignSelf: 'center'
@@ -614,13 +614,15 @@ export default class NewPost extends React.Component {
 						<TouchableOpacity
 							style={{
 								backgroundColor: '#F95F62',
-								padding: 20,
+								padding: 15,
 								borderRadius: 10,
 								marginLeft: 25
 							}}
 							onPress={this._cancelPhoto}
 						>
-							<Text style={{ color: 'white' }}>Remove Photo</Text>
+							<Text style={{ color: 'white' }}>
+								{translate('Remove Photo')}
+							</Text>
 						</TouchableOpacity>
 					</View>
 				: null}

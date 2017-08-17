@@ -36,12 +36,6 @@ export default class ViewPosts extends React.Component {
 					mapRegion: mapRegion
 				},
 				() => {
-					// If the Map is unmounted (which it is when the user is in the
-					// list view) this is a null pointer. Don't set the mapRegion. It
-					// will automatically update when the user tabs back.
-					if (this.map) {
-						this.map.setRegion(this.state.mapRegion);
-					}
 					this._getPosts();
 				}
 			);
@@ -54,20 +48,22 @@ export default class ViewPosts extends React.Component {
 	// ---------------------------------------------------------------------------
 	// When the map loads, get the users current location and pan to it.
 	async componentDidMount() {
-		this._syncFriendliness();
 		let { status } = await Permissions.askAsync(Permissions.LOCATION);
 		if (status === 'granted') {
 			const location = await Location.getCurrentPositionAsync({});
 			this.currentLocation = location;
-			this._onRegionChange({
-				latitude: location.coords.latitude,
-				longitude: location.coords.longitude,
-				latitudeDelta: 0.2,
-				longitudeDelta: 0.4
+			this.setState({
+				mapRegion: {
+					latitude: location.coords.latitude,
+					longitude: location.coords.longitude,
+					latitudeDelta: 0.2,
+					longitudeDelta: 0.4
+				}
 			});
 		} else {
-			console.log('Get current location failed', status);
+			console.warn('Get current location failed', status);
 		}
+		this._syncFriendliness();
 	}
 
 	// syncFriendliness
@@ -130,11 +126,21 @@ export default class ViewPosts extends React.Component {
 				distance: geolib.getDistance(distanceOrigin, posts[sortResult.key]),
 				...posts[sortResult.key]
 			}));
-		// Make a deep copy to avoid immutability issues
-		this.setState({
-			listData: JSON.parse(JSON.stringify(posts)),
-			loaded: true
-		});
+
+		// Clear listData first to fix Android custom icons issue
+		this.setState(
+			{
+				listData: []
+			},
+			() => {
+				this.setState({
+					// Make a deep copy to avoid immutability issues
+					// TODO check if this was causing android rendering issues
+					listData: JSON.parse(JSON.stringify(posts)),
+					loaded: true
+				});
+			}
+		);
 	};
 
 	_checkIcon = (post, filter) =>
@@ -149,11 +155,6 @@ export default class ViewPosts extends React.Component {
 		post.latitude < region.latitude + region.latitudeDelta / 2.0 &&
 		post.longitude > region.longitude - region.longitudeDelta / 2.0 &&
 		post.longitude < region.longitude + region.longitudeDelta / 2.0;
-
-	_onRegionChange = mapRegion => {
-		global.setRegion(mapRegion);
-		this._getPosts();
-	};
 
 	_convertDetailsToRegion = details => {
 		const pickedLocation = details.geometry;
@@ -212,14 +213,11 @@ export default class ViewPosts extends React.Component {
 							}
 						/>
 					: <MapViewPage
-							ref={instance => {
-								this.map = instance;
-							}}
 							listData={this.state.listData.filter(post =>
 								this._checkRegion(post, this.state.mapRegion)
 							)}
 							mapRegion={this.state.mapRegion}
-							onRegionChange={this._onRegionChange}
+							onRegionChange={global.setRegion}
 							message={
 								this.state.loaded
 									? <ClearFilter
