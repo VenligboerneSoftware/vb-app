@@ -136,6 +136,7 @@ export default class StartupPage extends React.Component {
 		console.log('Loaded fonts');
 
 		if (!global.language) {
+			global.isFirstTime = true;
 			history.push('/introLanguageSelect');
 		} else if (!storedToken) {
 			history.push('/facebook');
@@ -150,8 +151,12 @@ export default class StartupPage extends React.Component {
 
 			await this._loadDatabasePromises();
 
-			// When login succeeds and the databse is loaded, proceed to the homepage
-			history.push('/homepage');
+			if (global.isFirstTime) {
+				history.push('/tutorial');
+			} else {
+				// When login succeeds and the databse is loaded, proceed to the homepage
+				history.push('/homepage');
+			}
 		}
 	}
 
