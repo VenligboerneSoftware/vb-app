@@ -119,6 +119,15 @@ export default class Menu extends React.Component {
 				</TouchableOpacity>
 
 				<View style={SharedStyles.divider} />
+
+				{/* Tutorial */}
+				<TouchableOpacity onPress={() => history.push('/tutorial')}>
+					<Text style={styles.menuText}>
+						{translate('Tutorial')}
+					</Text>
+				</TouchableOpacity>
+
+				<View style={SharedStyles.divider} />
 			</View>
 		);
 	}
