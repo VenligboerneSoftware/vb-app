@@ -546,7 +546,9 @@ export default class NewPost extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<TopBar title={translate('New Post')} />
+				<TopBar
+					title={translate(this.state.newPost.key ? 'Edit Post' : 'New Post')}
+				/>
 				<ScrollView
 					ref={scrollView => {
 						this.scrollView = scrollView;
