@@ -86,20 +86,8 @@ export default class StartupPage extends React.Component {
 		// possibly helpful: https://developers.facebook.com/docs/facebook-login/access-tokens/debugging-and-error-handling
 
 		try {
-			let userProfile = await this.authenticate(token);
 			global.token = token;
-
-			// Add the users push token to the database so they can be notified about events.
-			// Get the token that uniquely identifies this device.
-			const pushToken = await Notifications.getExpoPushTokenAsync();
-
-			// Store user data in the database
-			firebase.database().ref('users').child(userProfile.uid).update({
-				facebookUID: userProfile.providerData[0].uid,
-				photoURL: userProfile.providerData[0].photoURL,
-				pushToken: pushToken,
-				displayName: userProfile.providerData[0].displayName
-			});
+			return await this.authenticate(token);
 		} catch (error) {
 			console.error(error);
 			AsyncStorage.removeItem('token');
@@ -135,21 +123,39 @@ export default class StartupPage extends React.Component {
 		]);
 		console.log('Loaded fonts');
 
+		const dbPromises = this._loadDatabasePromises();
+
 		if (!global.language) {
 			global.isFirstTime = true;
 			history.push('/introLanguageSelect');
 		} else if (!storedToken) {
 			history.push('/facebook');
 		} else {
-			await this.attemptLoginWithStoredToken(storedToken);
+			const userProfile = await this.attemptLoginWithStoredToken(storedToken);
+			console.log('Logged in');
 
+			// Add the users push token to the database so they can be notified about events.
+			// Get the token that uniquely identifies this device.
+			Notifications.getExpoPushTokenAsync().then(pushToken => {
+				// Store user data in the database
+				firebase.database().ref('users').child(userProfile.uid).update({
+					facebookUID: userProfile.providerData[0].uid,
+					photoURL: userProfile.providerData[0].photoURL,
+					pushToken: pushToken,
+					displayName: userProfile.providerData[0].displayName
+				});
+				console.log('Got push token');
+			});
+
+			// Preload Profile Pic
 			Image.prefetch(
 				'https://graph.facebook.com/' +
 					firebase.auth().currentUser.providerData[0].uid +
 					'/picture?height=400'
-			); //Preload Profile Pic
+			);
 
-			await this._loadDatabasePromises();
+			await dbPromises;
+			console.log('Loaded icons and centers');
 
 			if (global.isFirstTime) {
 				history.push('/tutorial');
