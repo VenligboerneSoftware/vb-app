@@ -187,6 +187,7 @@ export default class ViewPosts extends React.Component {
 						const mapRegion = this._convertDetailsToRegion(details);
 						global.setRegion(mapRegion);
 					}}
+					location={this.currentLocation ? this.currentLocation.coords : null}
 				/>
 				<FilterBar
 					onFilterChange={this._setFilter}

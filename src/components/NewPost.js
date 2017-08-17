@@ -1,4 +1,4 @@
-import { ImagePicker } from 'expo';
+import { ImagePicker, Location, Permissions } from 'expo';
 import {
 	StyleSheet,
 	View,
@@ -31,7 +31,8 @@ const initialState = {
 	newPost: {},
 	datepickerVisible: false,
 	searchModalVisible: false,
-	base64: null
+	base64: null,
+	location: null
 };
 
 export default class NewPost extends React.Component {
@@ -64,6 +65,14 @@ export default class NewPost extends React.Component {
 	componentWillReceiveProps(props) {
 		// Clear all the data every time we leave and come back
 		this.setState(initialState);
+	}
+
+	async componentDidMount() {
+		let { status } = await Permissions.askAsync(Permissions.LOCATION);
+		if (status === 'granted') {
+			const location = await Location.getCurrentPositionAsync({});
+			this.setState({ location: location });
+		}
 	}
 
 	/* _onIconPressed
@@ -416,6 +425,9 @@ export default class NewPost extends React.Component {
 							hide={() => {
 								this.setState({ searchModalVisible: false });
 							}}
+							location={
+								this.state.location !== null ? this.state.location.coords : null
+							}
 						/>
 					</Modal>
 				</TouchableOpacity>
