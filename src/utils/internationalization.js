@@ -145,6 +145,12 @@ export function getLanguageSymbol(language) {
 // Set the global language setting, store it in AsyncStorage, update the RTL
 // setting, and prompt the user to restart if RTL changed.
 export function setLanguage(language) {
+	Expo.Amplitude.logEventWithProperties('Language Change', {
+		from: global.language,
+		to: language
+	});
+	Expo.Amplitude.setUserProperties({ language: language });
+
 	global.language = language;
 	AsyncStorage.setItem('language', global.language);
 	// const shouldBeRTL = global.db.languageOptions[global.language].isRTL;
