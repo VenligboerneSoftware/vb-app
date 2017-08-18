@@ -170,7 +170,7 @@ export default class StartupPage extends React.Component {
 		return (
 			<View style={styles.container}>
 				<Image
-					source={require('../../assets/images/home_gradient.png')}
+					source={require('../../assets/images/home_background.png')}
 					style={styles.gradient}
 				>
 					<Image
