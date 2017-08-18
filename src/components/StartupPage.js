@@ -65,7 +65,6 @@ export default class StartupPage extends React.Component {
 	//
 	// More on a firebase.promise:
 	// https://firebase.google.com/docs/reference/js/firebase.Promise#Promise
-
 	authenticate = async token => {
 		const provider = firebase.auth.FacebookAuthProvider;
 		const credential = provider.credential(token);
@@ -89,7 +88,7 @@ export default class StartupPage extends React.Component {
 			global.token = token;
 			return await this.authenticate(token);
 		} catch (error) {
-			console.error(error);
+			console.error('Facebook authentication error', error);
 			AsyncStorage.removeItem('token');
 			Alert.alert('Your Facebook session has expired!', 'Please log in again!');
 			history.push('/facebook');
@@ -132,8 +131,15 @@ export default class StartupPage extends React.Component {
 		} else if (!storedToken) {
 			history.push('/facebook');
 		} else {
-			const userProfile = await this.attemptLoginWithStoredToken(storedToken);
+			await this.attemptLoginWithStoredToken(storedToken);
 			console.log('Logged in');
+
+			// Initialize Amplitude with user data
+			let userProfile = firebase.auth().currentUser;
+			userProfile = JSON.parse(JSON.stringify(userProfile));
+			userProfile.language = global.language;
+			Expo.Amplitude.setUserId(userProfile.uid);
+			Expo.Amplitude.setUserProperties(userProfile);
 
 			// Add the users push token to the database so they can be notified about events.
 			// Get the token that uniquely identifies this device.

@@ -1,12 +1,5 @@
-import {
-	Alert,
-	Linking,
-	Platform,
-	StatusBar,
-	StyleSheet,
-	View
-} from 'react-native';
-import { Permissions, Notifications } from 'expo';
+import { Linking, Platform, StatusBar, StyleSheet, View } from 'react-native';
+import Expo, { Permissions, Notifications } from 'expo';
 import React from 'react';
 import SideMenu from 'react-native-side-menu';
 import TabNavigator from 'react-native-tab-navigator';
@@ -137,6 +130,19 @@ export default class HomePage extends React.Component {
 		Notifications.addListener(this._handleNotification);
 	}
 
+	_setTab = tab => {
+		console.log('Setting tab', tab);
+		Expo.Amplitude.logEventWithProperties('Change Tab', {
+			from: this.state.selectedTab,
+			to: tab
+		});
+		if (tab === 'Me') {
+			this.setState({ selectedTab: tab, meNotifications: 0 });
+		} else {
+			this.setState({ selectedTab: tab });
+		}
+	};
+
 	render() {
 		return (
 			<SideMenu
@@ -176,9 +182,7 @@ export default class HomePage extends React.Component {
 							}
 							renderIcon={() => <FontAwesome name={'map'} size={30} />}
 							renderSelectedIcon={() => <FontAwesome name={'map'} size={30} />}
-							onPress={() => {
-								this.setState({ selectedTab: 'Map' });
-							}}
+							onPress={this._setTab.bind(this, 'Map')}
 							badgeText={
 								this.state.mapNotifications > 0
 									? this.state.mapNotifications.toString()
@@ -207,9 +211,7 @@ export default class HomePage extends React.Component {
 							renderIcon={() => <FontAwesome name={'list-ul'} size={30} />}
 							renderSelectedIcon={() =>
 								<FontAwesome name={'list-ul'} size={30} />}
-							onPress={() => {
-								this.setState({ selectedTab: 'List' });
-							}}
+							onPress={this._setTab.bind(this, 'List')}
 						/>
 
 						{[
@@ -241,13 +243,7 @@ export default class HomePage extends React.Component {
 								renderIcon={() => <FontAwesome name={tab.icon} size={30} />}
 								renderSelectedIcon={() =>
 									<FontAwesome name={tab.icon} size={30} />}
-								onPress={() => {
-									if (tab.key === 'Me') {
-										this.setState({ selectedTab: tab.key, meNotifications: 0 });
-									} else {
-										this.setState({ selectedTab: tab.key });
-									}
-								}}
+								onPress={this._setTab.bind(this, tab.key)}
 								badgeText={
 									tab.key === 'Me' && this.state.meNotifications > 0
 										? this.state.meNotifications.toString()

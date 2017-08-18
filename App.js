@@ -1,5 +1,6 @@
 import { Alert, I18nManager, NetInfo, Text } from 'react-native';
 import { Router, Route, Switch } from 'react-router-native';
+import Expo from 'expo';
 import React from 'react';
 import * as firebase from 'firebase';
 
@@ -35,6 +36,9 @@ export default class App extends React.Component {
 
 	componentDidMount() {
 		this.addInternetEventListeners();
+
+		Expo.Amplitude.initialize(APIKeys.Amplitude);
+		Expo.Amplitude.logEvent('Startup');
 	}
 
 	componentWillUnmount() {
