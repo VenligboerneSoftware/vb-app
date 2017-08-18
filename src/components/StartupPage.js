@@ -155,14 +155,23 @@ export default class StartupPage extends React.Component {
 					'/picture?height=400'
 			);
 
-			await this._loadDatabasePromises();
-			console.log('Loaded icons and centers');
+			try {
+				await this._loadDatabasePromises();
+				console.log('Loaded icons and centers');
 
-			if (global.isFirstTime) {
-				history.push('/tutorial');
-			} else {
-				// When login succeeds and the databse is loaded, proceed to the homepage
-				history.push('/homepage');
+				if (global.isFirstTime) {
+					history.push('/tutorial');
+				} else {
+					// When login succeeds and the databse is loaded, proceed to the homepage
+					history.push('/homepage');
+				}
+			} catch (error) {
+				console.warn('Database load error', error);
+				if (error.code === 'PERMISSION_DENIED') {
+					alert(
+						'You have been banned by an administrator for inappropriate use of the app. Please email venligboerneapp@gmail.com for more details.'
+					);
+				}
 			}
 		}
 	}
