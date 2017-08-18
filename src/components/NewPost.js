@@ -530,7 +530,7 @@ export default class NewPost extends React.Component {
 							hideArrows={false}
 							hideExtraDays={true}
 							disableMonthChange={false}
-							firstDay={1}
+							firstDay={1} //Monday comes first
 							markedDates={this._getSelectedDates()}
 							theme={{
 								calendarBackground: '#ffffff',
@@ -540,9 +540,7 @@ export default class NewPost extends React.Component {
 								todayTextColor: '#00adf5',
 								dayTextColor: '#2d4150',
 								textDisabledColor: '#d9e1e8',
-								textDayFontSize: 16,
-								textMonthFontSize: 16,
-								textDayHeaderFontSize: 16
+								textMonthFontSize: 16
 							}}
 						/>
 

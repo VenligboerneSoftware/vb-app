@@ -128,19 +128,19 @@ export default class ViewPosts extends React.Component {
 			}));
 
 		// Clear listData first to fix Android custom icons issue
-		this.setState(
-			{
-				listData: []
-			},
-			() => {
-				this.setState({
-					// Make a deep copy to avoid immutability issues
-					// TODO check if this was causing android rendering issues
-					listData: JSON.parse(JSON.stringify(posts)),
-					loaded: true
-				});
-			}
-		);
+		// this.setState(
+		// 	{
+		// 		listData: []
+		// 	},
+		// 	() => {
+		this.setState({
+			// Make a deep copy to avoid immutability issues
+			// TODO check if this was causing android rendering issues
+			listData: JSON.parse(JSON.stringify(posts)),
+			loaded: true
+		});
+		// 	}
+		// );
 	};
 
 	_checkIcon = (post, filter) =>
