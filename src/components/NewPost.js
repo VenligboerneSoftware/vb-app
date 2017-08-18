@@ -204,7 +204,6 @@ export default class NewPost extends React.Component {
 		// Expo.ImagePicker.launchCameraAsync or Expo.ImagePicker.launchImageLibraryAsync
 		// https://docs.expo.io/versions/v15.0.0/sdk/imagepicker.html
 		const result = await pickMethod({
-			allowsEditing: true,
 			base64: true
 		});
 
@@ -625,7 +624,7 @@ export default class NewPost extends React.Component {
 
 			{/* Submit Button */}
 			<TouchableOpacity
-				style={styles.submit}
+				style={SharedStyles.finishButton}
 				activeOpacity={0.4}
 				onPress={this._submitPressed}
 			>
@@ -760,16 +759,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		borderRadius: 10
-	},
-	submit: {
-		height: 108,
-		width: '100%',
-		backgroundColor: Colors.blue.dark,
-		marginTop: 10,
-		marginBottom: 20,
-		flexDirection: 'row',
-		justifyContent: 'center',
-		alignItems: 'center'
 	},
 	horizontalLayout: {
 		flexDirection: 'row',

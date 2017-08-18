@@ -248,6 +248,9 @@ export default class ViewPost extends Component {
 		// TODO make this atomic with an update
 		firebase.database().ref('posts').child(this.props.post.key).remove();
 
+		// remove image
+		firebase.database().ref('images').child(this.props.post.key).remove();
+
 		this.props.hide();
 	};
 
