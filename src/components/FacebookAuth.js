@@ -85,7 +85,7 @@ export default class FacebookAuth extends React.Component {
 		return (
 			<View style={styles.container}>
 				<Image
-					source={require('../../assets/images/logo_black_text.png')}
+					source={require('../../assets/images/logo_gray_text.png')}
 					style={styles.logo}
 				/>
 				<View style={styles.textContainer}>
