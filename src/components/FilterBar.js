@@ -25,10 +25,14 @@ export default class FilterBar extends React.Component {
 	}
 
 	// Custom setState function to always call the onFilterChange callback
-	mySetState = state => {
-		this.setState(state, () => {
-			this.props.onFilterChange(this.state);
-		});
+	mySetState = (state, filterRefreshNeeded) => {
+		if (filterRefreshNeeded) {
+			this.setState(state, () => {
+				this.props.onFilterChange(this.state);
+			});
+		} else {
+			this.setState(state);
+		}
 	};
 
 	// _onIconPressed
@@ -45,30 +49,41 @@ export default class FilterBar extends React.Component {
 			newSelection.splice(index, 1); // If the element exists, remove it
 		}
 
-		this.mySetState({ icon: newSelection });
+		this.mySetState({ icon: newSelection }, true); //always refresh on icon press
 	};
 
 	_onDatesChange = newDates => {
-		this.mySetState({
-			// store the new data in the state
-			// The psuedo-Date object returned aren't fully functional (no toDateLocaleString function).
-			// Wrap them in new Dates to get these methods.
-			start: new Date(newDates.startDate),
-			end:
-				newDates.endDate === null ? this.state.end : new Date(newDates.endDate),
-			focusedInput: newDates.focusedInput === 'endDate' ? 'endDate' : undefined,
-			// if the range is picked, hide the picker
-			isDatePickerVisible: !(newDates.startDate && newDates.endDate)
-		});
+		let filterRefreshNeeded = newDates.startDate && newDates.endDate;
+		this.mySetState(
+			{
+				// store the new data in the state
+				// The psuedo-Date object returned aren't fully functional (no toDateLocaleString function).
+				// Wrap them in new Dates to get these methods.
+				start: new Date(newDates.startDate),
+				end:
+					newDates.endDate === null
+						? this.state.end
+						: new Date(newDates.endDate),
+				focusedInput:
+					newDates.focusedInput === 'endDate' ? 'endDate' : undefined,
+				// if the range is picked, hide the picker
+				isDatePickerVisible: !(newDates.startDate && newDates.endDate)
+			},
+			filterRefreshNeeded
+		);
 	};
 
 	_cancelDate = () => {
-		this.mySetState({
-			start: null,
-			end: null,
-			focusedInput: null,
-			isDatePickerVisible: false
-		});
+		let filterRefreshNeeded = this.state.start && this.state.end;
+		this.mySetState(
+			{
+				start: null,
+				end: null,
+				focusedInput: null,
+				isDatePickerVisible: false
+			},
+			filterRefreshNeeded
+		);
 	};
 
 	_renderIcon = ({ item }) => {
