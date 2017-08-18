@@ -16,8 +16,8 @@ export default class HomePage extends React.Component {
 			tabStyle: styles.tabStyleSelected,
 			isOpen: false,
 			badgeCounts: {
-				Me: 3,
-				Map: 3
+				Me: 0,
+				Map: 0
 			}
 		};
 
