@@ -9,7 +9,6 @@ import {
 	ScrollView,
 	TextInput
 } from 'react-native';
-import Dates from 'react-native-dates';
 import { Calendar } from 'react-native-calendars';
 import Modal from 'react-native-modal';
 import React from 'react';
@@ -27,7 +26,7 @@ import SearchLocation from './SearchLocation.js';
 import TopBar from './TopBar.js';
 import mortonize from '../utils/mortonize';
 import pushNotify from '../utils/pushNotify';
-import { getNextDate, formatDate } from '../utils/dates';
+import { formatDate } from '../utils/dates';
 
 const initialState = {
 	newPost: {},
@@ -530,7 +529,7 @@ export default class NewPost extends React.Component {
 							hideArrows={false}
 							hideExtraDays={true}
 							disableMonthChange={false}
-							firstDay={0}
+							firstDay={1}
 							markedDates={this._getSelectedDates()}
 							theme={{
 								calendarBackground: '#ffffff',

@@ -133,7 +133,7 @@ export default class FilterBar extends React.Component {
 										</Text>}
 								<Text>
 									{this.state.start
-										? this.state.start.toLocaleDateString()
+										? this.state.start.toLocaleDateString('en-GB')
 										: ''}
 								</Text>
 							</TouchableOpacity>
@@ -165,7 +165,7 @@ export default class FilterBar extends React.Component {
 										</Text>
 										<Text>
 											{this.state.end
-												? this.state.end.toLocaleDateString()
+												? this.state.end.toLocaleDateString('en-GB')
 												: ''}
 										</Text>
 									</TouchableOpacity>

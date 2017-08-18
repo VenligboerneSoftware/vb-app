@@ -46,9 +46,6 @@ export function checkFilters(dates, start, end) {
 		return false;
 	}
 	dates = dates.filter(date => {
-		console.log('date', Moment.unix(date / 1000));
-		console.log('before', Moment.parseZone(start));
-		console.log('after', Moment.parseZone(end));
 		return (
 			(Moment.unix(date / 1000).isAfter(start) ||
 				Moment.unix(date / 1000).isSame(start)) &&
@@ -56,7 +53,6 @@ export function checkFilters(dates, start, end) {
 				Moment.unix(date / 1000).isSame(end))
 		);
 	});
-	console.log(dates);
 	return dates.length > 0;
 }
 
