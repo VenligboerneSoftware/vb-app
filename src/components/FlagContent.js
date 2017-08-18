@@ -71,12 +71,15 @@ export default class FlagContent extends React.Component {
 							onChangeText={text => this.setState({ reason: text })}
 							style={styles.textInput}
 							underlineColorAndroid={'white'}
+							blurOnSubmit={true}
+							returnKeyType="done"
+							multiline={true}
 						/>
 						<Text
 							style={[SharedStyles.button, { textAlign: 'center' }]}
 							onPress={this._submitReport}
 						>
-							Submit Report
+							{translate('Submit Report')}
 						</Text>
 					</View>
 				</Modal>
