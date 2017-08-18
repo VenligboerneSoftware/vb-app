@@ -124,13 +124,11 @@ export default class StartupPage extends React.Component {
 		const agreedToEula = await AsyncStorage.getItem('eula');
 		global.language = await AsyncStorage.getItem('language');
 		const storedToken = await AsyncStorage.getItem('token');
-		if (!agreedToEula) {
-			history.push('/eula');
-		} else if (!global.language) {
+		if (!global.language) {
 			global.isFirstTime = true;
 			history.push('/introLanguageSelect');
 		} else if (!storedToken) {
-			history.push('/facebook');
+			history.push('/facebook', { eula: !agreedToEula });
 		} else {
 			const userProfile = await this.attemptLoginWithStoredToken(storedToken);
 			console.log('Logged in');
