@@ -497,7 +497,6 @@ export default class NewPost extends React.Component {
 						})}
 				>
 					<FontAwesome name={'calendar'} size={22} style={styles.pinIcon} />
-					{console.log(this.state.newPost.dates)}
 					{this.state.newPost.dates && this.state.newPost.dates.length !== 0
 						? <View>
 								<Text>
