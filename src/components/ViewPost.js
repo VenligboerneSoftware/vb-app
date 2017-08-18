@@ -292,10 +292,7 @@ export default class ViewPost extends Component {
 
 							<View style={[SharedStyles.divider, { marginTop: 10 }]} />
 
-							<Time
-								style={styles.dataRow}
-								datetime={this.props.post.datetime}
-							/>
+							<Time style={styles.dataRow} dates={this.props.post.dates} />
 
 							<View style={SharedStyles.divider} />
 

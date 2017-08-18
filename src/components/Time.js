@@ -6,6 +6,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import React, { Component } from 'react';
 
 import { translate } from '../utils/internationalization';
+import { sortedDatesString } from '../utils/dates';
 
 export default class Time extends Component {
 	render() {
@@ -13,8 +14,8 @@ export default class Time extends Component {
 			<View style={styles.time}>
 				<FontAwesome name={'calendar'} size={35} style={{ marginRight: 10 }} />
 				<Text style={{ marginLeft: 10 }}>
-					{this.props.datetime
-						? new Date(this.props.datetime).toLocaleDateString()
+					{this.props.dates
+						? sortedDatesString(this.props.dates)
 						: translate('Date Not Specified')}
 				</Text>
 			</View>

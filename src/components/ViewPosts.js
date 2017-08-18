@@ -9,6 +9,7 @@ import FilterBar from './FilterBar.js';
 import MapViewPage from './MapViewPage';
 import PostList from './PostList';
 import TopBar from './TopBar.js';
+import { checkFilters } from '../utils/dates';
 
 export default class ViewPosts extends React.Component {
 	constructor() {
@@ -145,9 +146,9 @@ export default class ViewPosts extends React.Component {
 	_checkIcon = (post, filter) =>
 		filter.icon.length === 0 || filter.icon.indexOf(post.icon) !== -1;
 
-	_checkDate = (post, filter) =>
-		(!filter.start || filter.start.getTime() <= post.datetime) &&
-		(!filter.end || filter.end.getTime() >= post.datetime);
+	_checkDate = (post, filter) => {
+		return checkFilters(post.dates, filter.start, filter.end);
+	};
 
 	_checkRegion = (post, region) =>
 		post.latitude > region.latitude - region.latitudeDelta / 2.0 &&

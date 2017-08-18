@@ -17,6 +17,8 @@ import PostOrCenterModal from './PostOrCenterModal';
 import SharedStyles from '../styles/SharedStyles';
 import ViewApplications from './ViewApplications';
 
+import { formatDate, getNextDate } from '../utils/dates';
+
 export default class PostList extends React.Component {
 	constructor(props) {
 		super(props);
@@ -84,11 +86,11 @@ export default class PostList extends React.Component {
 											<ApplicationCount applications={item.applications} />
 										</TouchableOpacity>
 									: null}
-
-								{item.datetime
+								{item.dates
 									? // display date of event
 										<Text style={styles.dateText}>
-											{new Date(item.datetime).toLocaleDateString()}
+											{formatDate(getNextDate(item.dates)) +
+												(item.dates.length > 1 ? '...' : '')}
 										</Text>
 									: null}
 
