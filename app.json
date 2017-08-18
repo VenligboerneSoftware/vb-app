@@ -11,7 +11,7 @@
     "primaryColor": "#f3f3f3",
     "icon": "./assets/images/logo_icon_background.png",
     "loading": {
-      "backgroundImage": "./assets/images/home_gradient.png",
+      "backgroundImage": "./assets/images/home_background.png",
       "icon": "./assets/images/logo_icon.png",
       "hideExponentText": true
     },
