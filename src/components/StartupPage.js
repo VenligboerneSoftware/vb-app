@@ -97,9 +97,6 @@ export default class StartupPage extends React.Component {
 	};
 
 	async componentDidMount() {
-		global.language = await AsyncStorage.getItem('language');
-		const storedToken = await AsyncStorage.getItem('token');
-
 		// Language data must be loaded before language selection page
 		global.db.language = (await firebase
 			.database()
@@ -123,9 +120,13 @@ export default class StartupPage extends React.Component {
 		]);
 		console.log('Loaded fonts');
 
-		const dbPromises = this._loadDatabasePromises();
-
-		if (!global.language) {
+		// AsyncStorage.clear();
+		const agreedToEula = await AsyncStorage.getItem('eula');
+		global.language = await AsyncStorage.getItem('language');
+		const storedToken = await AsyncStorage.getItem('token');
+		if (!agreedToEula) {
+			history.push('/eula');
+		} else if (!global.language) {
 			global.isFirstTime = true;
 			history.push('/introLanguageSelect');
 		} else if (!storedToken) {
@@ -154,7 +155,7 @@ export default class StartupPage extends React.Component {
 					'/picture?height=400'
 			);
 
-			await dbPromises;
+			await this._loadDatabasePromises();
 			console.log('Loaded icons and centers');
 
 			if (global.isFirstTime) {

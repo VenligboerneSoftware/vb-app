@@ -54,5 +54,14 @@ export default {
 		marginLeft: 20,
 		marginRight: 20,
 		fontSize: 15
+	},
+	finishButton: {
+		height: 108,
+		width: '100%',
+		backgroundColor: Colors.blue.dark,
+		marginTop: 10,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center'
 	}
 };

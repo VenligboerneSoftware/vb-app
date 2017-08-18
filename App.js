@@ -5,13 +5,14 @@ import * as firebase from 'firebase';
 
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
 
+import APIKeys from './src/utils/APIKeys.js';
+import EULA from './src/components/EULA.js';
 import FacebookAuth from './src/components/FacebookAuth.js';
 import HomePage from './src/components/HomePage.js';
 import LanguageSelect from './src/components/IntroLanguageSelect.js';
 import StartupPage from './src/components/StartupPage.js';
 import Tutorial from './src/components/Tutorial.js';
 import history from './src/utils/history.js';
-import APIKeys from './src/utils/APIKeys.js';
 
 // The warnings are caused by an issue in Firebase. Hopefully a future firebase
 // update will fix them.
@@ -78,6 +79,7 @@ export default class App extends React.Component {
 					<Route path="/facebook" component={FacebookAuth} />
 					<Route path="/startup" component={StartupPage} />
 					<Route path="/introLanguageSelect" component={LanguageSelect} />
+					<Route path="/eula" component={EULA} />
 				</Switch>
 			</Router>
 		);
