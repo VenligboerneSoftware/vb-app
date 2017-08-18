@@ -4,6 +4,7 @@ import { StyleSheet, TouchableOpacity, View, Text, Image } from 'react-native';
 import React, { Component } from 'react';
 import history from '../utils/history.js';
 import Colors from '../styles/Colors';
+import { translate } from 'venligboerneapp/src/utils/internationalization.js';
 
 export default class ExitBar extends Component {
 	constructor(props) {
@@ -25,7 +26,6 @@ export default class ExitBar extends Component {
 
 	render() {
 		return (
-			//TODO: require images, update lastSlide in _checkLastSlide
 			<View style={{ flex: 1 }}>
 				<Swiper
 					style={styles.wrapper}
@@ -46,7 +46,7 @@ export default class ExitBar extends Component {
 					{slides.map(slide =>
 						<View key={slide.num} style={styles.container}>
 							<Text style={{ position: 'absolute', top: '49%', fontSize: 25 }}>
-								Loading...
+								{translate('Loading... Please Wait')}
 							</Text>
 							<Image
 								style={styles.screenshot}

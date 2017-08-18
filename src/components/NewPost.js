@@ -153,7 +153,6 @@ export default class NewPost extends React.Component {
 					return obj;
 				}, {})
 			: null;
-		console.log('SELECTED DATES', dates);
 		return dates;
 	};
 
@@ -368,7 +367,10 @@ export default class NewPost extends React.Component {
 
 	//removes selected date from state
 	_cancelDate = () => {
-		this.setState({ newPost: { ...this.state.newPost, datetime: null } });
+		this.setState({
+			datepickerVisible: false,
+			newPost: { ...this.state.newPost, dates: null }
+		});
 	};
 
 	//removes selected photo from state
@@ -495,7 +497,8 @@ export default class NewPost extends React.Component {
 						})}
 				>
 					<FontAwesome name={'calendar'} size={22} style={styles.pinIcon} />
-					{this.state.newPost.dates
+					{console.log(this.state.newPost.dates)}
+					{this.state.newPost.dates && this.state.newPost.dates.length !== 0
 						? <View>
 								<Text>
 									{this.state.newPost.dates.map(date => {
@@ -510,7 +513,7 @@ export default class NewPost extends React.Component {
 							</Text>}
 				</TouchableOpacity>
 				{/* cancel button */}
-				{this.state.newPost.datetime
+				{this.state.newPost.dates && this.state.newPost.dates.length !== 0
 					? <TouchableOpacity
 							style={{ paddingTop: 10, paddingRight: 15 }}
 							onPress={this._cancelDate}
@@ -556,9 +559,9 @@ export default class NewPost extends React.Component {
 								style={{ fontSize: 16, color: 'black', alignSelf: 'center' }}
 							>
 								{!this.state.newPost.dates ||
-								this.state.newPost.dates.length === 1
-									? 'Select Date'
-									: 'Select Dates'}
+								this.state.newPost.dates.length <= 1
+									? translate('Select Date')
+									: translate('Select Dates')}
 							</Text>
 						</TouchableOpacity>
 					</View>
