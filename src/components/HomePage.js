@@ -1,19 +1,12 @@
 import { Linking, Platform, StatusBar, StyleSheet, View } from 'react-native';
-import Expo, { Permissions, Notifications } from 'expo';
+import { Permissions, Notifications } from 'expo';
 import React from 'react';
 import SideMenu from 'react-native-side-menu';
-import TabNavigator from 'react-native-tab-navigator';
 import firebase from 'firebase';
 
-import { FontAwesome } from '@expo/vector-icons';
-import { translate } from 'venligboerneapp/src/utils/internationalization.js';
-
 import Menu from './Menu.js';
-import NewPost from './NewPost.js';
-import News from './News.js';
+import Tabs from './Tabs.js';
 import PostOrCenterModal from './PostOrCenterModal';
-import Profile from './Profile.js';
-import ViewPosts from './ViewPosts';
 
 export default class HomePage extends React.Component {
 	constructor() {
@@ -22,8 +15,10 @@ export default class HomePage extends React.Component {
 			selectedTab: 'Map',
 			tabStyle: styles.tabStyleSelected,
 			isOpen: false,
-			meNotifications: 0,
-			mapNotifications: 0
+			badgeCounts: {
+				Me: 0,
+				Map: 0
+			}
 		};
 
 		global.openMenu = () => {
@@ -32,10 +27,6 @@ export default class HomePage extends React.Component {
 
 		global.closeMenu = () => {
 			this.setState({ isOpen: false });
-		};
-
-		global.changeTab = (tab, callback) => {
-			this.setState({ selectedTab: tab }, callback);
 		};
 
 		global.onLanguageChange = [this.forceUpdate.bind(this)];
@@ -89,22 +80,12 @@ export default class HomePage extends React.Component {
 		}
 	}
 
-	_incrementMeBadge = () => {
-		var currNotifications = this.state.meNotifications + 1;
-		this.setState({ meNotifications: currNotifications });
-	};
-
-	_incrementMapBadge = () => {
-		var currNotifications = this.state.mapNotifications + 1;
-		this.setState({ mapNotifications: currNotifications });
-	};
-
 	_handleNotification = notification => {
 		if (Platform.OS === 'android' && notification.origin === 'selected') {
-			// TODO make all notification actions use deep linking
 			if (notification.data.url) {
 				this._link(notification.data.url);
 			} else {
+				// TODO make all notification actions use deep linking
 				if (notification.data.type === 'applicantAccepted') {
 					global.changeTab('Me', () => {
 						global.profileIndex(1);
@@ -118,9 +99,19 @@ export default class HomePage extends React.Component {
 		} else {
 			//iOS specific code
 			if (notification.data.url) {
-				this._incrementMapBadge();
+				this.setState({
+					badgeCounts: {
+						...this.state.badgeCounts,
+						Map: this.state.badgeCounts.Map + 1
+					}
+				});
 			} else {
-				this._incrementMeBadge();
+				this.setState({
+					badgeCounts: {
+						...this.state.badgeCounts,
+						Me: this.state.badgeCounts.Me + 1
+					}
+				});
 			}
 		}
 	};
@@ -129,19 +120,6 @@ export default class HomePage extends React.Component {
 		this.registerForPushNotificationsAsync();
 		Notifications.addListener(this._handleNotification);
 	}
-
-	_setTab = tab => {
-		console.log('Setting tab', tab);
-		Expo.Amplitude.logEventWithProperties('Change Tab', {
-			from: this.state.selectedTab,
-			to: tab
-		});
-		if (tab === 'Me') {
-			this.setState({ selectedTab: tab, meNotifications: 0 });
-		} else {
-			this.setState({ selectedTab: tab });
-		}
-	};
 
 	render() {
 		return (
@@ -159,123 +137,17 @@ export default class HomePage extends React.Component {
 					post={this.state.linkedPost}
 					hide={() => this.setState({ showPost: false })}
 				/>
-				<View style={{ flex: 1 }}>
-					<TabNavigator>
-						{/* This tab contains the MapView and ListView because they are
-						actually the same component */}
-						<TabNavigator.Item
-							key={'Map'}
-							selected={
-								this.state.selectedTab === 'Map' ||
-								this.state.selectedTab === 'List'
-							}
-							title={translate('Map')}
-							tabStyle={
-								this.state.selectedTab === 'Map'
-									? styles.tabStyleSelected
-									: styles.tabStyleUnselected
-							}
-							selectedTitleStyle={
-								this.state.selectedTab === 'Map'
-									? styles.titleStyleSelected
-									: styles.titleStyleUnselected
-							}
-							renderIcon={() => <FontAwesome name={'map'} size={30} />}
-							renderSelectedIcon={() => <FontAwesome name={'map'} size={30} />}
-							onPress={this._setTab.bind(this, 'Map')}
-							badgeText={
-								this.state.mapNotifications > 0
-									? this.state.mapNotifications.toString()
-									: null
-							}
-						>
-							<ViewPosts mode={this.state.selectedTab} />
-						</TabNavigator.Item>
-
-						{/* This is a dummy tab that controls the map/list mode of the previous
-						tab */}
-						<TabNavigator.Item
-							key={'List'}
-							selected={false}
-							title={translate('List')}
-							tabStyle={
-								this.state.selectedTab === 'List'
-									? styles.tabStyleSelected
-									: styles.tabStyleUnselected
-							}
-							titleStyle={
-								this.state.selectedTab === 'List'
-									? styles.titleStyleSelected
-									: styles.titleStyleUnselected
-							}
-							renderIcon={() => <FontAwesome name={'list-ul'} size={30} />}
-							renderSelectedIcon={() =>
-								<FontAwesome name={'list-ul'} size={30} />}
-							onPress={this._setTab.bind(this, 'List')}
-						/>
-
-						{[
-							{
-								key: 'New Post',
-								icon: 'plus-square-o',
-								component: <NewPost />
-							},
-							{
-								key: 'News',
-								icon: 'newspaper-o',
-								component: <News />
-							},
-							{
-								key: 'Me',
-								icon: 'user',
-								component: <Profile />
-							}
-						].map(tab =>
-							<TabNavigator.Item
-								key={tab.key}
-								selected={this.state.selectedTab === tab.key}
-								title={translate(tab.key)}
-								tabStyle={
-									this.state.selectedTab === tab.key
-										? styles.tabStyleSelected
-										: styles.tabStyleUnselected
-								}
-								renderIcon={() => <FontAwesome name={tab.icon} size={30} />}
-								renderSelectedIcon={() =>
-									<FontAwesome name={tab.icon} size={30} />}
-								onPress={this._setTab.bind(this, tab.key)}
-								badgeText={
-									tab.key === 'Me' && this.state.meNotifications > 0
-										? this.state.meNotifications.toString()
-										: null
-								}
-							>
-								{tab.component}
-							</TabNavigator.Item>
-						)}
-					</TabNavigator>
-					<View style={this.state.isOpen ? styles.overlay : null} />
-				</View>
+				<Tabs
+					badgeCounts={this.state.badgeCounts}
+					setBadgeCount={(tab, count) => (this.state.badgeCounts[tab] = count)}
+				/>
+				<View style={this.state.isOpen ? styles.overlay : null} />
 			</SideMenu>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
-	tabStyleUnselected: {
-		backgroundColor: 'white',
-		paddingTop: 5
-	},
-	tabStyleSelected: {
-		backgroundColor: 'lightgrey',
-		paddingTop: 5
-	},
-	titleStyleSelected: {
-		color: '#007aff'
-	},
-	titleStyleUnselected: {
-		color: '#929292'
-	},
 	overlay: {
 		flex: 1,
 		position: 'absolute',
