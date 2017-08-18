@@ -124,7 +124,7 @@ export default class OwnerViewApplicant extends React.Component {
 								</View>
 							: null}
 
-						<Time datetime={this.props.post.datetime} />
+						<Time dates={this.props.post.dates} />
 						<View style={SharedStyles.divider} />
 						<MapWithCircle
 							style={{ flex: 1 }}
