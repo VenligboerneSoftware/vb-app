@@ -72,11 +72,7 @@ export default class OwnerViewApplicant extends React.Component {
 
 				<ExitBar hide={this.props.hide} />
 
-				<ScrollView
-					ref={scrollView => {
-						this.scrollView = scrollView;
-					}}
-				>
+				<ScrollView keyboardShouldPersistTaps={'handled'}>
 					<View style={styles.container}>
 						<TitleAndIcon post={this.props.post} />
 						<ApplicationStatus

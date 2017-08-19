@@ -55,7 +55,10 @@ export default class PostList extends React.Component {
 						post={this.state.selectedPost}
 					/>
 				</Modal>
-				<ScrollView style={{ flex: 1, width: Dimensions.get('window').width }}>
+				<ScrollView
+					keyboardShouldPersistTaps={'handled'}
+					style={{ flex: 1, width: Dimensions.get('window').width }}
+				>
 					<FlatList
 						data={this.props.listData}
 						scrollEnabled={false}

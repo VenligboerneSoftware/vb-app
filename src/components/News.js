@@ -109,7 +109,7 @@ export default class News extends React.Component {
 	_renderModal = () =>
 		<View style={styles.articleModalContainer}>
 			<ExitBar hide={this._hideModal} />
-			<ScrollView>
+			<ScrollView keyboardShouldPersistTaps={'handled'}>
 				{/* Author and Date */}
 				<Text style={styles.selectedArticleHeader}>
 					{this.state.selectedArticle.author +

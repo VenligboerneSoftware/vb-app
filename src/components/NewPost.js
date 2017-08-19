@@ -404,6 +404,7 @@ export default class NewPost extends React.Component {
 						maxLength={45}
 						returnKeyType="done"
 						blurOnSubmit={true}
+						autoCapitalize={'sentences'}
 						placeholder={translate('Enter Post Title Here...')}
 						onSubmitEditing={event => {
 							this.descriptionInput.focus();
@@ -644,6 +645,7 @@ export default class NewPost extends React.Component {
 						this.scrollView = scrollView;
 					}}
 					keyboardDismissMode={'on-drag'}
+					keyboardShouldPersistTaps={'handled'}
 				>
 					<View style={[styles.horizontalLayout, { marginTop: 5 }]}>
 						<Text style={{ fontSize: 16 }}>
