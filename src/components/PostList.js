@@ -129,9 +129,7 @@ const ApplicationCount = ({ applications }) => {
 const styles = StyleSheet.create({
 	rowStyles: {
 		flexDirection: 'row',
-		margin: 10,
-		paddingTop: 0,
-		paddingBottom: 0
+		padding: 10
 	},
 	rowText: {
 		flex: 1,
@@ -150,13 +148,13 @@ const styles = StyleSheet.create({
 	},
 	dateText: {
 		position: 'absolute',
-		right: 3,
-		bottom: 16
+		right: 15,
+		bottom: 22
 	},
 	distanceText: {
 		position: 'absolute',
-		right: 3,
-		bottom: -5
+		right: 15,
+		bottom: 3
 	},
 	empty: {
 		alignItems: 'center',
