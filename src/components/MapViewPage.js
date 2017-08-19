@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import React from 'react';
 
 import MapView from 'react-native-maps';
@@ -10,17 +10,44 @@ export default class MapViewPage extends React.Component {
 		super(props);
 		this.state = {
 			mapRegion: props.mapRegion,
-			isPostModalVisible: false
+			isPostModalVisible: false,
+			listData: []
 		};
 	}
 
 	componentWillReceiveProps(props) {
-		this.setState({ mapRegion: props.mapRegion });
+		// TODO Is there a non platform specific solution to this?
+		// Is the OS really even the determining factor of the behavior?
+		if (Platform.OS === 'android') {
+			// Clear listData first to fix Android custom icons issue
+			this.setState(
+				{
+					listData: [],
+					mapRegion: props.mapRegion
+				},
+				() => {
+					this.setState({ listData: props.listData });
+				}
+			);
+		} else {
+			// Clearing listdata causes flashing on iOS
+			this.setState({
+				listData: props.listData,
+				mapRegion: props.mapRegion
+			});
+		}
 	}
 
-	_showModal = () => this.setState({ isPostModalVisible: true });
+	_showModal = post =>
+		this.setState({
+			isPostModalVisible: true,
+			selectedPost: post
+		});
 
-	_hideModal = () => this.setState({ isPostModalVisible: false });
+	_hideModal = () =>
+		this.setState({
+			isPostModalVisible: false
+		});
 
 	// Includes a region twice the size of the map in each direction.
 	// The wide viewport makes scrolling around more pleasant.
@@ -63,16 +90,13 @@ export default class MapViewPage extends React.Component {
 					pitchEnabled={false}
 				>
 					{// Render post and center icons
-					this.props.listData
+					this.state.listData
 						.filter(post => this._checkRegion(post, this.state.mapRegion))
 						.map(marker =>
 							<MapView.Marker
 								key={marker.key}
 								coordinate={marker}
-								onPress={(mark => {
-									this.setState({ selectedPost: mark });
-									this._showModal();
-								}).bind(this, marker)}
+								onPress={this._showModal.bind(this, marker)}
 								image={{
 									uri: global.db.categories[marker.icon].pinURL
 								}}

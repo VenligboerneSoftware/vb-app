@@ -107,17 +107,7 @@ export default class ViewPosts extends React.Component {
 		posts = posts.filter(post => this._checkIcon(post, this.state.filter));
 
 		console.log('posts filtered', Date.now());
-		// TODO Is there a non platform specific solution to this?
-		// Is the OS really even the determining factor of the behavior?
-		if (Platform.OS === 'android') {
-			// Clear listData first to fix Android custom icons issue
-			this.setState({ listData: [] }, () => {
-				this.setState({ listData: posts });
-			});
-		} else {
-			// Clearing listdata causes flashing on iOS
-			this.setState({ listData: posts });
-		}
+		this.setState({ listData: posts });
 	};
 
 	_checkIcon = (post, filter) =>
