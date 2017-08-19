@@ -14,7 +14,7 @@ import Colors from 'venligboerneapp/src/styles/Colors.js';
 import { translate } from '../utils/internationalization';
 import FilterListItem from './FilterListItem.js';
 
-export default class FilterBar extends React.Component {
+export default class FilterBar extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.state = props.filter;
@@ -26,13 +26,15 @@ export default class FilterBar extends React.Component {
 
 	// Custom setState function to always call the onFilterChange callback
 	mySetState = (state, filterRefreshNeeded) => {
-		if (filterRefreshNeeded) {
-			this.setState(state, () => {
-				this.props.onFilterChange(this.state);
-			});
-		} else {
-			this.setState(state);
-		}
+		this.setState(state, () => {
+			if (filterRefreshNeeded) {
+				// Use a setTimeout so the filterchange is registered in a new message,
+				// and the UI has time to hide the calendar
+				setTimeout(() => {
+					this.props.onFilterChange(this.state);
+				}, 0);
+			}
+		});
 	};
 
 	// _onIconPressed
@@ -192,22 +194,31 @@ export default class FilterBar extends React.Component {
 						</View>
 					: null}
 
-				{this.state.isDatePickerVisible
-					? <Dates
-							onDatesChange={this._onDatesChange}
-							isDateBlocked={date => {
-								return (
-									this.state.start !== null &&
-									this.state.end === null &&
-									date.isBefore(this.state.start, 'day')
-								);
-							}}
-							startDate={this.state.start}
-							endDate={this.state.end}
-							focusedInput={this.state.focusedInput}
-							range
-						/>
-					: null}
+				<View
+					style={
+						// hide instead of unmounting for better performance on show
+						this.state.isDatePickerVisible
+							? {}
+							: {
+									display: 'none'
+								}
+					}
+				>
+					<Dates
+						onDatesChange={this._onDatesChange}
+						isDateBlocked={date => {
+							return (
+								this.state.start !== null &&
+								this.state.end === null &&
+								date.isBefore(this.state.start, 'day')
+							);
+						}}
+						startDate={this.state.start}
+						endDate={this.state.end}
+						focusedInput={this.state.focusedInput}
+						range
+					/>
+				</View>
 			</View>
 		);
 	}
