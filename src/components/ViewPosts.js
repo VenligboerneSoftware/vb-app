@@ -1,15 +1,15 @@
 import { Location, Permissions } from 'expo';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import React from 'react';
 import firebase from 'firebase';
 import geolib from 'geolib';
 
+import { checkFilters } from '../utils/dates';
 import ClearFilter from './ClearFilter.js';
 import FilterBar from './FilterBar.js';
 import MapViewPage from './MapViewPage';
 import PostList from './PostList';
 import TopBar from './TopBar.js';
-import { checkFilters } from '../utils/dates';
 
 export default class ViewPosts extends React.Component {
 	constructor() {
@@ -127,19 +127,17 @@ export default class ViewPosts extends React.Component {
 				...posts[sortResult.key]
 			}));
 
-		// Clear listData first to fix Android custom icons issue
-		// this.setState(
-		// 	{
-		// 		listData: []
-		// 	},
-		// 	() => {
-		this.setState({
-			// Make a deep copy to avoid immutability issues
-			// TODO check if this was causing android rendering issues
-			listData: JSON.parse(JSON.stringify(posts))
-		});
-		// 	}
-		// );
+		// TODO Is there a non platform specific solution to this?
+		// Is the OS really even the determining factor of the behavior?
+		if (Platform.OS === 'android') {
+			// Clear listData first to fix Android custom icons issue
+			this.setState({ listData: [] }, () => {
+				this.setState({ listData: posts });
+			});
+		} else {
+			// Clearing listdata causes flashing on iOS
+			this.setState({ listData: posts });
+		}
 	};
 
 	_checkIcon = (post, filter) =>
