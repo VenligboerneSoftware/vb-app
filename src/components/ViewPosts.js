@@ -136,8 +136,7 @@ export default class ViewPosts extends React.Component {
 		this.setState({
 			// Make a deep copy to avoid immutability issues
 			// TODO check if this was causing android rendering issues
-			listData: JSON.parse(JSON.stringify(posts)),
-			loaded: true
+			listData: JSON.parse(JSON.stringify(posts))
 		});
 		// 	}
 		// );
@@ -219,12 +218,10 @@ export default class ViewPosts extends React.Component {
 							mapRegion={this.state.mapRegion}
 							onRegionChange={global.setRegion}
 							message={
-								this.state.loaded
-									? <ClearFilter
-											onPress={this._clearFilter}
-											filterApplied={this.filterApplied()}
-										/>
-									: null
+								<ClearFilter
+									onPress={this._clearFilter}
+									filterApplied={this.filterApplied()}
+								/>
 							}
 						/>}
 			</View>
