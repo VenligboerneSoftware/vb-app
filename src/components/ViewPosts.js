@@ -160,9 +160,9 @@ export default class ViewPosts extends React.Component {
 
 				{this.props.mode === 'List'
 					? <PostList
-							listData={/* Remove own posts from ListView */
-							this.state.listData.filter(
+							listData={this.state.listData.filter(
 								post =>
+									/* Remove own posts from ListView */
 									post.owner !== firebase.auth().currentUser.uid &&
 									this._checkDate(post, this.state.filter)
 							)}
@@ -179,7 +179,10 @@ export default class ViewPosts extends React.Component {
 								/>
 							}
 						/>
-					: <MapViewPage
+					: null}
+
+				{this.props.mode === 'Map'
+					? <MapViewPage
 							listData={this.state.listData}
 							mapRegion={this.state.mapRegion}
 							onRegionChange={global.setRegion}
@@ -189,7 +192,8 @@ export default class ViewPosts extends React.Component {
 									filterApplied={this.filterApplied()}
 								/>
 							}
-						/>}
+						/>
+					: null}
 			</View>
 		);
 	}
