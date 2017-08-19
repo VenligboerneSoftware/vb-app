@@ -42,7 +42,7 @@
     "react-native-communications": "^2.2.1",
     "react-native-dates": "^2.0.4",
     "react-native-google-maps-directions": "git+https://github.com/VenligboerneSoftware/react-native-google-maps-directions.git",
-    "react-native-google-places-autocomplete": "git+https://github.com/ujwal-setlur/react-native-google-places-autocomplete.git",
+    "react-native-google-places-autocomplete": "git+https://github.com/benhannel/react-native-google-places-autocomplete.git",
     "react-native-htmlview": "^0.12.0",
     "react-native-keyboard-aware-view": "0.0.12",
     "react-native-modal": "^2.5.0",

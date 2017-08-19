@@ -66,7 +66,9 @@ export default class SearchLocation extends React.Component {
 				}}
 				currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
 				currentLocationLabel={translate('Current location')}
-				nearbyPlacesAPI="None" // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+				nearbyPlacesAPI="GoogleReverseGeocoding" // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+				reverseGeocodeReturnFirst={true}
+				
 				predefinedPlaces={this.props.predefinedPlaces}
 				debounce={100} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
 				renderLeftButton={() =>
