@@ -30,20 +30,20 @@ export default class Menu extends React.Component {
 		history.push('/startup');
 	};
 
-	// _showModal = () => this.setState({ manageNotificationsModal: true });
-	//
-	// _hideModal = () => this.setState({ manageNotificationsModal: false });
+	_showModal = () => this.setState({ manageNotificationsModal: true });
+
+	_hideModal = () => this.setState({ manageNotificationsModal: false });
 
 	render() {
 		return (
 			<View style={styles.container}>
-				{/* <Modal
+				<Modal
 					isVisible={this.state.manageNotificationsModal}
 					animationIn={'zoomIn'}
 					animationOut={'zoomOut'}
 				>
 					<ManageNotifications hide={this._hideModal} />
-				</Modal> */}
+				</Modal>
 
 				<TouchableOpacity
 					style={{ alignSelf: 'flex-end', marginRight: 10 }}
@@ -53,13 +53,13 @@ export default class Menu extends React.Component {
 				</TouchableOpacity>
 
 				{/*Manage Notifications*/}
-				{/* <TouchableOpacity onPress={this._showModal}>
+				<TouchableOpacity onPress={this._showModal}>
 					<Text style={[styles.menuText]}>
 						{translate('Manage Notifications')}
 					</Text>
 				</TouchableOpacity>
 
-				<View style={SharedStyles.divider} /> */}
+				<View style={SharedStyles.divider} />
 
 				{/*About Venligboerne*/}
 				<TouchableOpacity>
