@@ -1,4 +1,4 @@
-import { Platform, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React from 'react';
 
 import MapView from 'react-native-maps';
@@ -10,30 +10,21 @@ export default class MapViewPage extends React.Component {
 		super(props);
 		this.state = {
 			mapRegion: props.mapRegion,
-			isPostModalVisible: false,
-			listData: props.listData
+			listData: props.listData,
+			isPostModalVisible: false
 		};
 	}
 
 	componentWillReceiveProps(props) {
-		// TODO Is there a non platform specific solution to this?
-		// Is the OS really even the determining factor of the behavior?
-		if (Platform.OS === 'android') {
-			// Clear listData first to fix Android custom icons issue
-			this.setState(
-				{
-					listData: [],
-					mapRegion: props.mapRegion
-				},
-				() => {
-					this.setState({ listData: props.listData });
-				}
-			);
-		} else {
-			// Clearing listdata causes flashing on iOS
+		console.log('new props', props.mapRegion, props.listData.length);
+		// TODO what if listData and mapRegion update simultaneously?
+		if (this.props.listData === props.listData) {
 			this.setState({
-				listData: props.listData,
 				mapRegion: props.mapRegion
+			});
+		} else {
+			this.setState({
+				listData: props.listData
 			});
 		}
 	}
@@ -78,10 +69,10 @@ export default class MapViewPage extends React.Component {
 						if (this.regionChange) {
 							clearInterval(this.regionChange);
 						}
+						// TODO no need to live update this
 						this.regionChange = setTimeout(() => {
 							this.props.onRegionChange(this.state.mapRegion);
 						}, 200);
-						// TODO fiddle with this timing parameter
 					}}
 					onRegionChangeComplete={mapRegion => {
 						this.state.mapRegion = mapRegion;
