@@ -1,5 +1,6 @@
 import { StyleSheet, View, Text, Image } from 'react-native';
 import { TabViewAnimated, TabBar } from 'react-native-tab-view';
+import Expo from 'expo';
 import React from 'react';
 import firebase from 'firebase';
 
@@ -75,7 +76,7 @@ export default class Profile extends React.Component {
 
 	_renderScene = route => {
 		const scenes = {
-			'1': (
+			'1':
 				<PostList
 					listData={route.navigationState.listData}
 					message={
@@ -86,7 +87,7 @@ export default class Profile extends React.Component {
 							: null
 					}
 				/>
-			),
+			,
 			'2': <MyApplications />
 		};
 		return scenes[route.route.key];
