@@ -91,6 +91,8 @@ export default class PostList extends React.Component {
 						post={this.state.selectedPost}
 					/>
 				</Modal>
+				{/* TODO use the FlatList instead. FlatLists can scroll
+					  TODO don't use that hacky Dimensions.get thing */}
 				<ScrollView
 					keyboardShouldPersistTaps={'handled'}
 					style={{ flex: 1, width: Dimensions.get('window').width }}

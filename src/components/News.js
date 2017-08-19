@@ -37,7 +37,8 @@ export default class News extends React.Component {
 		this.getArticles();
 	}
 
-	//Pulls the Article Information From Wordpress
+	// TODO this freezes UI and prevents user from leaving
+	// Pulls the Article Information From Wordpress
 	getArticles = async () => {
 		let urls = await firebase.database().ref('newsUrls').once('value');
 		urls = urls.val();

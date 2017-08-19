@@ -335,6 +335,7 @@ export default class NewPost extends React.Component {
 			return;
 		}
 
+		// TODO run this computation at the server for privacy
 		Promise.all(
 			Object.values(subs.val()).map(async sub => {
 				// Get the push token if the subscription covers this post
