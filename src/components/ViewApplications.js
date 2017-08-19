@@ -175,7 +175,7 @@ export default class ViewApplications extends React.Component {
 
 					<View style={styles.applicantsTextStyle}>
 						<Text style={styles.applicantsText}>
-							{'APPLICANTS'}
+							{'APPLICANTS' /* TODO translate */}
 						</Text>
 					</View>
 					<View style={SharedStyles.divider} />

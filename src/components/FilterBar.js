@@ -1,14 +1,15 @@
 import {
 	FlatList,
+	I18nManager,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
 	View
 } from 'react-native';
 import Dates from 'react-native-dates';
-import { FontAwesome } from '@expo/vector-icons';
 import React from 'react';
 
+import { FontAwesome } from '@expo/vector-icons';
 import Colors from 'venligboerneapp/src/styles/Colors.js';
 
 import { translate } from '../utils/internationalization';
@@ -108,7 +109,10 @@ export default class FilterBar extends React.Component {
 		return (
 			<View style={styles.container}>
 				<FlatList
-					style={styles.list}
+					style={[
+						styles.list,
+						{ flexDirection: I18nManager.isRTL ? 'row-reverse' : 'row' }
+					]}
 					data={Object.values(global.db.categories).sort(
 						(a, b) => a.order - b.order
 					)}

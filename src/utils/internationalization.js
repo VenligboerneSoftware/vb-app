@@ -6,7 +6,8 @@
 // Never use strings directly which will be user facing. Call
 // translate("Your String")
 
-import { AsyncStorage } from 'react-native';
+import { Alert, AsyncStorage, I18nManager } from 'react-native';
+import Expo from 'expo';
 import * as firebase from 'firebase';
 import * as queryString from 'query-string';
 
@@ -135,14 +136,15 @@ export function setLanguage(language) {
 
 	global.language = language;
 	AsyncStorage.setItem('language', global.language);
-	// const shouldBeRTL = global.db.languageOptions[global.language].isRTL;
-	// if (shouldBeRTL !== I18nManager.isRTL) {
-	// 	I18nManager.forceRTL(shouldBeRTL);
-	// 	Alert.alert(
-	// 		translate('Locale change'),
-	// 		translate(
-	// 			'You need to restart the app to change between right to left and left to right languages.'
-	// 		)
-	// 	);
-	// }
+
+	const shouldBeRTL = global.db.languageOptions[global.language].isRTL;
+	if (shouldBeRTL !== I18nManager.isRTL) {
+		I18nManager.forceRTL(shouldBeRTL);
+		Alert.alert(
+			translate('Locale change'),
+			translate(
+				'You need to restart the app to change between right to left and left to right languages.'
+			)
+		);
+	}
 }
