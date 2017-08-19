@@ -44,8 +44,9 @@ export default class NewPost extends React.Component {
 
 		// Make the resolve function externally accessible so it can be Called
 		// in the onLayout of renderRemaining.
+		const _this = this;
 		this.onScroll = new Promise((resolve, reject) => {
-			this.onLayout = {
+			_this.onLayout = {
 				resolve: resolve,
 				reject: reject
 			};
