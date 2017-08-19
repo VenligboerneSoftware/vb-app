@@ -67,8 +67,9 @@ export default class MapViewPage extends React.Component {
 								uri: global.db.categories[marker.icon].pinURL
 							}}
 							style={{
-								zIndex: hashCode(marker.key)
-							} /* keep marker order from flickering */}
+								/* keep marker order from flickering (Android only) */
+								zIndex: marker.latitude
+							}}
 						/>
 					)}
 				</MapView>
@@ -76,13 +77,6 @@ export default class MapViewPage extends React.Component {
 		);
 	}
 }
-
-hashCode = function(str) {
-	var hash = 5381,
-		i = str.length;
-	while (i) hash = (hash * 33) ^ str.charCodeAt(--i);
-	return hash >>> 0;
-};
 
 const styles = StyleSheet.create({
 	container: {
