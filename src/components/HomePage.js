@@ -29,7 +29,8 @@ export default class HomePage extends React.Component {
 			this.setState({ isOpen: false });
 		};
 
-		global.onLanguageChange = [this.forceUpdate.bind(this)];
+		// TODO there must be a better pattern for this
+		global.onLanguageChange = { home: this.forceUpdate.bind(this) };
 
 		Linking.addEventListener('url', urlPacket => {
 			this._link(urlPacket.url);
@@ -139,7 +140,9 @@ export default class HomePage extends React.Component {
 				/>
 				<Tabs
 					badgeCounts={this.state.badgeCounts}
-					setBadgeCount={(tab, count) => (this.state.badgeCounts[tab] = count)}
+					setBadgeCount={(tab, count) => {
+						this.state.badgeCounts[tab] = count;
+					}}
 				/>
 				<View style={this.state.isOpen ? styles.overlay : null} />
 			</SideMenu>

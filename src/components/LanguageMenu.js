@@ -25,7 +25,7 @@ export default class LanguageMenu extends React.Component {
 							if (this.props.onPress) {
 								this.props.onPress(global.language);
 							}
-							global.onLanguageChange.forEach(callback => {
+							Object.values(global.onLanguageChange).forEach(callback => {
 								callback();
 							});
 						}}

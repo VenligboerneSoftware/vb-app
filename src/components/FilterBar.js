@@ -14,7 +14,7 @@ import Colors from 'venligboerneapp/src/styles/Colors.js';
 import { translate } from '../utils/internationalization';
 import FilterListItem from './FilterListItem.js';
 
-export default class FilterBar extends React.PureComponent {
+export default class FilterBar extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = props.filter;

@@ -13,4 +13,4 @@ global.changeTab - Function in HomePage.js. Takes a string (the name of the tab 
 
 global.editPost - Function in NewPost.js. Takes a post object. Loads the object into the New Post form.
 
-global.onLanguageChange - An array of functions, all of which are called when the user changes the language via the LanguageMenu. Updates UI in Homepage.js and Profile.js
+global.onLanguageChange - An Object of functions, all of which are called when the user changes the language via the LanguageMenu. Updates UI in Homepage.js and Profile.js

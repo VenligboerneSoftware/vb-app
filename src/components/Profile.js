@@ -23,7 +23,7 @@ export default class Profile extends React.Component {
 			listData: []
 		};
 
-		global.onLanguageChange.push(() => {
+		global.onLanguageChange.profile = () => {
 			// Retranslate the tab headers into a new language
 			this.setState({
 				routes: [
@@ -31,7 +31,7 @@ export default class Profile extends React.Component {
 					{ key: '2', title: translate('My Applications') }
 				]
 			});
-		});
+		};
 
 		// TODO This is a derpy fix. This setState must be called after the component
 		// loads.
