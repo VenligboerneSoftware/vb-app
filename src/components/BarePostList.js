@@ -1,4 +1,4 @@
-import { Dimensions, FlatList, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import React from 'react';
 
 import PostListItem from './PostListItem.js';
@@ -10,7 +10,6 @@ export default class BarePostList extends React.PureComponent {
 	// Use the users current location to label distance, but fall back on the
 	// map region center.
 	_sort = posts => {
-		console.log('Sorting start ', Date.now());
 		posts = posts
 			// Calculate distances
 			.map(post => ({
@@ -20,12 +19,10 @@ export default class BarePostList extends React.PureComponent {
 			// Sort by distance
 			.sort((a, b) => a.distance - b.distance)
 			.map(obj => obj.post);
-		console.log('Sort complete ', Date.now());
 		return posts;
 	};
 
 	render() {
-		console.log('Rendering a BarePostList', this.props.listData.length);
 		return (
 			<FlatList
 				data={

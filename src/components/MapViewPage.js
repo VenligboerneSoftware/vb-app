@@ -16,7 +16,6 @@ export default class MapViewPage extends React.Component {
 	}
 
 	componentWillReceiveProps(props) {
-		console.log('new props', props.mapRegion, props.listData.length);
 		// TODO what if listData and mapRegion update simultaneously?
 		if (this.props.listData === props.listData) {
 			this.setState({

@@ -81,7 +81,7 @@ export default class News extends React.Component {
 					);
 					return articles;
 				} catch (e) {
-					console.log(e);
+					console.warn(e);
 					return [];
 				}
 			})

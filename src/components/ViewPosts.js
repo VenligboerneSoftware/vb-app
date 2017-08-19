@@ -106,7 +106,6 @@ export default class ViewPosts extends React.Component {
 		// check the event meets the filter criteria
 		posts = posts.filter(post => this._checkIcon(post, this.state.filter));
 
-		console.log('posts filtered', Date.now());
 		this.setState({ listData: posts });
 	};
 
