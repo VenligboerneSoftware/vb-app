@@ -147,12 +147,6 @@ export default class ViewPosts extends React.Component {
 		return checkFilters(post.dates, filter.start, filter.end);
 	};
 
-	_checkRegion = (post, region) =>
-		post.latitude > region.latitude - region.latitudeDelta / 2.0 &&
-		post.latitude < region.latitude + region.latitudeDelta / 2.0 &&
-		post.longitude > region.longitude - region.longitudeDelta / 2.0 &&
-		post.longitude < region.longitude + region.longitudeDelta / 2.0;
-
 	_convertDetailsToRegion = details => {
 		const pickedLocation = details.geometry;
 		let currMapRegion = {};
@@ -210,9 +204,7 @@ export default class ViewPosts extends React.Component {
 							}
 						/>
 					: <MapViewPage
-							listData={this.state.listData.filter(post =>
-								this._checkRegion(post, this.state.mapRegion)
-							)}
+							listData={this.state.listData}
 							mapRegion={this.state.mapRegion}
 							onRegionChange={global.setRegion}
 							message={

@@ -22,6 +22,14 @@ export default class MapViewPage extends React.Component {
 
 	_hideModal = () => this.setState({ isPostModalVisible: false });
 
+	// Includes a region twice the size of the map in each direction.
+	// The wide viewport makes scrolling around more pleasant.
+	_checkRegion = (post, region) =>
+		post.latitude > region.latitude - region.latitudeDelta &&
+		post.latitude < region.latitude + region.latitudeDelta &&
+		post.longitude > region.longitude - region.longitudeDelta &&
+		post.longitude < region.longitude + region.longitudeDelta;
+
 	render() {
 		return (
 			<View style={styles.container}>
@@ -55,23 +63,25 @@ export default class MapViewPage extends React.Component {
 					pitchEnabled={false}
 				>
 					{// Render post and center icons
-					this.props.listData.map(marker =>
-						<MapView.Marker
-							key={marker.key}
-							coordinate={marker}
-							onPress={(mark => {
-								this.setState({ selectedPost: mark });
-								this._showModal();
-							}).bind(this, marker)}
-							image={{
-								uri: global.db.categories[marker.icon].pinURL
-							}}
-							style={{
-								/* keep marker order from flickering (Android only) */
-								zIndex: marker.latitude
-							}}
-						/>
-					)}
+					this.props.listData
+						.filter(post => this._checkRegion(post, this.state.mapRegion))
+						.map(marker =>
+							<MapView.Marker
+								key={marker.key}
+								coordinate={marker}
+								onPress={(mark => {
+									this.setState({ selectedPost: mark });
+									this._showModal();
+								}).bind(this, marker)}
+								image={{
+									uri: global.db.categories[marker.icon].pinURL
+								}}
+								style={{
+									/* keep marker order from flickering (Android only) */
+									zIndex: marker.latitude
+								}}
+							/>
+						)}
 				</MapView>
 			</View>
 		);
