@@ -11,13 +11,12 @@ import Modal from 'react-native-modal';
 import React from 'react';
 import firebase from 'firebase';
 
+import { formatDate, getNextDate } from '../utils/dates';
 import { translate } from '../utils/internationalization';
 import EventIcon from './EventIcon.js';
 import PostOrCenterModal from './PostOrCenterModal';
 import SharedStyles from '../styles/SharedStyles';
 import ViewApplications from './ViewApplications';
-
-import { formatDate, getNextDate } from '../utils/dates';
 
 export default class PostList extends React.Component {
 	constructor(props) {
@@ -32,6 +31,43 @@ export default class PostList extends React.Component {
 		this.setState({ selectedPost: item, isPostModalVisible: true });
 
 	_hideModal = () => this.setState({ isPostModalVisible: false });
+
+	// Rather inaccurate, but very fast, geodistance function
+	getDistance = (a, b) => {
+		const deltaLatitude = a.latitude - b.latitude;
+		const deltaLongitude =
+			(a.longitude - b.longitude) * Math.cos(a.latitude / 180.0 * Math.PI);
+		const totalDegrees = Math.sqrt(
+			deltaLatitude * deltaLatitude + deltaLongitude * deltaLongitude
+		);
+		// 111319 is the width of one degree latitude in meters
+		return totalDegrees * 111319;
+	};
+
+	// Sort the posts by increasing distance from the mapRegion center, if specified.
+	// Use the users current location to label distance, but fall back on the
+	// map region center.
+	_sort = posts => {
+		// copy to avoid immutablility issues
+		console.log('Starting copy', Date.now());
+		posts = JSON.parse(JSON.stringify(posts));
+		console.log('Copy complete', Date.now());
+		if (this.props.sortCenter) {
+			posts = posts.map(post => ({
+				distance: this.getDistance(this.props.sortCenter, post),
+				post: post
+			}));
+			console.log('Distances calculated', Date.now());
+			const sorted = posts
+				.sort((a, b) => a.distance - b.distance)
+				.map(obj => obj.post);
+
+			console.log('Sort complete', Date.now());
+			return sorted;
+		} else {
+			return posts;
+		}
+	};
 
 	render() {
 		return (
@@ -60,7 +96,7 @@ export default class PostList extends React.Component {
 					style={{ flex: 1, width: Dimensions.get('window').width }}
 				>
 					<FlatList
-						data={this.props.listData}
+						data={this._sort(this.props.listData)}
 						scrollEnabled={false}
 						ItemSeparatorComponent={() => <View style={SharedStyles.divider} />}
 						renderItem={({ item }) =>
@@ -97,10 +133,12 @@ export default class PostList extends React.Component {
 										</Text>
 									: null}
 
-								{item.distance
+								{this.props.distanceCenter
 									? // display how far away the event is
 										<Text style={styles.distanceText}>
-											{Math.round(item.distance / 1000) + ' km'}
+											{Math.round(
+												this.getDistance(this.props.distanceCenter, item) / 1000
+											) + ' km'}
 										</Text>
 									: null}
 							</TouchableOpacity>}

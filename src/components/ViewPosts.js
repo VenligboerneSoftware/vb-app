@@ -2,7 +2,6 @@ import { Location, Permissions } from 'expo';
 import { Platform, StyleSheet, View } from 'react-native';
 import React from 'react';
 import firebase from 'firebase';
-import geolib from 'geolib';
 
 import { checkFilters } from '../utils/dates';
 import ClearFilter from './ClearFilter.js';
@@ -31,14 +30,7 @@ export default class ViewPosts extends React.Component {
 		};
 
 		global.setRegion = mapRegion => {
-			this.setState(
-				{
-					mapRegion: mapRegion
-				},
-				() => {
-					this._getPosts();
-				}
-			);
+			this.setState({ mapRegion: mapRegion });
 		};
 
 		this.posts = {};
@@ -114,19 +106,7 @@ export default class ViewPosts extends React.Component {
 		// check the event meets the filter criteria
 		posts = posts.filter(post => this._checkIcon(post, this.state.filter));
 
-		// Sort the posts by increasing distance from the mapRegion center.
-		// Use the users current location to label distance, but fall back on the
-		// map region center.
-		const distanceOrigin = this.currentLocation
-			? this.currentLocation.coords
-			: this.state.mapRegion;
-		posts = geolib
-			.orderByDistance(this.state.mapRegion, posts)
-			.map(sortResult => ({
-				distance: geolib.getDistance(distanceOrigin, posts[sortResult.key]),
-				...posts[sortResult.key]
-			}));
-
+		console.log('posts filtered', Date.now());
 		// TODO Is there a non platform specific solution to this?
 		// Is the OS really even the determining factor of the behavior?
 		if (Platform.OS === 'android') {
@@ -196,6 +176,12 @@ export default class ViewPosts extends React.Component {
 									post.owner !== firebase.auth().currentUser.uid &&
 									this._checkDate(post, this.state.filter)
 							)}
+							sortCenter={this.state.mapRegion}
+							distanceCenter={
+								this.currentLocation
+									? this.currentLocation.coords
+									: this.state.mapRegion
+							}
 							message={
 								<ClearFilter
 									onPress={this._clearFilter}
