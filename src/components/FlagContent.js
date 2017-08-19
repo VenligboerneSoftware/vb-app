@@ -52,7 +52,7 @@ export default class FlagContent extends React.Component {
 				<Modal isVisible={this.state.isModalVisible}>
 					<View style={styles.container}>
 						<ExitBar
-							title="Report As Inappropriate"
+							title={translate('Report As Inappropriate')}
 							hide={() => this.setState({ isModalVisible: false })}
 						/>
 						<View style={{ flexDirection: 'row', width: '100%' }}>

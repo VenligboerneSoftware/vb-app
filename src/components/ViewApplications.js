@@ -205,6 +205,7 @@ const styles = StyleSheet.create({
 	nameStatusContainer: {
 		flexDirection: 'column',
 		justifyContent: 'flex-start',
+		alignItems: 'flex-start',
 		marginLeft: 10
 	},
 	name: {
