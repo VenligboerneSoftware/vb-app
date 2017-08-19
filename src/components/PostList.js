@@ -39,7 +39,6 @@ export default class PostList extends React.PureComponent {
 
 	render() {
 		console.log('Rendering a PostList', this.props.listData.length);
-		// TODO don't use that hacky Dimensions.get thing
 		return (
 			<View style={{ flex: 1 }}>
 				<PostOrCenterModal

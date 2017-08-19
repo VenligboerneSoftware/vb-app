@@ -4,6 +4,7 @@ import firebase from 'firebase';
 
 import { formatDate, getNextDate } from '../utils/dates';
 import { translate } from '../utils/internationalization';
+import getDistance from '../utils/getDistance';
 import EventIcon from './EventIcon';
 
 export default class PostListItem extends React.PureComponent {
@@ -39,8 +40,7 @@ export default class PostListItem extends React.PureComponent {
 					? // display how far away the event is
 						<Text style={styles.distanceText}>
 							{Math.round(
-								this.getDistance(this.props.distanceCenter, this.props.item) /
-									1000
+								getDistance(this.props.distanceCenter, this.props.item) / 1000
 							) + ' km'}
 						</Text>
 					: null}
@@ -90,10 +90,6 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		right: 15,
 		bottom: 3
-	},
-	empty: {
-		alignItems: 'center',
-		paddingTop: 10
 	},
 	numAppText: {
 		color: 'white',
