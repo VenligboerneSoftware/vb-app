@@ -11,7 +11,7 @@ export default class MapViewPage extends React.Component {
 		this.state = {
 			mapRegion: props.mapRegion,
 			isPostModalVisible: false,
-			listData: []
+			listData: props.listData
 		};
 	}
 
@@ -75,7 +75,9 @@ export default class MapViewPage extends React.Component {
 						// Use intervals to detect the end of the drag.
 						// Don't use onRegionChangeComplete because it produces
 						// weird events for no reason.
-						if (this.regionChange) clearInterval(this.regionChange);
+						if (this.regionChange) {
+							clearInterval(this.regionChange);
+						}
 						this.regionChange = setTimeout(() => {
 							this.props.onRegionChange(this.state.mapRegion);
 						}, 200);
