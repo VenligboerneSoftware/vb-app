@@ -12,7 +12,8 @@ import React from 'react';
 import { FontAwesome } from '@expo/vector-icons';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
 
-import { getLanguageSymbol, translate } from '../utils/internationalization';
+import { getCode } from '../utils/languages';
+import { translate } from '../utils/internationalization';
 import ManageNotifications from './ManageNotifications';
 import history from '../utils/history.js';
 
@@ -33,6 +34,10 @@ export default class Menu extends React.Component {
 	_showModal = () => this.setState({ manageNotificationsModal: true });
 
 	_hideModal = () => this.setState({ manageNotificationsModal: false });
+
+	_getLocalizedWiki = () =>
+		'http://venligboerne.dk' +
+		(getCode(global.language) === 'en' ? '' : '/' + getCode(global.language));
 
 	render() {
 		return (
@@ -66,7 +71,7 @@ export default class Menu extends React.Component {
 					<Text
 						style={styles.menuText}
 						onPress={() =>
-							WebBrowser.openBrowserAsync('http://venligboerne.dk/')} //TODO: add language symbol
+							WebBrowser.openBrowserAsync(this._getLocalizedWiki())}
 					>
 						{translate('About Venligboerne')}
 					</Text>
@@ -78,9 +83,7 @@ export default class Menu extends React.Component {
 				<TouchableOpacity
 					onPress={() =>
 						WebBrowser.openBrowserAsync(
-							'http://venligboerne.dk/' +
-								getLanguageSymbol() +
-								'/knowledge-base/'
+							this._getLocalizedWiki() + '/knowledge-base/'
 						)}
 				>
 					<Text style={styles.menuText}>
@@ -111,9 +114,7 @@ export default class Menu extends React.Component {
 				{/*Feedback Button*/}
 				<TouchableOpacity
 					onPress={() =>
-						WebBrowser.openBrowserAsync(
-							'http://venligboerne.dk/' + getLanguageSymbol() + '/feedback'
-						)}
+						WebBrowser.openBrowserAsync(this._getLocalizedWiki() + '/feedback')}
 				>
 					<Text style={styles.menuText}>
 						{translate('Give Feedback')}

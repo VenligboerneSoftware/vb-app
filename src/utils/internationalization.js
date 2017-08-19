@@ -124,24 +124,6 @@ export function getAvailableLanguages() {
 	}
 }
 
-// TODO generalize this to support all languages
-export function getLanguageSymbol(language) {
-	language = language || global.language; // set default parameter
-	console.log(language);
-	switch (language) {
-		case 'English':
-			return 'en';
-		case 'Danish':
-			return 'dk';
-		case 'Arabic':
-			return 'ar';
-		case 'Persian':
-			return 'fa';
-		default:
-			return 'en';
-	}
-}
-
 // Set the global language setting, store it in AsyncStorage, update the RTL
 // setting, and prompt the user to restart if RTL changed.
 export function setLanguage(language) {
