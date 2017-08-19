@@ -7,7 +7,6 @@ import * as firebase from 'firebase';
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
 
 import APIKeys from './src/utils/APIKeys.js';
-import EULA from './src/components/EULA.js';
 import FacebookAuth from './src/components/FacebookAuth.js';
 import HomePage from './src/components/HomePage.js';
 import LanguageSelect from './src/components/IntroLanguageSelect.js';
@@ -83,7 +82,6 @@ export default class App extends React.Component {
 					<Route path="/facebook" component={FacebookAuth} />
 					<Route path="/startup" component={StartupPage} />
 					<Route path="/introLanguageSelect" component={LanguageSelect} />
-					<Route path="/eula" component={EULA} />
 				</Switch>
 			</Router>
 		);

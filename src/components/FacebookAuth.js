@@ -7,23 +7,28 @@ import {
 	TouchableOpacity,
 	View
 } from 'react-native';
-import Exponent from 'expo';
+import Exponent, { WebBrowser } from 'expo';
 import React from 'react';
 import * as firebase from 'firebase';
+import Modal from 'react-native-modal';
 
 import { FontAwesome } from '@expo/vector-icons';
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
 import APIKeys from 'venligboerneapp/src/utils/APIKeys.js';
 
 import Colors from '../styles/Colors';
-import LanguageMenu from './LanguageMenu';
+import ExitBar from './ExitBar';
 import history from '../utils/history.js';
 
 export default class FacebookAuth extends React.Component {
 	constructor(props) {
 		super(props);
+		this.state = {
+			eulaClicked: false,
+			isModalVisible: false
+		};
+		this.eula = this.props.location.state.eula;
 	}
-
 	// Function: authenticate
 	// ---------------------------------------------------------------------------
 	// Authenticates token with firebase server and returns
@@ -39,45 +44,56 @@ export default class FacebookAuth extends React.Component {
 		return await firebase.auth().signInWithCredential(credential);
 	};
 
+	_eulaAlert = () => {
+		//TODO: translate
+		Alert.alert(
+			'Please agree to the End User Licensing Agreement',
+			'You must agree before you can log in',
+			[{ text: translate('Ok') }],
+			{ cancelable: false }
+		);
+	};
 	/* Function: attemptRegularLogin
      * ---------------------------------------------------------------------------
      * Attempts to log in a user to the app using the Facebook Graph API
      * and deals with potential login failures. Uses firebase authentication.
     */
 	login = async () => {
-		const options = {
-			permissions: ['public_profile', 'email'],
-			behavior: 'web'
-		};
-		const APP_ID = APIKeys.API_KEY;
+		if (this.eula && !this.state.eulaClicked) {
+			this._eulaAlert();
+		} else {
+			const options = {
+				permissions: ['public_profile', 'email'],
+				behavior: 'web'
+			};
+			const APP_ID = APIKeys.API_KEY;
 
-		try {
-			const {
-				type,
-				token
-			} = await Exponent.Facebook.logInWithReadPermissionsAsync(
-				APP_ID,
-				options
-			);
+			try {
+				const {
+					type,
+					token
+				} = await Exponent.Facebook.logInWithReadPermissionsAsync(
+					APP_ID,
+					options
+				);
 
-			if (type === 'success') {
-				/* Next two lines in tutorial but not strictly neccessary -- can possibly use to make sure token is valid?
-             If following calls are omitted, no calls to facebook server will
-             occur and token will expire after 60 days  */
+				if (type === 'success') {
+					await AsyncStorage.setItem('token', token);
+					if (this.eula) {
+						await AsyncStorage.setItem('eula', 'true');
+					}
 
-				// const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`)
-				// const profile = await response.json()
-				await AsyncStorage.setItem('token', token);
-				history.goBack();
-			} else if (type === 'cancel') {
-				// Don't let the user close it
-			} else {
-				// error with logInWithReadPermissionsAsync call
-				Alert.alert('fail #1', type);
+					history.goBack();
+				} else if (type === 'cancel') {
+					// Don't let the user close it
+				} else {
+					// error with logInWithReadPermissionsAsync call
+					Alert.alert('fail #1', type);
+				}
+			} catch (e) {
+				// all other errors signInWithCredential call
+				Alert.alert('fail #2', e.toString());
 			}
-		} catch (e) {
-			// all other errors signInWithCredential call
-			Alert.alert('fail #2', e.toString());
 		}
 	};
 
@@ -88,13 +104,49 @@ export default class FacebookAuth extends React.Component {
 					source={require('../../assets/images/logo_gray_text.png')}
 					style={styles.logo}
 				/>
-				<View style={styles.textContainer}>
-					<Text style={styles.text}>
-						{translate(
-							'In order to use the app, you must log in to Facebook for security reasons.  Your Facebook profile and information will only be visible to the people you choose to show it to. If you apply to an event, your profile will be visible to the event owner. If someone applies to your event, once you accept their application they will be able to see your profile.'
-						)}
-					</Text>
-				</View>
+
+				{this.eula
+					? <View style={{ flexDirection: 'row', paddingBottom: 40 }}>
+							<View style={{ flex: 1 }}>
+								<TouchableOpacity
+									style={
+										this.state.eulaClicked
+											? styles.checkbox
+											: styles.agreeButton
+									}
+									onPress={() =>
+										this.setState({ eulaClicked: !this.state.eulaClicked })}
+								>
+									{this.state.eulaClicked
+										? <FontAwesome
+												name={'check'}
+												size={30}
+												style={{ paddingLeft: 5 }}
+											/>
+										: <Text style={{ fontSize: 16 }}>
+												{translate('I Agree')}
+											</Text>}
+								</TouchableOpacity>
+							</View>
+							<View style={styles.textContainer}>
+								<Text>
+									{translate('I agree to the')}
+								</Text>
+								<TouchableOpacity
+									onPress={() => {
+										WebBrowser.openBrowserAsync(
+											'http://venligboerne-app.herokuapp.com/eula'
+										);
+									}}
+								>
+									<Text style={{ textDecorationLine: 'underline' }}>
+										User End Licencing Agreement
+									</Text>
+								</TouchableOpacity>
+							</View>
+						</View>
+					: null}
+
 				<TouchableOpacity onPress={this.login} style={styles.buttonContainer}>
 					<FontAwesome
 						name={'facebook'}
@@ -105,6 +157,53 @@ export default class FacebookAuth extends React.Component {
 						{translate('LOG IN WITH FACEBOOK')}
 					</Text>
 				</TouchableOpacity>
+
+				<TouchableOpacity
+					style={{ flex: 1, justifyContent: 'center' }}
+					onPress={() => {
+						this.setState({ isModalVisible: true });
+					}}
+				>
+					<Text style={styles.text}>
+						{translate('Why Log In?')}
+					</Text>
+				</TouchableOpacity>
+
+				<Modal
+					isVisible={this.state.isModalVisible}
+					animationIn={'zoomIn'}
+					animationOut={'zoomOut'}
+				>
+					<View style={{ flex: 1, backgroundColor: 'white' }}>
+						<ExitBar
+							hide={() => {
+								this.setState({ isModalVisible: false });
+							}}
+						/>
+						<Text
+							style={{
+								alignSelf: 'center',
+								fontSize: 24,
+								margin: 20,
+								fontWeight: 'bold'
+							}}
+						>
+							{translate('Why Log In?')}
+						</Text>
+						<Text
+							style={{
+								marginLeft: 25,
+								marginRight: 25,
+								fontSize: 18,
+								alignSelf: 'center'
+							}}
+						>
+							{translate(
+								'In order to create or apply to posts, you must log in to Facebook for security reasons.  Your Facebook profile and information will only be visible to the people you choose to show it to. If you apply to an event, your profile will be visible to the event owner. If someone applies to your event, once you accept their application they will be able to see your profile.'
+							)}
+						</Text>
+					</View>
+				</Modal>
 			</View>
 		);
 	}
@@ -116,14 +215,10 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		backgroundColor: 'white'
 	},
-	textContainer: {
-		flex: 2,
-		padding: 15,
-		justifyContent: 'center'
-	},
 	text: {
 		fontSize: 18,
-		textAlign: 'left'
+		alignSelf: 'center',
+		textDecorationLine: 'underline'
 	},
 	buttonContainer: {
 		backgroundColor: '#3b5998',
@@ -131,7 +226,8 @@ const styles = StyleSheet.create({
 		margin: 25,
 		borderRadius: 6,
 		flexDirection: 'row',
-		alignItems: 'center'
+		alignItems: 'center',
+		height: 70
 	},
 	loginButton: {
 		color: 'white',
@@ -145,9 +241,29 @@ const styles = StyleSheet.create({
 	},
 	logo: {
 		width: '85%',
-		flex: 1,
+		flex: 2,
 		resizeMode: 'contain',
 		alignSelf: 'center',
-		marginTop: 75
+		marginTop: 40,
+		marginBottom: 40
+	},
+	textContainer: {
+		justifyContent: 'center',
+		flex: 2
+	},
+	checkbox: {
+		width: 40,
+		height: 40,
+		backgroundColor: Colors.grey.medium,
+		alignSelf: 'center',
+		justifyContent: 'center'
+	},
+	agreeButton: {
+		backgroundColor: Colors.grey.medium,
+		padding: 10,
+		alignSelf: 'center',
+		justifyContent: 'center',
+		flexDirection: 'row',
+		borderRadius: 10
 	}
 });

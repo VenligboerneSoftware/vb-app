@@ -88,10 +88,10 @@ export default class Menu extends React.Component {
 					</Text>
 				</TouchableOpacity>
 
-				<View style={SharedStyles.divider} />
+				{/* <View style={SharedStyles.divider} />
 
-				{/*TODO Donate*/}
-				{/* <TouchableOpacity>
+				TODO Donate
+				<TouchableOpacity>
 					<Text style={styles.menuText}>
 						{translate('Donate')}
 					</Text>
