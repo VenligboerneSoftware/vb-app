@@ -183,7 +183,6 @@ export default class NewPost extends React.Component {
 	// ---------------------------------------------------------------------------
 	// Triggered when the user selects a location from the address picker.
 	_onSearchLocation = (data, details) => {
-		console.log('location picked', details);
 		this.setState({
 			searchModalVisible: false,
 			newPost: {
@@ -286,7 +285,6 @@ export default class NewPost extends React.Component {
 			creationTime: Date.now(),
 			owner: firebase.auth().currentUser.uid
 		};
-		console.log('newPost', newPost);
 
 		// If we are editing, then overwrite the old index. If we are creating
 		// a new post, push a new entry to the database.

@@ -22,11 +22,6 @@ import Time from './Time';
 import TitleAndIcon from './TitleAndIcon.js';
 
 export default class OwnerViewApplicant extends React.Component {
-	constructor(props) {
-		super(props);
-		console.log(this.props.application);
-	}
-
 	acceptApplicant = () => {
 		//TODO: translate
 		Alert.alert(

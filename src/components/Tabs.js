@@ -18,8 +18,6 @@ export default class HomePage extends React.Component {
 			selectedTab: 'Map'
 		};
 
-		console.log('props', props);
-
 		global.changeTab = (tab, callback) => {
 			this.setState({ selectedTab: tab }, callback);
 		};

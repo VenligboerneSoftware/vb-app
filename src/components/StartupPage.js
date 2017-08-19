@@ -149,7 +149,6 @@ export default class StartupPage extends React.Component {
 					pushToken: pushToken,
 					displayName: userProfile.providerData[0].displayName
 				});
-				console.log('Got push token');
 			});
 
 			// Preload Profile Pic
@@ -161,7 +160,6 @@ export default class StartupPage extends React.Component {
 
 			try {
 				await this._loadDatabasePromises();
-				console.log('Loaded icons and centers');
 			} catch (error) {
 				console.warn('Database load error', error);
 				if (error.code === 'PERMISSION_DENIED') {
