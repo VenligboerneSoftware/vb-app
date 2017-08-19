@@ -1,6 +1,7 @@
 import {
 	ActivityIndicator,
 	FlatList,
+	I18nManager,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
@@ -126,7 +127,11 @@ export default class ViewApplications extends React.Component {
 				</View>
 				<View style={styles.iconContainer}>
 					<Ionicons
-						name={'ios-arrow-forward-outline'}
+						name={
+							I18nManager.isRTL
+								? 'ios-arrow-back-outline'
+								: 'ios-arrow-forward-outline'
+						}
 						size={40}
 						color={Colors.grey.medium}
 					/>

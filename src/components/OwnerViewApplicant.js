@@ -1,5 +1,6 @@
 import {
 	Alert,
+	I18nManager,
 	ScrollView,
 	StyleSheet,
 	Text,
@@ -62,7 +63,10 @@ export default class OwnerViewApplicant extends React.Component {
 		return (
 			<View style={{ flex: 1, backgroundColor: 'white' }}>
 				<TouchableOpacity onPress={this.props.back} style={SharedStyles.back}>
-					<Ionicons name={'ios-arrow-back'} size={42} />
+					<Ionicons
+						name={I18nManager.isRTL ? 'ios-arrow-forward' : 'ios-arrow-back'}
+						size={42}
+					/>
 				</TouchableOpacity>
 
 				<ExitBar hide={this.props.hide} />
