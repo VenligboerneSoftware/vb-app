@@ -162,13 +162,6 @@ export default class StartupPage extends React.Component {
 			try {
 				await this._loadDatabasePromises();
 				console.log('Loaded icons and centers');
-
-				if (global.isFirstTime) {
-					history.push('/tutorial');
-				} else {
-					// When login succeeds and the databse is loaded, proceed to the homepage
-					history.push('/homepage');
-				}
 			} catch (error) {
 				console.warn('Database load error', error);
 				if (error.code === 'PERMISSION_DENIED') {
@@ -176,6 +169,14 @@ export default class StartupPage extends React.Component {
 						'You have been banned by an administrator for inappropriate use of the app. Please email venligboerneapp@gmail.com for more details.'
 					);
 				}
+				return;
+			}
+
+			if (global.isFirstTime) {
+				history.push('/tutorial');
+			} else {
+				// When login succeeds and the databse is loaded, proceed to the homepage
+				history.push('/homepage');
 			}
 		}
 	}
