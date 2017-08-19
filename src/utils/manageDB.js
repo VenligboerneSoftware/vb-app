@@ -64,7 +64,7 @@ export function populateDB(numUsers, numPosts, numApplications) {
 					let users = Object.keys(initialUsers);
 					await firebase.database().ref('users').set(initialUsers);
 
-					for (let i = initialUsers.length; i < numUsers; i++) {
+					while (users.length < numUsers) {
 						users.push(
 							firebase.database().ref('users').push({
 								facebookUID: Math.round(Math.random() * 10000000000),
