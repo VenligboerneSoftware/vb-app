@@ -13,7 +13,6 @@ export default class HomePage extends React.Component {
 		super();
 		this.state = {
 			selectedTab: 'Map',
-			tabStyle: styles.tabStyleSelected,
 			isOpen: false,
 			badgeCounts: {
 				Me: 0,
