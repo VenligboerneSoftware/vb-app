@@ -140,11 +140,15 @@ export function setLanguage(language) {
 	const shouldBeRTL = global.db.languageOptions[global.language].isRTL;
 	if (shouldBeRTL !== I18nManager.isRTL) {
 		I18nManager.forceRTL(shouldBeRTL);
-		Alert.alert(
-			translate('Locale change'),
-			translate(
-				'You need to restart the app to change between right to left and left to right languages.'
-			)
-		);
+
+		// Wait a bit to display the alert. Showing an alert in the middle of a RTL
+		// switch crashes on iOS.
+		setTimeout(() => {
+			alert(
+				translate(
+					'You need to restart the app to change between right to left and left to right languages.'
+				)
+			);
+		}, 1000);
 	}
 }
