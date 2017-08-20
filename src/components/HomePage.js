@@ -1,11 +1,9 @@
-import { Linking, Platform, StatusBar } from 'react-native';
+import { Linking, Platform, StatusBar, View } from 'react-native';
 import { Permissions, Notifications } from 'expo';
 import React from 'react';
 import firebase from 'firebase';
 
-import Menu from './Menu.js';
 import PostOrCenterModal from './PostOrCenterModal';
-import SideMenu from './SideMenu.js';
 import Tabs from './Tabs.js';
 
 export default class HomePage extends React.Component {
@@ -13,19 +11,10 @@ export default class HomePage extends React.Component {
 		super();
 		this.state = {
 			selectedTab: 'Map',
-			isOpen: false,
 			badgeCounts: {
 				Me: 0,
 				Map: 0
 			}
-		};
-
-		global.openMenu = () => {
-			this.setState({ isOpen: true });
-		};
-
-		global.closeMenu = () => {
-			this.setState({ isOpen: false });
 		};
 
 		// TODO there must be a better pattern for this
@@ -38,8 +27,6 @@ export default class HomePage extends React.Component {
 	}
 
 	_link = url => {
-		global.closeMenu();
-
 		if (url.indexOf('+') === -1 || url.indexOf('+') === url.length - 1) {
 			// There is no extra data. This is just a normal startup
 			return;
@@ -123,7 +110,7 @@ export default class HomePage extends React.Component {
 
 	render() {
 		return (
-			<SideMenu menu={<Menu />} isOpen={this.state.isOpen}>
+			<View style={{ flex: 1 }}>
 				<StatusBar barStyle="dark-content" />
 				<PostOrCenterModal
 					isVisible={this.state.showPost}
@@ -136,7 +123,7 @@ export default class HomePage extends React.Component {
 						this.state.badgeCounts[tab] = count;
 					}}
 				/>
-			</SideMenu>
+			</View>
 		);
 	}
 }

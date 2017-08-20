@@ -52,7 +52,7 @@ export default class Menu extends React.Component {
 
 				<TouchableOpacity
 					style={{ alignSelf: 'flex-end', marginRight: 10 }}
-					onPress={() => global.closeMenu()}
+					onPress={this.props.hide}
 				>
 					<FontAwesome name={'times'} size={35} />
 				</TouchableOpacity>
@@ -138,7 +138,11 @@ export default class Menu extends React.Component {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
+		position: 'absolute',
+		top: 0,
+		bottom: 0,
+		left: 0,
+		width: '60%',
 		backgroundColor: '#F5F5F5',
 		borderRightWidth: 1,
 		borderColor: '#000',

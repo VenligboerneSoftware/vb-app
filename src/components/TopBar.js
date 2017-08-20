@@ -1,14 +1,21 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import {
+	I18nManager,
+	Image,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View
+} from 'react-native';
 import Modal from 'react-native-modal';
-
 import React from 'react';
 
+import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
 import Colors from 'venligboerneapp/src/styles/Colors.js';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
 
 import LanguageMenu from './LanguageMenu.js';
+import Menu from './Menu';
 import SearchLocation from './SearchLocation.js';
 
 export default class TopBar extends React.Component {
@@ -19,9 +26,14 @@ export default class TopBar extends React.Component {
 
 		this.state = {
 			languageModalVisible: false,
-			searchModalVisible: false
+			searchModalVisible: false,
+			isOpen: false
 		};
 	}
+
+	_showMenu = () => this.setState({ isOpen: true });
+
+	_hideMenu = () => this.setState({ isOpen: false });
 
 	// function: returnTopBar
 	// ----------------------------------------
@@ -32,7 +44,7 @@ export default class TopBar extends React.Component {
 	returnTopBar = () => {
 		return (
 			<View style={styles.container}>
-				<TouchableOpacity onPress={global.openMenu}>
+				<TouchableOpacity onPress={this._showMenu}>
 					<Ionicons name={'ios-menu'} size={38} style={styles.settings} />
 				</TouchableOpacity>
 
@@ -184,6 +196,17 @@ export default class TopBar extends React.Component {
 	render() {
 		return (
 			<View>
+				<Modal
+					isVisible={this.state.isOpen}
+					animationIn={I18nManager.isRTL ? 'slideInRight' : 'slideInLeft'}
+					animationOut={I18nManager.isRTL ? 'slideOutRight' : 'slideOutLeft'}
+					backdropColor={'black'}
+					backdropOpacity={0.5}
+					style={{ padding: 0, margin: 0 }}
+				>
+					<Menu hide={this._hideMenu} />
+				</Modal>
+
 				{this.returnTopBar()}
 
 				{this.returnLanguageModal()}
