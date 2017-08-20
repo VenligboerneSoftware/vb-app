@@ -171,101 +171,114 @@ const slides = [
 	{
 		num: 0,
 		image: require('../../assets/images/tutorial/0.png'),
-		textBig: 'Welcome to The Venligboerne App Tutorial',
-		textSmall: 'Slide the screen to the right to continue'
+		textBig: translate('Welcome to The Venligboerne App Tutorial'),
+		textSmall: translate('Slide the screen to the right to continue')
 	},
 	{
 		num: 1,
 		image: require('../../assets/images/tutorial/1.png'),
-		textBig: 'Below is the tab navigator.',
-		textSmall: 'You will use it to switch between pages within the app'
+		textBig: translate('Below is the tab navigator.'),
+		textSmall: translate(
+			'You will use it to switch between pages within the app'
+		)
 	},
 	{
 		num: 2,
 		image: require('../../assets/images/tutorial/2.png'),
-		textBig: 'This is the Map page',
-		textSmall: 'Here, you can see posts around you.'
+		textBig: translate('This is the Map page'),
+		textSmall: translate('Here, you can see posts around you.')
 	},
 	{
 		num: 3,
 		image: require('../../assets/images/tutorial/3.png'),
-		textBig: 'Above is the filter bar',
-		textSmall: 'Click on an icon to show only posts from that category'
+		textBig: translate('Above is the filter bar'),
+		textSmall: translate(
+			'Click on an icon to show only posts from that category'
+		)
 	},
 	{
 		num: 4,
 		image: require('../../assets/images/tutorial/4.png'),
 		textBig: '',
-		textSmall: 'Click on a pin to show information about that post.'
+		textSmall: translate('Click on a pin to show information about that post.')
 	},
 	{
 		num: 5,
 		image: require('../../assets/images/tutorial/5.png'),
 		textBig: '',
-		textSmall:
-			'Here you can view information about the post and share the post with friends'
+		textSmall: translate(
+			'Here you can view information about the post and share it with friends'
+		)
 	},
 	{
 		num: 6,
 		image: require('../../assets/images/tutorial/6.png'),
 		textBig: '',
-		textSmall: 'You can apply to a post to contact the owner'
+		textSmall: translate('You can apply to a post to contact the owner')
 	},
 	{
 		num: 7,
 		image: require('../../assets/images/tutorial/7.png'),
-		textBig: 'This is the List Page',
-		textSmall: 'Another way to find posts around you'
+		textBig: translate('This is the List Page'),
+		textSmall: translate('Another way to find posts around you')
 	},
 	{
 		num: 8,
 		image: require('../../assets/images/tutorial/8.png'),
 		textBig: '',
-		textSmall: 'Click on a Venligbo Café to show information about it'
+		textSmall: translate(
+			'Click on a Venligbo Café to show information about it'
+		)
 	},
 	{
 		num: 9,
 		image: require('../../assets/images/tutorial/9.png'),
 		textBig: '',
-		textSmall:
+		textSmall: translate(
 			'This is the Create Post Page.  Click on a category to get started'
+		)
 	},
 	{
 		num: 10,
 		image: require('../../assets/images/tutorial/10.png'),
 		textBig: '',
-		textSmall: 'Then, fill out the required information about your post'
+		textSmall: translate(
+			'Then, fill out the required information about your post'
+		)
 	},
 	{
 		num: 11,
 		image: require('../../assets/images/tutorial/11.png'),
-		textBig: 'This is the News page',
-		textSmall: 'Stay updated on the latest Venligboerne Articles'
+		textBig: translate('This is the News page'),
+		textSmall: translate('Stay updated on the latest Venligboerne Articles')
 	},
 	{
 		num: 12,
 		image: require('../../assets/images/tutorial/12.png'),
-		textBig: 'This is the My Posts page of your profile',
-		textSmall: "Here you can see the posts that you've created"
+		textBig: translate('This is the My Posts page of your profile'),
+		textSmall: translate("Here you can see the posts that you've created")
 	},
 	{
 		num: 13,
 		image: require('../../assets/images/tutorial/13.png'),
-		textBig: 'This is the My Applications page of your profile',
-		textSmall: "Here you can see all the posts that you've applied to"
+		textBig: translate('This is the My Applications page of your profile'),
+		textSmall: translate(
+			"Here you can see all the posts that you've applied to"
+		)
 	},
 	{
 		num: 14,
 		image: require('../../assets/images/tutorial/14.png'),
-		textBig: 'This is the Change Language button',
-		textSmall: 'You can switch language on any page'
+		textBig: translate('This is the Change Language button'),
+		textSmall: translate('You can switch language on any page')
 	},
 	{
 		num: 15,
 		image: require('../../assets/images/tutorial/15.png'),
-		textBig: 'This is the Menu button',
-		textSmall:
+		textBig: translate('This is the Menu button'),
+		textSmall: translate(
 			'Here, you will find more features, including this tutorial if you want to rewatch it'
+		)
 	},
 	{
 		num: 16,
