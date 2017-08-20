@@ -87,9 +87,13 @@ export default class ViewPost extends Component {
 	}
 
 	_scrollToBottom = () => {
-		this.scrollView.scrollToEnd({
-			animated: true
-		});
+		// If the user leaves the post to a WebBrowser, the scrollview stops existing
+		// but the listeners stay mounted, and this causes an error
+		if (this.scrollView) {
+			this.scrollView.scrollToEnd({
+				animated: true
+			});
+		}
 	};
 
 	_applicationChange = application => {
