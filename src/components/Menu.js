@@ -42,73 +42,77 @@ export default class Menu extends React.Component {
 
 	render() {
 		return (
-			<View style={styles.container}>
-				<Modal
-					isVisible={this.state.manageNotificationsModal}
-					animationIn={'zoomIn'}
-					animationOut={'zoomOut'}
-				>
-					<ManageNotifications hide={this._hideModal} />
-				</Modal>
-
-				{[
-					{
-						title: 'Manage Notifications',
-						onPress: this._showModal
-					},
-					{
-						title: 'About Venligboerne',
-						onPress: () => WebBrowser.openBrowserAsync(this._getLocalizedWiki())
-					},
-					{
-						title: 'FAQ About Denmark',
-						onPress: () =>
-							WebBrowser.openBrowserAsync(
-								this._getLocalizedWiki() + '/knowledge-base/'
-							)
-					},
-					{
-						title: 'Logout',
-						onPress: this._logOut
-					},
-					{
-						title: 'Give Feedback',
-						onPress: () =>
-							WebBrowser.openBrowserAsync(
-								this._getLocalizedWiki() + '/feedback'
-							)
-					},
-					{
-						title: 'Tutorial',
-						onPress: () => history.push('/tutorial')
-					}
-				].map(button =>
-					<View key={button.title} style={{ width: '100%' }}>
-						<TouchableOpacity onPress={button.onPress}>
-							<Text style={styles.menuText}>
-								{translate(button.title)}
-							</Text>
-						</TouchableOpacity>
-						<View style={SharedStyles.divider} />
-					</View>
-				)}
-
+			<View style={{ flex: 1 }}>
 				<TouchableOpacity
-					style={{ position: 'absolute', bottom: 0, left: 0, padding: 30 }}
+					style={styles.tapCloseMenu}
 					onPress={this.props.hide}
-				>
-					<FontAwesome
-						name={I18nManager.isRTL ? 'chevron-right' : 'chevron-left'}
-						size={40}
-					/>
-				</TouchableOpacity>
+				/>
+				<View style={styles.modalContainer}>
+					<Modal
+						isVisible={this.state.manageNotificationsModal}
+						animationIn={'zoomIn'}
+						animationOut={'zoomOut'}
+					>
+						<ManageNotifications hide={this._hideModal} />
+					</Modal>
+
+					<TouchableOpacity
+						style={{ alignSelf: 'flex-end', marginRight: 10, marginTop: 10 }}
+						onPress={this.props.hide}
+					>
+						<FontAwesome name={'times'} size={45} />
+					</TouchableOpacity>
+
+					{[
+						{
+							title: 'Manage Notifications',
+							onPress: this._showModal
+						},
+						{
+							title: 'About Venligboerne',
+							onPress: () =>
+								WebBrowser.openBrowserAsync(this._getLocalizedWiki())
+						},
+						{
+							title: 'FAQ About Denmark',
+							onPress: () =>
+								WebBrowser.openBrowserAsync(
+									this._getLocalizedWiki() + '/knowledge-base/'
+								)
+						},
+						{
+							title: 'Logout',
+							onPress: this._logOut
+						},
+						{
+							title: 'Give Feedback',
+							onPress: () =>
+								WebBrowser.openBrowserAsync(
+									this._getLocalizedWiki() + '/feedback'
+								)
+						},
+						{
+							title: 'Tutorial',
+							onPress: () => history.push('/tutorial')
+						}
+					].map(button =>
+						<View key={button.title} style={{ width: '100%' }}>
+							<TouchableOpacity onPress={button.onPress}>
+								<Text style={styles.menuText}>
+									{translate(button.title)}
+								</Text>
+							</TouchableOpacity>
+							<View style={SharedStyles.divider} />
+						</View>
+					)}
+				</View>
 			</View>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
-	container: {
+	modalContainer: {
 		position: 'absolute',
 		top: 0,
 		bottom: 0,
@@ -124,5 +128,12 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		padding: 15,
 		color: '#444'
+	},
+	tapCloseMenu: {
+		position: 'absolute',
+		top: 0,
+		bottom: 0,
+		right: 0,
+		width: '40%'
 	}
 });
