@@ -1,4 +1,4 @@
-import { FlatList, View } from 'react-native';
+import { Dimensions, FlatList, View } from 'react-native';
 import React from 'react';
 
 import PostListItem from './PostListItem.js';
@@ -31,7 +31,7 @@ export default class BarePostList extends React.PureComponent {
 						: this.props.listData
 				}
 				keyboardShouldPersistTaps={'handled'}
-				style={{ flex: 1 }}
+				style={{ flex: 1, width: Dimensions.get('window').width }}
 				ItemSeparatorComponent={() => <View style={SharedStyles.divider} />}
 				renderItem={({ item }) =>
 					<PostListItem
