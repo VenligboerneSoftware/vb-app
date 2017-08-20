@@ -81,7 +81,9 @@ export default class ExitBar extends Component {
 								: styles.skipButtonText
 						}
 					>
-						{this.state.isLastSlide ? 'go to app!' : 'skip tutorial'}
+						{this.state.isLastSlide
+							? translate('go to app!')
+							: translate('skip tutorial')}
 					</Text>
 				</TouchableOpacity>
 			</View>
