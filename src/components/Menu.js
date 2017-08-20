@@ -1,9 +1,10 @@
 import {
+	AsyncStorage,
+	I18nManager,
 	StyleSheet,
-	View,
 	Text,
 	TouchableOpacity,
-	AsyncStorage
+	View
 } from 'react-native';
 import { WebBrowser } from 'expo';
 import Modal from 'react-native-modal';
@@ -49,13 +50,6 @@ export default class Menu extends React.Component {
 				>
 					<ManageNotifications hide={this._hideModal} />
 				</Modal>
-
-				<TouchableOpacity
-					style={{ alignSelf: 'flex-end', marginRight: 10 }}
-					onPress={this.props.hide}
-				>
-					<FontAwesome name={'times'} size={35} />
-				</TouchableOpacity>
 
 				{/*Manage Notifications*/}
 				<TouchableOpacity onPress={this._showModal}>
@@ -131,6 +125,16 @@ export default class Menu extends React.Component {
 				</TouchableOpacity>
 
 				<View style={SharedStyles.divider} />
+
+				<TouchableOpacity
+					style={{ position: 'absolute', bottom: 0, left: 0, padding: 30 }}
+					onPress={this.props.hide}
+				>
+					<FontAwesome
+						name={I18nManager.isRTL ? 'chevron-right' : 'chevron-left'}
+						size={40}
+					/>
+				</TouchableOpacity>
 			</View>
 		);
 	}
@@ -146,8 +150,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#F5F5F5',
 		borderRightWidth: 1,
 		borderColor: '#000',
-		alignItems: 'center',
-		paddingTop: 20
+		alignItems: 'center'
 	},
 	menuText: {
 		fontSize: 20,
