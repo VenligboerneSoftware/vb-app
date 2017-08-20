@@ -73,9 +73,10 @@ export default class SearchLocation extends React.Component {
 				renderLeftButton={() =>
 					<FontAwesome
 						name="map-marker"
-						size={20}
+						size={30}
 						style={{
-							alignSelf: 'center'
+							alignSelf: 'center',
+							marginBottom: 2
 						}}
 					/>}
 				renderRightButton={() =>
@@ -87,7 +88,7 @@ export default class SearchLocation extends React.Component {
 							marginLeft: -5
 						}}
 					>
-						<FontAwesome name="close" size={25} />
+						<FontAwesome name="close" size={35} style={{ marginBottom: 2 }} />
 					</TouchableOpacity>}
 			/>
 		);

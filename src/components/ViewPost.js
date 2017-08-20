@@ -324,6 +324,7 @@ export default class ViewPost extends Component {
 											source={{ uri: this.state.image }}
 											style={styles.imageUpload}
 										/>
+										<View style={SharedStyles.divider} />
 									</View>
 								: null}
 
