@@ -43,8 +43,8 @@ export default class HomePage extends React.Component {
 		return (
 			<TabNavigator
 				style={{ flex: 1 }}
-				tabBarStyle={{ height: 60 }}
-				sceneStyle={{ paddingBottom: 60 }}
+				tabBarStyle={{ height: 50 }} //TODO: Fix android numbers
+				sceneStyle={{ paddingBottom: 50 }}
 			>
 				{[
 					// This tab contains the MapView and ListView because they are
