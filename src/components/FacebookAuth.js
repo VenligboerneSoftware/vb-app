@@ -45,10 +45,9 @@ export default class FacebookAuth extends React.Component {
 	};
 
 	_eulaAlert = () => {
-		//TODO: translate
 		Alert.alert(
-			'Please agree to the End User Licensing Agreement',
-			'You must agree before you can log in',
+			translate('Please agree to the End User Licensing Agreement'),
+			translate('You must agree before you can log in'),
 			[{ text: translate('Ok') }],
 			{ cancelable: false }
 		);
