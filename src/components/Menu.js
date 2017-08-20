@@ -29,7 +29,7 @@ export default class Menu extends React.Component {
 
 	_logout = async () => {
 		await AsyncStorage.removeItem('token');
-		history.push('/startup');
+		history.push('/facebook');
 	};
 
 	_showModal = () => this.setState({ manageNotificationsModal: true });
@@ -82,7 +82,7 @@ export default class Menu extends React.Component {
 						},
 						{
 							title: 'Logout',
-							onPress: this._logOut
+							onPress: this._logout
 						},
 						{
 							title: 'Give Feedback',

@@ -34,8 +34,8 @@ export default class SearchLocation extends React.Component {
 					// available options: https://developers.google.com/places/web-service/autocomplete
 					key: APIKeys.googleTranslateKey,
 					language: getCode(global.language),
-					location: this.props.location
-						? this.props.location.latitude + ',' + this.props.location.longitude
+					location: global.location
+						? global.location.latitude + ',' + global.location.longitude
 						: '55.6761,12.5683', //Default to Copenhagen
 					radius: 2500 //TODO: test and decide radius / if needed
 				}}
@@ -68,15 +68,15 @@ export default class SearchLocation extends React.Component {
 				currentLocationLabel={translate('Current location')}
 				nearbyPlacesAPI="GoogleReverseGeocoding" // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
 				reverseGeocodeReturnFirst={true}
-				
 				predefinedPlaces={this.props.predefinedPlaces}
 				debounce={100} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
 				renderLeftButton={() =>
 					<FontAwesome
 						name="map-marker"
-						size={20}
+						size={30}
 						style={{
-							alignSelf: 'center'
+							alignSelf: 'center',
+							marginBottom: 2
 						}}
 					/>}
 				renderRightButton={() =>
@@ -88,7 +88,7 @@ export default class SearchLocation extends React.Component {
 							marginLeft: -5
 						}}
 					>
-						<FontAwesome name="close" size={25} />
+						<FontAwesome name="close" size={35} style={{ marginBottom: 2 }} />
 					</TouchableOpacity>}
 			/>
 		);
