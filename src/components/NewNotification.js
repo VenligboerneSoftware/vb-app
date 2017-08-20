@@ -7,7 +7,8 @@ import {
 	TouchableOpacity,
 	Image,
 	ScrollView,
-	Slider
+	Alert,
+	Picker
 } from 'react-native';
 import ExitBar from './ExitBar';
 import Colors from '../styles/Colors';
@@ -25,7 +26,7 @@ export default class NewNotification extends React.Component {
 		this.state = {
 			newSubscription: {
 				owner: firebase.auth().currentUser.uid,
-				radius: 1.0
+				radius: 10
 			},
 			searchModalVisible: false
 		};
@@ -58,7 +59,11 @@ export default class NewNotification extends React.Component {
 			<TouchableOpacity
 				onPress={() =>
 					this.setState({
-						newSubscription: { ...this.state.newSubscription, icon: item.key }
+						newSubscription: {
+							...this.state.newSubscription,
+							icon: item.key,
+							iconText: item.title
+						}
 					})}
 				style={[
 					{
@@ -93,7 +98,7 @@ export default class NewNotification extends React.Component {
 		this.setState({
 			newSubscription: {
 				...this.state.newSubscription,
-				radius: parseFloat(num.toFixed(1))
+				radius: num
 			}
 		});
 	};
@@ -117,10 +122,37 @@ export default class NewNotification extends React.Component {
 			alert(translate('Please select a distance'));
 			return;
 		}
-		// TODO: Add to firebase and translate text once we decide wording is right
 
-		firebase.database().ref('subscriptions').push(this.state.newSubscription);
-		this.props.hide();
+		Alert.alert(
+			'Ready?',
+			'Category: ' +
+				this.state.newSubscription.iconText +
+				'\n' +
+				this.state.newSubscription.formatted_address +
+				'\n' +
+				'Distance: ' +
+				this.state.newSubscription.radius +
+				' km',
+			[
+				{
+					text: 'Cancel',
+					onPress: () => console.log('Cancel Pressed'),
+					style: 'cancel'
+				},
+				{
+					text: 'Submit',
+					onPress: () =>
+						// TODO: Add to firebase and translate text once we decide wording is right
+						{
+							firebase
+								.database()
+								.ref('subscriptions')
+								.push(this.state.newSubscription);
+							this.props.hide();
+						}
+				}
+			]
+		);
 	};
 
 	render() {
@@ -136,7 +168,9 @@ export default class NewNotification extends React.Component {
 						alignItems: 'center'
 					}}
 				>
-					<Text style={styles.questionText}>Choose A Category</Text>
+					<Text style={styles.questionText}>
+						{translate('Choose A Category')}
+					</Text>
 					<FlatList
 						style={styles.list}
 						data={Object.values(global.db.categories)
@@ -146,11 +180,11 @@ export default class NewNotification extends React.Component {
 						scrollEnabled={false}
 						renderItem={this._renderIcon}
 					/>
-					<View style={[SharedStyles.divider, { marginBottom: 30 }]} />
+					<View style={[SharedStyles.divider, { marginBottom: 20 }]} />
 
 					{/* Location Selection */}
 					<Text style={styles.questionText}>
-						What Location Should We Notify You About?
+						{translate('What Location Should We Notify You About?')}
 					</Text>
 					<TouchableOpacity
 						style={styles.searchBar}
@@ -182,23 +216,23 @@ export default class NewNotification extends React.Component {
 
 					{/* Distance Selection */}
 					<Text style={styles.questionText}>
-						Within What Distance Would You Like To Be Notified?
+						{translate('Within What Distance Would You Like To Be Notified?')}
 					</Text>
-					<View style={styles.radiusContainer} onPress={this._distancePicker}>
-						<Entypo name={'ruler'} size={22} style={styles.pinIcon} />
-						<Slider
-							maximumValue={100}
-							minimumValue={1}
-							step={0.5}
-							onSlidingComplete={num => this._setRadius(num)}
-							value={1.0}
-							style={{ width: '55%' }}
-						/>
-						<View style={{ width: '20%', marginRight: 10 }}>
-							<Text style={{ fontSize: 16 }}>
-								{this.state.newSubscription.radius} km
-							</Text>
-						</View>
+					<View style={styles.radiusContainer}>
+						<Entypo name={'ruler'} size={35} style={styles.pinIcon} />
+						<Picker
+							style={{ width: '80%', alignSelf: 'center' }}
+							selectedValue={this.state.newSubscription.radius}
+							onValueChange={itemValue => this._setRadius(itemValue)}
+						>
+							{[2.5, 5, 7.5, 10, 15, 20, 25, 40, 50].map(distance =>
+								<Picker.Item
+									label={distance + ' km'}
+									value={distance}
+									key={distance}
+								/>
+							)}
+						</Picker>
 					</View>
 				</ScrollView>
 
@@ -249,21 +283,19 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		borderRadius: 10,
-		marginBottom: 30
+		marginBottom: 20
 	},
 	pinIcon: {
 		marginHorizontal: 10
 	},
 	radiusContainer: {
 		width: '90%',
-		height: 50,
 		alignSelf: 'center',
 		backgroundColor: Colors.grey.light,
 		flexDirection: 'row',
 		alignItems: 'center',
-		justifyContent: 'space-between',
 		borderRadius: 10,
-		marginBottom: 30
+		marginBottom: 20
 	},
 	questionText: {
 		textAlign: 'center',
