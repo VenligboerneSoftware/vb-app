@@ -359,8 +359,8 @@ export default class NewPost extends React.Component {
 				// Notify all of the users who match the subscription
 				pushNotify(
 					tokens,
-					translate('New post in your area!'),
-					translate('title') + ':' + event.title,
+					'New post in your area!',
+					'title' + ':' + event.title,
 					{
 						url: '+post/' + event.key
 					}
