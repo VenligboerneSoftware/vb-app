@@ -51,80 +51,47 @@ export default class Menu extends React.Component {
 					<ManageNotifications hide={this._hideModal} />
 				</Modal>
 
-				{/*Manage Notifications*/}
-				<TouchableOpacity onPress={this._showModal}>
-					<Text style={[styles.menuText]}>
-						{translate('Manage Notifications')}
-					</Text>
-				</TouchableOpacity>
-
-				<View style={SharedStyles.divider} />
-
-				{/*About Venligboerne*/}
-				<TouchableOpacity>
-					<Text
-						style={styles.menuText}
-						onPress={() =>
-							WebBrowser.openBrowserAsync(this._getLocalizedWiki())}
-					>
-						{translate('About Venligboerne')}
-					</Text>
-				</TouchableOpacity>
-
-				<View style={SharedStyles.divider} />
-
-				{/*Knowledge Base Link*/}
-				<TouchableOpacity
-					onPress={() =>
-						WebBrowser.openBrowserAsync(
-							this._getLocalizedWiki() + '/knowledge-base/'
-						)}
-				>
-					<Text style={styles.menuText}>
-						{translate('FAQ About Denmark')}
-					</Text>
-				</TouchableOpacity>
-
-				{/* <View style={SharedStyles.divider} />
-
-				TODO Donate
-				<TouchableOpacity>
-					<Text style={styles.menuText}>
-						{translate('Donate')}
-					</Text>
-				</TouchableOpacity> */}
-
-				<View style={SharedStyles.divider} />
-
-				{/*Logout*/}
-				<TouchableOpacity onPress={this._logout}>
-					<Text style={styles.menuText}>
-						{translate('Logout')}
-					</Text>
-				</TouchableOpacity>
-
-				<View style={SharedStyles.divider} />
-
-				{/*Feedback Button*/}
-				<TouchableOpacity
-					onPress={() =>
-						WebBrowser.openBrowserAsync(this._getLocalizedWiki() + '/feedback')}
-				>
-					<Text style={styles.menuText}>
-						{translate('Give Feedback')}
-					</Text>
-				</TouchableOpacity>
-
-				<View style={SharedStyles.divider} />
-
-				{/* Tutorial */}
-				<TouchableOpacity onPress={() => history.push('/tutorial')}>
-					<Text style={styles.menuText}>
-						{translate('Tutorial')}
-					</Text>
-				</TouchableOpacity>
-
-				<View style={SharedStyles.divider} />
+				{[
+					{
+						title: 'Manage Notifications',
+						onPress: this._showModal
+					},
+					{
+						title: 'About Venligboerne',
+						onPress: () => WebBrowser.openBrowserAsync(this._getLocalizedWiki())
+					},
+					{
+						title: 'FAQ About Denmark',
+						onPress: () =>
+							WebBrowser.openBrowserAsync(
+								this._getLocalizedWiki() + '/knowledge-base/'
+							)
+					},
+					{
+						title: 'Logout',
+						onPress: this._logOut
+					},
+					{
+						title: 'Give Feedback',
+						onPress: () =>
+							WebBrowser.openBrowserAsync(
+								this._getLocalizedWiki() + '/feedback'
+							)
+					},
+					{
+						title: 'Tutorial',
+						onPress: () => history.push('/tutorial')
+					}
+				].map(button =>
+					<View key={button.title} style={{ width: '100%' }}>
+						<TouchableOpacity onPress={button.onPress}>
+							<Text style={styles.menuText}>
+								{translate(button.title)}
+							</Text>
+						</TouchableOpacity>
+						<View style={SharedStyles.divider} />
+					</View>
+				)}
 
 				<TouchableOpacity
 					style={{ position: 'absolute', bottom: 0, left: 0, padding: 30 }}
