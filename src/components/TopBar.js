@@ -99,6 +99,7 @@ export default class TopBar extends React.Component {
 						// Hide when clicking outside the menu
 						this.setState({ languageModalVisible: false });
 					}}
+					activeOpacity={1}
 				>
 					<LanguageMenu
 						onPress={() => {
