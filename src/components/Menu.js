@@ -82,7 +82,7 @@ export default class Menu extends React.Component {
 						},
 						{
 							title: 'Logout',
-							onPress: this._logOut
+							onPress: this._logout
 						},
 						{
 							title: 'Give Feedback',
