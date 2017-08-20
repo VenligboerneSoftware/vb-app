@@ -1,12 +1,12 @@
-import { Linking, Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { Linking, Platform, StatusBar } from 'react-native';
 import { Permissions, Notifications } from 'expo';
 import React from 'react';
-import SideMenu from 'react-native-side-menu';
 import firebase from 'firebase';
 
 import Menu from './Menu.js';
-import Tabs from './Tabs.js';
 import PostOrCenterModal from './PostOrCenterModal';
+import SideMenu from './SideMenu.js';
+import Tabs from './Tabs.js';
 
 export default class HomePage extends React.Component {
 	constructor() {
@@ -124,14 +124,7 @@ export default class HomePage extends React.Component {
 
 	render() {
 		return (
-			<SideMenu
-				menu={<Menu />}
-				disableGestures={true}
-				isOpen={this.state.isOpen}
-				onChange={isOpen => {
-					this.setState({ isOpen: isOpen });
-				}}
-			>
+			<SideMenu menu={<Menu />} isOpen={this.state.isOpen}>
 				<StatusBar barStyle="dark-content" />
 				<PostOrCenterModal
 					isVisible={this.state.showPost}
@@ -144,21 +137,7 @@ export default class HomePage extends React.Component {
 						this.state.badgeCounts[tab] = count;
 					}}
 				/>
-				<View style={this.state.isOpen ? styles.overlay : null} />
 			</SideMenu>
 		);
 	}
 }
-
-const styles = StyleSheet.create({
-	overlay: {
-		flex: 1,
-		position: 'absolute',
-		left: 0,
-		top: 0,
-		opacity: 0.5,
-		backgroundColor: 'black',
-		width: '100%',
-		height: '100%'
-	}
-});
