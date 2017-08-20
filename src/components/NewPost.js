@@ -69,14 +69,6 @@ export default class NewPost extends React.Component {
 		this.setState(initialState);
 	}
 
-	async componentDidMount() {
-		let { status } = await Permissions.askAsync(Permissions.LOCATION);
-		if (status === 'granted') {
-			const location = await Location.getCurrentPositionAsync({});
-			this.setState({ location: location });
-		}
-	}
-
 	/* _onIconPressed
   --------------------------------------------------
   Stores the selected icon and scrolls down to the rest of the form. */
@@ -460,9 +452,6 @@ export default class NewPost extends React.Component {
 							hide={() => {
 								this.setState({ searchModalVisible: false });
 							}}
-							location={
-								this.state.location !== null ? this.state.location.coords : null
-							}
 						/>
 					</Modal>
 				</TouchableOpacity>

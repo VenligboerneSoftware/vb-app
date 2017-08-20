@@ -1,4 +1,3 @@
-import { Notifications, Font } from 'expo';
 import {
 	View,
 	Image,
@@ -7,9 +6,11 @@ import {
 	Alert,
 	Text
 } from 'react-native';
+import Expo, { Font, Location, Notifications, Permissions } from 'expo';
 import * as Progress from 'react-native-progress';
 import React from 'react';
 import * as firebase from 'firebase';
+
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
 import history from '../utils/history.js';
@@ -172,6 +173,11 @@ export default class StartupPage extends React.Component {
 					firebase.auth().currentUser.providerData[0].uid +
 					'/picture?height=400'
 			);
+
+			let { status } = await Permissions.askAsync(Permissions.LOCATION);
+			if (status === 'granted') {
+				global.location = await Location.getCurrentPositionAsync({});
+			}
 
 			try {
 				await this._loadDatabasePromises();

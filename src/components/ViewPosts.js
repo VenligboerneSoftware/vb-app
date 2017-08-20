@@ -16,12 +16,19 @@ export default class ViewPosts extends React.Component {
 		this.state = {
 			listData: [],
 			// Set default viewport (without GPS) to Denmark
-			mapRegion: {
-				latitude: 55.8,
-				latitudeDelta: 2,
-				longitude: 10.3,
-				longitudeDelta: 5
-			},
+			mapRegion: global.location
+				? {
+						latitude: global.location.coords.latitude,
+						longitude: global.location.coords.longitude,
+						latitudeDelta: 0.2,
+						longitudeDelta: 0.4
+					}
+				: {
+						latitude: 55.8,
+						latitudeDelta: 2,
+						longitude: 10.3,
+						longitudeDelta: 5
+					},
 			filter: {
 				start: null,
 				end: null,
@@ -40,21 +47,6 @@ export default class ViewPosts extends React.Component {
 	// ---------------------------------------------------------------------------
 	// When the map loads, get the users current location and pan to it.
 	async componentDidMount() {
-		let { status } = await Permissions.askAsync(Permissions.LOCATION);
-		if (status === 'granted') {
-			const location = await Location.getCurrentPositionAsync({});
-			this.currentLocation = location;
-			this.setState({
-				mapRegion: {
-					latitude: location.coords.latitude,
-					longitude: location.coords.longitude,
-					latitudeDelta: 0.2,
-					longitudeDelta: 0.4
-				}
-			});
-		} else {
-			console.warn('Get current location failed', status);
-		}
 		this._syncFriendliness();
 	}
 
@@ -149,7 +141,6 @@ export default class ViewPosts extends React.Component {
 						const mapRegion = this._convertDetailsToRegion(details);
 						global.setRegion(mapRegion);
 					}}
-					location={this.currentLocation ? this.currentLocation.coords : null}
 				/>
 				<FilterBar
 					onFilterChange={this._setFilter}
@@ -166,11 +157,7 @@ export default class ViewPosts extends React.Component {
 									this._checkDate(post, this.state.filter)
 							)}
 							sortCenter={this.state.mapRegion}
-							distanceCenter={
-								this.currentLocation
-									? this.currentLocation.coords
-									: this.state.mapRegion
-							}
+							distanceCenter={this.state.mapRegion}
 							message={
 								<ClearFilter
 									onPress={this._clearFilter}
