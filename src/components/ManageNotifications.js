@@ -1,5 +1,6 @@
 import {
 	FlatList,
+	Image,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
@@ -8,9 +9,11 @@ import {
 import Modal from 'react-native-modal';
 import React, { Component } from 'react';
 import firebase from 'firebase';
+import { FontAwesome } from '@expo/vector-icons';
 
 import { Entypo } from '@expo/vector-icons';
 
+import { translate } from '../utils/internationalization';
 import Colors from '../styles/Colors';
 import ExitBar from './ExitBar';
 import NewNotification from './NewNotification';
@@ -33,7 +36,7 @@ export default class ManageNotifications extends Component {
 			.orderByChild('owner')
 			.equalTo(firebase.auth().currentUser.uid)
 			.on('value', snap => {
-				let subscriptions = snap.val();
+				let subscriptions = snap.val() || {};
 				for (key in subscriptions) {
 					subscriptions[key].key = key;
 				}
@@ -41,6 +44,10 @@ export default class ManageNotifications extends Component {
 					subscriptions: subscriptions
 				});
 			});
+	}
+
+	_deleteSubscription(subscription) {
+		firebase.database().ref('subscriptions').child(subscription.key).remove();
 	}
 
 	render() {
@@ -57,13 +64,81 @@ export default class ManageNotifications extends Component {
 				</Modal>
 
 				<ExitBar title={'Manage Notifications'} hide={this.props.hide} />
+
+				<View
+					style={{
+						flexDirection: 'row',
+						justifyContent: 'space-around',
+						marginTop: 10,
+						marginBottom: 5
+					}}
+				>
+					<View style={{ flex: 1 }} />
+					<Text style={styles.heading}>
+						{translate('Range')}
+					</Text>
+					<Text style={styles.heading}>
+						{translate('Location')}
+					</Text>
+					<View style={{ flex: 1 }} />
+				</View>
+
+				<View style={[SharedStyles.divider, { height: 3 }]} />
 				<FlatList
+					style={{ width: '100%' }}
 					data={Object.values(this.state.subscriptions)}
 					ItemSeparatorComponent={() => <View style={SharedStyles.divider} />}
 					renderItem={({ item }) =>
-						<Text key={item.key}>
-							{JSON.stringify(item)}
-						</Text> /* TODO figure out UI */}
+						<View
+							key={item.key}
+							style={{
+								flexDirection: 'row',
+								justifyContent: 'space-around',
+								alignItems: 'center',
+								padding: 10
+							}}
+						>
+							<View style={{ alignItems: 'center', flex: 1 }}>
+								<Image
+									style={{
+										tintColor: Colors.blue.dark,
+										width: 50,
+										height: 50,
+										resizeMode: 'contain'
+									}}
+									source={{ uri: global.db.categories[item.icon].iconURL }}
+								/>
+
+								<Text
+									style={{
+										color: Colors.blue.dark,
+										fontSize: 10,
+										textAlign: 'center'
+									}}
+								>
+									{translate(global.db.categories[item.icon].title)}
+								</Text>
+							</View>
+
+							<Text style={{ fontSize: 16, flex: 1, textAlign: 'center' }}>
+								{item.radius + ' KM'}
+							</Text>
+							<Text style={{ fontSize: 12, flex: 2 }} numberOfLines={2}>
+								{item.formatted_address}
+							</Text>
+
+							<TouchableOpacity
+								onPress={this._deleteSubscription.bind(this, item)}
+								style={{
+									backgroundColor: Colors.grey.light,
+									padding: 5,
+									borderRadius: 10,
+									marginLeft: 10
+								}}
+							>
+								<FontAwesome name={'trash-o'} size={26} />
+							</TouchableOpacity>
+						</View>}
 				/>
 				<View style={styles.bottomBar}>
 					<TouchableOpacity
@@ -85,6 +160,11 @@ const styles = StyleSheet.create({
 		justifyContent: 'flex-start',
 		alignItems: 'center',
 		backgroundColor: 'white'
+	},
+	heading: {
+		flex: 1,
+		fontSize: 18,
+		fontWeight: '500'
 	},
 	bottomBar: {
 		height: 70,

@@ -28,43 +28,19 @@ export function populateDB(numUsers, numPosts, numApplications) {
 					);
 
 					const initialUsers = {
-						Jy8bYhVNXoNzdKhrsIqWmXP1TMo2: {
-							displayName: 'Brendan Edelson',
+						FNuDynYSOfYFz5HWGrFSiP6y2Wm2: {
+							displayName: 'Administrator',
 							facebookUID: '1831544803539124',
 							permissions: 'superuser',
 							photoURL:
 								'https://scontent.xx.fbcdn.net/v/t1.0-1/s100x100/18951508_1795380283822243_3207296857840408456_n.jpg?oh=2612ab33960a9c3b3e2bfe01b198e054&oe=59CEBE7F',
 							pushToken: 'ExponentPushToken[5U2RBmCCqEifkbFRuWxlLW]'
-						},
-						VdTWgI8pioS1Sc82VYNcRidGjDA2: {
-							displayName: 'Ethan Brown',
-							facebookUID: '1407678712659669',
-							permissions: 'superuser',
-							photoURL:
-								'https://scontent.xx.fbcdn.net/v/t1.0-1/p100x100/16426031_1249111778516364_5284564463956178283_n.jpg?oh=6c693f38095cfcb491fee361d7f61afc&oe=59C463A9',
-							pushToken: 'ExponentPushToken[VoU47ZNWmtX6-MTrA47xku]'
-						},
-						nGliLbiQT5PPZxRhJChpg1ltFQq2: {
-							displayName: 'Ben Hannel',
-							facebookUID: '1516075111789476',
-							permissions: 'superuser',
-							photoURL:
-								'https://scontent.xx.fbcdn.net/v/t1.0-1/p100x100/13906650_1155288174534840_5562641394486031200_n.jpg?oh=037631682aefca3d0b3266c925905952&oe=59C5E0B7',
-							pushToken: 'ExponentPushToken[ZbeaB6AF5xf6ns_o7vhtSp]'
-						},
-						tbTJ5o7QPVb0fAO5tMVEHYXXe293: {
-							displayName: 'Mitchell Sayer',
-							facebookUID: '1327493713986537',
-							permissions: 'superuser',
-							photoURL:
-								'https://scontent.xx.fbcdn.net/v/t1.0-1/p100x100/18268591_1264584343610808_8896913589954832353_n.jpg?oh=2b93b0e124f291abb56d2670d2d11680&oe=59CA29F0',
-							pushToken: 'ExponentPushToken[tcWxs1Cq6zRrAzLTun4jkr]'
 						}
 					};
 					let users = Object.keys(initialUsers);
 					await firebase.database().ref('users').set(initialUsers);
 
-					for (let i = initialUsers.length; i < numUsers; i++) {
+					while (users.length < numUsers) {
 						users.push(
 							firebase.database().ref('users').push({
 								facebookUID: Math.round(Math.random() * 10000000000),

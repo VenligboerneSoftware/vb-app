@@ -15,14 +15,18 @@ export default class HomePage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			selectedTab: 'Map'
+			// Initially, load the news page to start the articles loading
+			selectedTab: 'News'
 		};
-
-		console.log('props', props);
 
 		global.changeTab = (tab, callback) => {
 			this.setState({ selectedTab: tab }, callback);
 		};
+	}
+
+	componentDidMount() {
+		// Switch to the Map once the News starts loading
+		this.setState({ selectedTab: 'Map' });
 	}
 
 	_setTab = tab => {

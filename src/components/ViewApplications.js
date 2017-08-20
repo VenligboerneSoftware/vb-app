@@ -1,6 +1,7 @@
 import {
 	ActivityIndicator,
 	FlatList,
+	I18nManager,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
@@ -126,7 +127,11 @@ export default class ViewApplications extends React.Component {
 				</View>
 				<View style={styles.iconContainer}>
 					<Ionicons
-						name={'ios-arrow-forward-outline'}
+						name={
+							I18nManager.isRTL
+								? 'ios-arrow-back-outline'
+								: 'ios-arrow-forward-outline'
+						}
 						size={40}
 						color={Colors.grey.medium}
 					/>
@@ -175,7 +180,7 @@ export default class ViewApplications extends React.Component {
 
 					<View style={styles.applicantsTextStyle}>
 						<Text style={styles.applicantsText}>
-							{'APPLICANTS'}
+							{'APPLICANTS' /* TODO translate */}
 						</Text>
 					</View>
 					<View style={SharedStyles.divider} />
@@ -200,6 +205,7 @@ const styles = StyleSheet.create({
 	nameStatusContainer: {
 		flexDirection: 'column',
 		justifyContent: 'flex-start',
+		alignItems: 'flex-start',
 		marginLeft: 10
 	},
 	name: {

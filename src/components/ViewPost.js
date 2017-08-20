@@ -271,6 +271,7 @@ export default class ViewPost extends Component {
 						ref={scrollView => {
 							this.scrollView = scrollView;
 						}}
+						keyboardShouldPersistTaps={'handled'}
 					>
 						<View style={styles.container}>
 							<TitleAndIcon post={this.props.post} />

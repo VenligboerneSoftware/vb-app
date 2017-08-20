@@ -2,14 +2,13 @@ import { Location, Permissions } from 'expo';
 import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import firebase from 'firebase';
-import geolib from 'geolib';
 
+import { checkFilters } from '../utils/dates';
 import ClearFilter from './ClearFilter.js';
 import FilterBar from './FilterBar.js';
 import MapViewPage from './MapViewPage';
 import PostList from './PostList';
 import TopBar from './TopBar.js';
-import { checkFilters } from '../utils/dates';
 
 export default class ViewPosts extends React.Component {
 	constructor() {
@@ -31,14 +30,7 @@ export default class ViewPosts extends React.Component {
 		};
 
 		global.setRegion = mapRegion => {
-			this.setState(
-				{
-					mapRegion: mapRegion
-				},
-				() => {
-					this._getPosts();
-				}
-			);
+			this.setState({ mapRegion: mapRegion });
 		};
 
 		this.posts = {};
@@ -114,33 +106,7 @@ export default class ViewPosts extends React.Component {
 		// check the event meets the filter criteria
 		posts = posts.filter(post => this._checkIcon(post, this.state.filter));
 
-		// Sort the posts by increasing distance from the mapRegion center.
-		// Use the users current location to label distance, but fall back on the
-		// map region center.
-		const distanceOrigin = this.currentLocation
-			? this.currentLocation.coords
-			: this.state.mapRegion;
-		posts = geolib
-			.orderByDistance(this.state.mapRegion, posts)
-			.map(sortResult => ({
-				distance: geolib.getDistance(distanceOrigin, posts[sortResult.key]),
-				...posts[sortResult.key]
-			}));
-
-		// Clear listData first to fix Android custom icons issue
-		this.setState(
-			{
-				listData: []
-			},
-			() => {
-				this.setState({
-					// Make a deep copy to avoid immutability issues
-					// TODO check if this was causing android rendering issues
-					listData: JSON.parse(JSON.stringify(posts)),
-					loaded: true
-				});
-			}
-		);
+		this.setState({ listData: posts });
 	};
 
 	_checkIcon = (post, filter) =>
@@ -149,12 +115,6 @@ export default class ViewPosts extends React.Component {
 	_checkDate = (post, filter) => {
 		return checkFilters(post.dates, filter.start, filter.end);
 	};
-
-	_checkRegion = (post, region) =>
-		post.latitude > region.latitude - region.latitudeDelta / 2.0 &&
-		post.latitude < region.latitude + region.latitudeDelta / 2.0 &&
-		post.longitude > region.longitude - region.longitudeDelta / 2.0 &&
-		post.longitude < region.longitude + region.longitudeDelta / 2.0;
 
 	_convertDetailsToRegion = details => {
 		const pickedLocation = details.geometry;
@@ -199,12 +159,18 @@ export default class ViewPosts extends React.Component {
 
 				{this.props.mode === 'List'
 					? <PostList
-							listData={/* Remove own posts from ListView */
-							this.state.listData.filter(
+							listData={this.state.listData.filter(
 								post =>
+									/* Remove own posts from ListView */
 									post.owner !== firebase.auth().currentUser.uid &&
 									this._checkDate(post, this.state.filter)
 							)}
+							sortCenter={this.state.mapRegion}
+							distanceCenter={
+								this.currentLocation
+									? this.currentLocation.coords
+									: this.state.mapRegion
+							}
 							message={
 								<ClearFilter
 									onPress={this._clearFilter}
@@ -212,21 +178,21 @@ export default class ViewPosts extends React.Component {
 								/>
 							}
 						/>
-					: <MapViewPage
-							listData={this.state.listData.filter(post =>
-								this._checkRegion(post, this.state.mapRegion)
-							)}
+					: null}
+
+				{this.props.mode === 'Map'
+					? <MapViewPage
+							listData={this.state.listData}
 							mapRegion={this.state.mapRegion}
 							onRegionChange={global.setRegion}
 							message={
-								this.state.loaded
-									? <ClearFilter
-											onPress={this._clearFilter}
-											filterApplied={this.filterApplied()}
-										/>
-									: null
+								<ClearFilter
+									onPress={this._clearFilter}
+									filterApplied={this.filterApplied()}
+								/>
 							}
-						/>}
+						/>
+					: null}
 			</View>
 		);
 	}

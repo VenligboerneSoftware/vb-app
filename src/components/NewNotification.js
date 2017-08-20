@@ -130,6 +130,7 @@ export default class NewNotification extends React.Component {
 
 				{/* Icon Selection */}
 				<ScrollView
+					keyboardShouldPersistTaps={'handled'}
 					contentContainerStyle={{
 						flexDirection: 'column',
 						alignItems: 'center'

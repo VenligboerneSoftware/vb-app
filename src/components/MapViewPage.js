@@ -10,17 +10,42 @@ export default class MapViewPage extends React.Component {
 		super(props);
 		this.state = {
 			mapRegion: props.mapRegion,
+			listData: props.listData,
 			isPostModalVisible: false
 		};
 	}
 
 	componentWillReceiveProps(props) {
-		this.setState({ mapRegion: props.mapRegion });
+		// TODO what if listData and mapRegion update simultaneously?
+		if (this.props.listData === props.listData) {
+			this.setState({
+				mapRegion: props.mapRegion
+			});
+		} else {
+			this.setState({
+				listData: props.listData
+			});
+		}
 	}
 
-	_showModal = () => this.setState({ isPostModalVisible: true });
+	_showModal = post =>
+		this.setState({
+			isPostModalVisible: true,
+			selectedPost: post
+		});
 
-	_hideModal = () => this.setState({ isPostModalVisible: false });
+	_hideModal = () =>
+		this.setState({
+			isPostModalVisible: false
+		});
+
+	// Includes a region twice the size of the map in each direction.
+	// The wide viewport makes scrolling around more pleasant.
+	_checkRegion = (post, region) =>
+		post.latitude > region.latitude - region.latitudeDelta &&
+		post.latitude < region.latitude + region.latitudeDelta &&
+		post.longitude > region.longitude - region.longitudeDelta &&
+		post.longitude < region.longitude + region.longitudeDelta;
 
 	render() {
 		return (
@@ -40,11 +65,13 @@ export default class MapViewPage extends React.Component {
 						// Use intervals to detect the end of the drag.
 						// Don't use onRegionChangeComplete because it produces
 						// weird events for no reason.
-						if (this.regionChange) clearInterval(this.regionChange);
+						if (this.regionChange) {
+							clearInterval(this.regionChange);
+						}
+						// TODO no need to live update this
 						this.regionChange = setTimeout(() => {
 							this.props.onRegionChange(this.state.mapRegion);
 						}, 200);
-						// TODO fiddle with this timing parameter
 					}}
 					onRegionChangeComplete={mapRegion => {
 						this.state.mapRegion = mapRegion;
@@ -55,19 +82,22 @@ export default class MapViewPage extends React.Component {
 					pitchEnabled={false}
 				>
 					{// Render post and center icons
-					this.props.listData.map(marker =>
-						<MapView.Marker
-							key={marker.key}
-							coordinate={marker}
-							onPress={(mark => {
-								this.setState({ selectedPost: mark });
-								this._showModal();
-							}).bind(this, marker)}
-							image={{
-								uri: global.db.categories[marker.icon].pinURL
-							}}
-						/>
-					)}
+					this.state.listData
+						.filter(post => this._checkRegion(post, this.state.mapRegion))
+						.map(marker =>
+							<MapView.Marker
+								key={marker.key}
+								coordinate={marker}
+								onPress={this._showModal.bind(this, marker)}
+								image={{
+									uri: global.db.categories[marker.icon].pinURL
+								}}
+								style={{
+									/* keep marker order from flickering (Android only) */
+									zIndex: marker.latitude
+								}}
+							/>
+						)}
 				</MapView>
 			</View>
 		);

@@ -37,7 +37,8 @@ export default class News extends React.Component {
 		this.getArticles();
 	}
 
-	//Pulls the Article Information From Wordpress
+	// TODO this freezes UI and prevents user from leaving
+	// Pulls the Article Information From Wordpress
 	getArticles = async () => {
 		let urls = await firebase.database().ref('newsUrls').once('value');
 		urls = urls.val();
@@ -80,7 +81,7 @@ export default class News extends React.Component {
 					);
 					return articles;
 				} catch (e) {
-					console.log(e);
+					console.warn(e);
 					return [];
 				}
 			})
@@ -109,7 +110,7 @@ export default class News extends React.Component {
 	_renderModal = () =>
 		<View style={styles.articleModalContainer}>
 			<ExitBar hide={this._hideModal} />
-			<ScrollView>
+			<ScrollView keyboardShouldPersistTaps={'handled'}>
 				{/* Author and Date */}
 				<Text style={styles.selectedArticleHeader}>
 					{this.state.selectedArticle.author +

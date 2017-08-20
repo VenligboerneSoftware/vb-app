@@ -1,5 +1,6 @@
 import { StyleSheet, View, Text, Image } from 'react-native';
 import { TabViewAnimated, TabBar } from 'react-native-tab-view';
+import Expo from 'expo';
 import React from 'react';
 import firebase from 'firebase';
 
@@ -22,7 +23,7 @@ export default class Profile extends React.Component {
 			listData: []
 		};
 
-		global.onLanguageChange.push(() => {
+		global.onLanguageChange.profile = () => {
 			// Retranslate the tab headers into a new language
 			this.setState({
 				routes: [
@@ -30,7 +31,7 @@ export default class Profile extends React.Component {
 					{ key: '2', title: translate('My Applications') }
 				]
 			});
-		});
+		};
 
 		// TODO This is a derpy fix. This setState must be called after the component
 		// loads.
@@ -75,7 +76,7 @@ export default class Profile extends React.Component {
 
 	_renderScene = route => {
 		const scenes = {
-			'1': (
+			'1':
 				<PostList
 					listData={route.navigationState.listData}
 					message={
@@ -86,7 +87,7 @@ export default class Profile extends React.Component {
 							: null
 					}
 				/>
-			),
+			,
 			'2': <MyApplications />
 		};
 		return scenes[route.route.key];

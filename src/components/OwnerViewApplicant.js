@@ -1,5 +1,6 @@
 import {
 	Alert,
+	I18nManager,
 	ScrollView,
 	StyleSheet,
 	Text,
@@ -22,11 +23,6 @@ import Time from './Time';
 import TitleAndIcon from './TitleAndIcon.js';
 
 export default class OwnerViewApplicant extends React.Component {
-	constructor(props) {
-		super(props);
-		console.log(this.props.application);
-	}
-
 	acceptApplicant = () => {
 		//TODO: translate
 		Alert.alert(
@@ -67,16 +63,15 @@ export default class OwnerViewApplicant extends React.Component {
 		return (
 			<View style={{ flex: 1, backgroundColor: 'white' }}>
 				<TouchableOpacity onPress={this.props.back} style={SharedStyles.back}>
-					<Ionicons name={'ios-arrow-back'} size={42} />
+					<Ionicons
+						name={I18nManager.isRTL ? 'ios-arrow-forward' : 'ios-arrow-back'}
+						size={42}
+					/>
 				</TouchableOpacity>
 
 				<ExitBar hide={this.props.hide} />
 
-				<ScrollView
-					ref={scrollView => {
-						this.scrollView = scrollView;
-					}}
-				>
+				<ScrollView keyboardShouldPersistTaps={'handled'}>
 					<View style={styles.container}>
 						<TitleAndIcon post={this.props.post} />
 						<ApplicationStatus

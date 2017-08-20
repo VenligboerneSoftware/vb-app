@@ -1,14 +1,15 @@
 import {
 	FlatList,
+	I18nManager,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
 	View
 } from 'react-native';
 import Dates from 'react-native-dates';
-import { FontAwesome } from '@expo/vector-icons';
 import React from 'react';
 
+import { FontAwesome } from '@expo/vector-icons';
 import Colors from 'venligboerneapp/src/styles/Colors.js';
 
 import { translate } from '../utils/internationalization';
@@ -26,13 +27,15 @@ export default class FilterBar extends React.Component {
 
 	// Custom setState function to always call the onFilterChange callback
 	mySetState = (state, filterRefreshNeeded) => {
-		if (filterRefreshNeeded) {
-			this.setState(state, () => {
-				this.props.onFilterChange(this.state);
-			});
-		} else {
-			this.setState(state);
-		}
+		this.setState(state, () => {
+			if (filterRefreshNeeded) {
+				// Use a setTimeout so the filterchange is registered in a new message,
+				// and the UI has time to hide the calendar
+				setTimeout(() => {
+					this.props.onFilterChange(this.state);
+				}, 0);
+			}
+		});
 	};
 
 	// _onIconPressed
@@ -106,7 +109,10 @@ export default class FilterBar extends React.Component {
 		return (
 			<View style={styles.container}>
 				<FlatList
-					style={styles.list}
+					style={[
+						styles.list,
+						{ flexDirection: I18nManager.isRTL ? 'row-reverse' : 'row' }
+					]}
 					data={Object.values(global.db.categories).sort(
 						(a, b) => a.order - b.order
 					)}
@@ -192,22 +198,31 @@ export default class FilterBar extends React.Component {
 						</View>
 					: null}
 
-				{this.state.isDatePickerVisible
-					? <Dates
-							onDatesChange={this._onDatesChange}
-							isDateBlocked={date => {
-								return (
-									this.state.start !== null &&
-									this.state.end === null &&
-									date.isBefore(this.state.start, 'day')
-								);
-							}}
-							startDate={this.state.start}
-							endDate={this.state.end}
-							focusedInput={this.state.focusedInput}
-							range
-						/>
-					: null}
+				<View
+					style={
+						// hide instead of unmounting for better performance on show
+						this.state.isDatePickerVisible
+							? {}
+							: {
+									display: 'none'
+								}
+					}
+				>
+					<Dates
+						onDatesChange={this._onDatesChange}
+						isDateBlocked={date => {
+							return (
+								this.state.start !== null &&
+								this.state.end === null &&
+								date.isBefore(this.state.start, 'day')
+							);
+						}}
+						startDate={this.state.start}
+						endDate={this.state.end}
+						focusedInput={this.state.focusedInput}
+						range
+					/>
+				</View>
 			</View>
 		);
 	}

@@ -47,11 +47,7 @@ export default class ViewSingleApplication extends React.Component {
 		return (
 			<View style={{ flex: 1, backgroundColor: 'white' }}>
 				<ExitBar hide={this.props.hide} />
-				<ScrollView
-					ref={scrollView => {
-						this.scrollView = scrollView;
-					}}
-				>
+				<ScrollView keyboardShouldPersistTaps={'handled'}>
 					<View style={styles.container}>
 						<TitleAndIcon post={this.props.app.postData} />
 

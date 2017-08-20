@@ -44,8 +44,9 @@ export default class NewPost extends React.Component {
 
 		// Make the resolve function externally accessible so it can be Called
 		// in the onLayout of renderRemaining.
+		const _this = this;
 		this.onScroll = new Promise((resolve, reject) => {
-			this.onLayout = {
+			_this.onLayout = {
 				resolve: resolve,
 				reject: reject
 			};
@@ -182,7 +183,6 @@ export default class NewPost extends React.Component {
 	// ---------------------------------------------------------------------------
 	// Triggered when the user selects a location from the address picker.
 	_onSearchLocation = (data, details) => {
-		console.log('location picked', details);
 		this.setState({
 			searchModalVisible: false,
 			newPost: {
@@ -285,7 +285,6 @@ export default class NewPost extends React.Component {
 			creationTime: Date.now(),
 			owner: firebase.auth().currentUser.uid
 		};
-		console.log('newPost', newPost);
 
 		// If we are editing, then overwrite the old index. If we are creating
 		// a new post, push a new entry to the database.
@@ -334,6 +333,7 @@ export default class NewPost extends React.Component {
 			return;
 		}
 
+		// TODO run this computation at the server for privacy
 		Promise.all(
 			Object.values(subs.val()).map(async sub => {
 				// Get the push token if the subscription covers this post
@@ -403,6 +403,7 @@ export default class NewPost extends React.Component {
 						maxLength={45}
 						returnKeyType="done"
 						blurOnSubmit={true}
+						autoCapitalize={'sentences'}
 						placeholder={translate('Enter Post Title Here...')}
 						onSubmitEditing={event => {
 							this.descriptionInput.focus();
@@ -530,7 +531,7 @@ export default class NewPost extends React.Component {
 							hideArrows={false}
 							hideExtraDays={true}
 							disableMonthChange={false}
-							firstDay={1}
+							firstDay={1} //Monday comes first
 							markedDates={this._getSelectedDates()}
 							theme={{
 								calendarBackground: '#ffffff',
@@ -540,9 +541,7 @@ export default class NewPost extends React.Component {
 								todayTextColor: '#00adf5',
 								dayTextColor: '#2d4150',
 								textDisabledColor: '#d9e1e8',
-								textDayFontSize: 16,
-								textMonthFontSize: 16,
-								textDayHeaderFontSize: 16
+								textMonthFontSize: 16
 							}}
 						/>
 
@@ -645,6 +644,7 @@ export default class NewPost extends React.Component {
 						this.scrollView = scrollView;
 					}}
 					keyboardDismissMode={'on-drag'}
+					keyboardShouldPersistTaps={'handled'}
 				>
 					<View style={[styles.horizontalLayout, { marginTop: 5 }]}>
 						<Text style={{ fontSize: 16 }}>
