@@ -200,9 +200,9 @@ export default class TopBar extends React.Component {
 					isVisible={this.state.isOpen}
 					animationIn={I18nManager.isRTL ? 'slideInRight' : 'slideInLeft'}
 					animationOut={I18nManager.isRTL ? 'slideOutRight' : 'slideOutLeft'}
-					backdropColor={'black'}
 					backdropOpacity={0.5}
-					style={{ padding: 0, margin: 0 }}
+					style={{ margin: 0 }}
+					hideOnBackdropPress={true}
 				>
 					<Menu hide={this._hideMenu} />
 				</Modal>
