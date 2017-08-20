@@ -55,6 +55,7 @@ export default class MapViewPage extends React.Component {
 					post={this.state.selectedPost}
 					hide={this._hideModal}
 				/>
+				{console.log(this.props.listData)}
 				{this.props.listData.length === 0 ? this.props.message : null}
 				<MapView
 					style={styles.map}

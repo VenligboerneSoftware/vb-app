@@ -324,15 +324,12 @@ export default class ViewPost extends Component {
 											source={{ uri: this.state.image }}
 											style={styles.imageUpload}
 										/>
-										<View style={SharedStyles.divider} />
 									</View>
 								: null}
 
 							{/*Image renders after divider so this is the only way to ensure
 							that there arent double dividers*/}
-							{this.props.post.image
-								? <View style={SharedStyles.divider} />
-								: null}
+							{this.state.image ? <View style={SharedStyles.divider} /> : null}
 
 							{/* Map or application text*/}
 							{this.state.applyClicked
