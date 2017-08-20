@@ -11,26 +11,31 @@
 //
 // The fetch function for POST request:
 // https://facebook.github.io/react-native/docs/network.html
-export default function pushNotify(tokens, body, data) {
-  // Allow user to pass a single token
-  if (tokens.constructor !== Array) {tokens = [tokens];}
+export default function pushNotify(tokens, messageSubject, postTitle, data) {
+	// Allow user to pass a single token
+	if (tokens.constructor !== Array) {
+		tokens = [tokens];
+	}
 
-  fetch('https://exp.host/--/api/v2/push/send', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Accept-Encoding': 'gzip, deflate',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(tokens.map(token => {
-       return {
-        to: token,
-        sound: 'default',
-        body: body,
-        data: data
-      };
-    }))
-  }).then(function(response) {
-    console.log('Expo push notification returned', response._bodyText);
-  });
+	fetch('https://exp.host/--/api/v2/push/send', {
+		method: 'POST',
+		headers: {
+			Accept: 'application/json',
+			'Accept-Encoding': 'gzip, deflate',
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(
+			tokens.map(token => {
+				return {
+					to: token,
+					sound: 'default',
+					title: messageSubject,
+					body: postTitle,
+					data: data
+				};
+			})
+		)
+	}).then(function(response) {
+		console.log('Expo push notification returned', response._bodyText);
+	});
 }

@@ -56,14 +56,14 @@ export default class ExitBar extends Component {
 							{slide.textBig !== ''
 								? <View style={styles.textContainerTop}>
 										<Text style={styles.textBig}>
-											{slide.textBig}
+											{translate(slide.textBig)}
 										</Text>
 									</View>
 								: null}
 							{slide.textSmall !== ''
 								? <View style={styles.textContainerBottom}>
 										<Text style={styles.textSmall}>
-											{slide.textSmall}
+											{translate(slide.textSmall)}
 										</Text>
 									</View>
 								: null}

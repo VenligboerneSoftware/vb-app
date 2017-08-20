@@ -118,11 +118,16 @@ export default class ViewPost extends Component {
 			.ref('users/' + this.props.post.owner + '/pushToken')
 			.once('value', snap => {
 				console.log('Push notifying', snap.val());
-				pushNotify(snap.val(), 'New application to your event!', {
-					type: 'applicationSent',
-					post: this.props.post.key,
-					uid: firebase.auth().currentUser.uid
-				});
+				pushNotify(
+					snap.val(),
+					'New application to your event!',
+					'title' + ':' + this.props.post.title,
+					{
+						type: 'applicationSent',
+						post: this.props.post.key,
+						uid: firebase.auth().currentUser.uid
+					}
+				);
 			});
 	};
 

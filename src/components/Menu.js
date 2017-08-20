@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#F5F5F5',
-		borderWidth: 1,
+		borderRightWidth: 1,
 		borderColor: '#000',
 		alignItems: 'center',
 		paddingTop: 20
