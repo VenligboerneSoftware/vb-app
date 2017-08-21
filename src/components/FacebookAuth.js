@@ -82,7 +82,7 @@ export default class FacebookAuth extends React.Component {
 						await AsyncStorage.setItem('eula', 'true');
 					}
 
-					history.goBack();
+					this.props.onDone(token);
 				} else if (type === 'cancel') {
 					// Don't let the user close it
 				} else {
