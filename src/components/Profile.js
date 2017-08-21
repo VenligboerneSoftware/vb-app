@@ -40,9 +40,7 @@ export default class Profile extends React.Component {
 				this.setState({ index: index });
 			}, 100);
 		};
-	}
 
-	componentDidMount() {
 		firebase
 			.database()
 			.ref('posts')
