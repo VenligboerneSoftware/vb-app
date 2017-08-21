@@ -74,7 +74,7 @@ export default class Profile extends React.Component {
 
 	_renderScene = route => {
 		const scenes = {
-			'1': (
+			'1':
 				<PostList
 					listData={route.navigationState.listData}
 					message={
@@ -85,7 +85,7 @@ export default class Profile extends React.Component {
 							: null
 					}
 				/>
-			),
+			,
 			'2': <MyApplications />
 		};
 		return scenes[route.route.key];

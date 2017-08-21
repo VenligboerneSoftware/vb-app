@@ -8,7 +8,6 @@ import FilterBar from './FilterBar.js';
 import MapViewPage from './MapViewPage';
 import PostList from './PostList';
 import TopBar from './TopBar.js';
-import history from '../utils/history';
 
 export default class ViewPosts extends React.Component {
 	constructor() {

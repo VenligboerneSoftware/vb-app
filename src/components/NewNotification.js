@@ -141,15 +141,14 @@ export default class NewNotification extends React.Component {
 				},
 				{
 					text: 'Submit',
-					onPress: () =>
+					onPress: () => {
 						// TODO: Add to firebase and translate text once we decide wording is right
-						{
-							firebase
-								.database()
-								.ref('subscriptions')
-								.push(this.state.newSubscription);
-							this.props.hide();
-						}
+						firebase
+							.database()
+							.ref('subscriptions')
+							.push(this.state.newSubscription);
+						this.props.hide();
+					}
 				}
 			]
 		);

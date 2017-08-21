@@ -1,5 +1,4 @@
 import {
-	ActivityIndicator,
 	FlatList,
 	StyleSheet,
 	Text,

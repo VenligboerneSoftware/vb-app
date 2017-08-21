@@ -1,6 +1,5 @@
 import {
 	AsyncStorage,
-	I18nManager,
 	StyleSheet,
 	Text,
 	TouchableOpacity,

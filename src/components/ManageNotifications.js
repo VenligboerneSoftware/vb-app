@@ -37,7 +37,7 @@ export default class ManageNotifications extends Component {
 			.equalTo(firebase.auth().currentUser.uid)
 			.on('value', snap => {
 				let subscriptions = snap.val() || {};
-				for (key in subscriptions) {
+				for (const key in subscriptions) {
 					subscriptions[key].key = key;
 				}
 				this.setState({
