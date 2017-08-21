@@ -1,15 +1,16 @@
+import {
+	Alert,
+	FlatList,
+	Image,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TextInput,
+	TouchableOpacity,
+	View
+} from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { ImagePicker } from 'expo';
-import {
-	StyleSheet,
-	View,
-	Text,
-	Image,
-	TouchableOpacity,
-	FlatList,
-	ScrollView,
-	TextInput
-} from 'react-native';
 import Modal from 'react-native-modal';
 import React from 'react';
 import * as firebase from 'firebase';
@@ -250,19 +251,19 @@ export default class NewPost extends React.Component {
 		// Check that all of the mandatory fields are filled out
 		// TODO maybe scroll to/highlight the relevant component
 		if (!this.state.newPost.icon) {
-			alert(translate('Please select a category'));
+			Alert.alert(translate('Please select a category'));
 			return;
 		}
 		if (!this.state.newPost.title) {
-			alert(translate('Please enter a title'));
+			Alert.alert(translate('Please enter a title'));
 			return;
 		}
 		if (!this.state.newPost.description) {
-			alert(translate('Please enter a description'));
+			Alert.alert(translate('Please enter a description'));
 			return;
 		}
 		if (!this.state.newPost.latitude || !this.state.newPost.longitude) {
-			alert(translate('Please select a location'));
+			Alert.alert(translate('Please select a location'));
 			return;
 		}
 
