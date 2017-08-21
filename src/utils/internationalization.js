@@ -112,11 +112,13 @@ async function addNewWord(word, key) {
 //		...
 // ]
 export function getAvailableLanguages() {
-	if (!global.db.language) {
+	if (!global.db.languageOptions || !global.db.language) {
+		console.warn(
+			'Attempting to get available languages before they are loaded'
+		);
 		return [];
 	} else {
-		var aWord = global.db.language[Object.keys(global.db.language)[0]];
-		return Object.keys(aWord).map(function(val) {
+		return Object.keys(global.db.languageOptions).map(function(val) {
 			return {
 				English: val,
 				Native: global.db.language[val][val]
