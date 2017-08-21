@@ -1,9 +1,8 @@
+import Expo from 'expo';
+
 import { createMemoryHistory } from 'history';
 
-const history = createMemoryHistory({
-	initialEntries: ['/startup'],
-	initialIndex: 0
-});
+const history = createMemoryHistory();
 
 history.listen((location, action) => {
 	// location is an object like window.location

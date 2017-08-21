@@ -7,7 +7,13 @@ import {
 	Text
 } from 'react-native';
 import { Route, Router, Switch } from 'react-router-native';
-import Expo, { Font, Location, Notifications, Permissions } from 'expo';
+import Expo, {
+	AppLoading,
+	Font,
+	Location,
+	Notifications,
+	Permissions
+} from 'expo';
 import React from 'react';
 import * as firebase from 'firebase';
 
@@ -30,7 +36,7 @@ console.ignoredYellowBox = ['Setting a timer'];
 export default class App extends React.Component {
 	constructor() {
 		super();
-		this.state = { startupStage: 'AppLoading' };
+		this.state = { isLoading: true };
 		console.log(Date.now(), 'Entering App.js');
 
 		// Disallows font scaling on iOS
@@ -83,7 +89,7 @@ export default class App extends React.Component {
 				});
 
 				// Ask the user if their system language is not supported
-				history.push('/IntroLanguageSelect', {
+				this._goToPage('/IntroLanguageSelect', {
 					onDone: this._afterLanguageSelect
 				});
 			});
@@ -104,7 +110,7 @@ export default class App extends React.Component {
 		if (agreedToEula && storedToken) {
 			this._afterLogin(storedToken);
 		} else {
-			history.push('/FacebookAuth', {
+			this._goToPage('/FacebookAuth', {
 				onDone: this._afterLogin,
 				eula: !agreedToEula
 			});
@@ -142,7 +148,7 @@ export default class App extends React.Component {
 		);
 
 		if (this.isFirstTime) {
-			history.push('/Tutorial');
+			this._goToPage('/Tutorial');
 		} else {
 			let { status } = await Permissions.askAsync(Permissions.LOCATION);
 			if (status === 'granted') {
@@ -154,7 +160,7 @@ export default class App extends React.Component {
 				this.assetPromises.categories,
 				this.assetPromises.centers
 			]);
-			history.push('/HomePage');
+			this._goToPage('/HomePage');
 		}
 	};
 
@@ -188,7 +194,7 @@ export default class App extends React.Component {
 			AsyncStorage.removeItem('token');
 			Alert.alert('Your Facebook session has expired!', 'Please log in again!');
 			AsyncStorage.getItem('eula').then(agreedToEula => {
-				history.push('/FacebookAuth', {
+				this._goToPage('/FacebookAuth', {
 					onDone: this._afterLogin,
 					eula: !agreedToEula
 				});
@@ -296,6 +302,11 @@ export default class App extends React.Component {
 				{ cancelable: false }
 			);
 		}
+	};
+
+	_goToPage = (page, state) => {
+		this.setState({ isLoading: false });
+		history.push(page, state);
 	};
 
 	render() {
