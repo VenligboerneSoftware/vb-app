@@ -5,6 +5,7 @@ import firebase from 'firebase';
 
 import PostOrCenterModal from './PostOrCenterModal';
 import Tabs from './Tabs.js';
+import history from '../utils/history';
 
 export default class HomePage extends React.Component {
 	constructor() {

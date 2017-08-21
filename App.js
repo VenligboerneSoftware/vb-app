@@ -7,13 +7,7 @@ import {
 	Text
 } from 'react-native';
 import { Route, Router, Switch } from 'react-router-native';
-import Expo, {
-	AppLoading,
-	Font,
-	Location,
-	Notifications,
-	Permissions
-} from 'expo';
+import Expo, { Font, Location, Notifications, Permissions } from 'expo';
 import React from 'react';
 import * as firebase from 'firebase';
 
@@ -24,7 +18,7 @@ import { setLanguage } from './src/utils/internationalization';
 import APIKeys from './src/utils/APIKeys.js';
 import FacebookAuth from './src/components/FacebookAuth.js';
 import HomePage from './src/components/HomePage.js';
-import LanguageSelect from './src/components/IntroLanguageSelect.js';
+import IntroLanguageSelect from './src/components/IntroLanguageSelect.js';
 import StartupPage from './src/components/StartupPage';
 import Tutorial from './src/components/Tutorial.js';
 import history from './src/utils/history';
@@ -36,29 +30,26 @@ console.ignoredYellowBox = ['Setting a timer'];
 export default class App extends React.Component {
 	constructor() {
 		super();
-		this.state = { isLoading: true };
+		this.state = {
+			displayText: 'Starting App'
+		};
 		console.log(Date.now(), 'Entering App.js');
+		this.assetPromises = {};
+		global.db = {};
+
+		// Initialize firebase before we do anything else
+		firebase.initializeApp(APIKeys.firebaseConfig);
+		this._startAssetLoad();
 
 		// Disallows font scaling on iOS
 		Text.defaultProps.allowFontScaling = false;
 
-		// Initialize firebase before we do anything else
-		firebase.initializeApp(APIKeys.firebaseConfig);
-
 		I18nManager.allowRTL(true);
 
-		this.assetPromises = {};
-		global.db = {
-			categories: {},
-			centers: {},
-			posts: {},
-			language: {},
-			languageOptions: {}
-		};
+		history.push('/StartupPage');
 	}
 
 	async componentDidMount() {
-		this._startAssetLoad(); // TODO do this sooner
 		console.log(Date.now(), 'Assets loading');
 		this.addInternetEventListeners();
 
@@ -89,7 +80,7 @@ export default class App extends React.Component {
 				});
 
 				// Ask the user if their system language is not supported
-				this._goToPage('/IntroLanguageSelect', {
+				history.push('/IntroLanguageSelect', {
 					onDone: this._afterLanguageSelect
 				});
 			});
@@ -110,7 +101,7 @@ export default class App extends React.Component {
 		if (agreedToEula && storedToken) {
 			this._afterLogin(storedToken);
 		} else {
-			this._goToPage('/FacebookAuth', {
+			history.push('/FacebookAuth', {
 				onDone: this._afterLogin,
 				eula: !agreedToEula
 			});
@@ -148,7 +139,7 @@ export default class App extends React.Component {
 		);
 
 		if (this.isFirstTime) {
-			this._goToPage('/Tutorial');
+			history.push('/Tutorial');
 		} else {
 			let { status } = await Permissions.askAsync(Permissions.LOCATION);
 			if (status === 'granted') {
@@ -160,7 +151,7 @@ export default class App extends React.Component {
 				this.assetPromises.categories,
 				this.assetPromises.centers
 			]);
-			this._goToPage('/HomePage');
+			history.push('/HomePage');
 		}
 	};
 
@@ -194,7 +185,7 @@ export default class App extends React.Component {
 			AsyncStorage.removeItem('token');
 			Alert.alert('Your Facebook session has expired!', 'Please log in again!');
 			AsyncStorage.getItem('eula').then(agreedToEula => {
-				this._goToPage('/FacebookAuth', {
+				history.push('/FacebookAuth', {
 					onDone: this._afterLogin,
 					eula: !agreedToEula
 				});
@@ -204,7 +195,6 @@ export default class App extends React.Component {
 
 	_startAssetLoad = () => {
 		// Language data must be loaded before language selection page
-		this.setState({ displayText: 'Loading Language Info' });
 		this.assetPromises.language = firebase
 			.database()
 			.ref('language')
@@ -212,6 +202,7 @@ export default class App extends React.Component {
 			.then(snap => {
 				global.db.language = snap.val();
 				console.log('Loaded language');
+				this.setState({ displayText: 'Loaded Language Info' });
 			});
 
 		this.assetPromises.languageOptions = firebase
@@ -226,22 +217,22 @@ export default class App extends React.Component {
 				console.log('Loaded languageOptions');
 			});
 
-		// Preload all of the images for icons and pins so they don't lag later.
-		// Note: Only works on hardware devices, not emulators.
-		this.setState({ displayText: 'Loading Icons' });
 		this.assetPromises.categories = firebase
 			.database()
 			.ref('categories')
 			.once('value')
-			.then(function(snap) {
+			.then(snap => {
 				global.db.categories = snap.val();
 				for (const iconName in global.db.categories) {
 					let icon = global.db.categories[iconName];
+					// Preload all of the images for icons and pins so they don't lag later.
+					// Note: Only works on hardware devices, not emulators.
 					Image.prefetch(icon.iconURL);
 					Image.prefetch(icon.pinURL);
 					icon.key = iconName;
 				}
 				console.log('Loaded icons');
+				this.setState({ displayText: 'Loaded Icons' });
 			});
 
 		// Queries firebase and downloads all center data from the firebase server.
@@ -260,7 +251,6 @@ export default class App extends React.Component {
 				console.log('Loaded centers');
 			});
 
-		this.setState({ displayText: 'Loading Fonts' });
 		this.assetPromises.fonts = Font.loadAsync([
 			Ionicons.font,
 			FontAwesome.font,
@@ -304,26 +294,21 @@ export default class App extends React.Component {
 		}
 	};
 
-	_goToPage = (page, state) => {
-		this.setState({ isLoading: false });
-		history.push(page, state);
-	};
-
 	render() {
-		if (this.state.isLoading) {
-			// Can't display loading text and works on iOS only
-			// return <AppLoading />;
-			return <StartupPage displayText={this.state.displayText} />;
-		}
-
 		return (
 			<Router history={history}>
 				<Switch>
-					<Route path="/HomePage" component={HomePage} />
-					<Route path="/Tutorial" component={Tutorial} />
-					<Route path="/FacebookAuth" component={FacebookAuth} />
-					<Route path="/StartupPage" component={StartupPage} />
-					<Route path="/IntroLanguageSelect" component={LanguageSelect} />
+					<Route
+						path="/StartupPage"
+						render={() => <StartupPage displayText={this.state.displayText} />}
+					/>
+					<Route path="/HomePage" render={() => <HomePage />} />
+					<Route path="/Tutorial" render={() => <Tutorial />} />
+					<Route path="/FacebookAuth" render={() => <FacebookAuth />} />
+					<Route
+						path="/IntroLanguageSelect"
+						render={() => <IntroLanguageSelect />}
+					/>
 				</Switch>
 			</Router>
 		);
