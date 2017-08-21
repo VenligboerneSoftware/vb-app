@@ -29,7 +29,8 @@ export default class Menu extends React.Component {
 
 	_logout = async () => {
 		await AsyncStorage.removeItem('token');
-		history.push('/facebook');
+		const agreedToEula = await AsyncStorage.getItem('eula');
+		history.push('/facebook', { eula: !agreedToEula });
 	};
 
 	_showModal = () => this.setState({ manageNotificationsModal: true });
