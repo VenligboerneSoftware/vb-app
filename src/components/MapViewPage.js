@@ -79,6 +79,7 @@ export default class MapViewPage extends React.Component {
 					}}
 					onRegionChangeComplete={mapRegion => {
 						this.state.mapRegion = mapRegion;
+						console.log(Date.now(), 'RegionChangeComplete');
 					}}
 					showsUserLocation={true}
 					userLocationAnnotationTitle={''}

@@ -21,6 +21,7 @@ console.ignoredYellowBox = ['Setting a timer'];
 export default class App extends React.Component {
 	constructor() {
 		super();
+		console.log(Date.now(), 'Entering App.js');
 	}
 
 	componentWillMount() {
