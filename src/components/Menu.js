@@ -29,7 +29,7 @@ export default class Menu extends React.Component {
 
 	_logout = async () => {
 		await AsyncStorage.removeItem('token');
-		history.push('/facebook');
+		history.push('/startup');
 	};
 
 	_showModal = () => this.setState({ manageNotificationsModal: true });
