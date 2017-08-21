@@ -51,7 +51,6 @@ export default class MapViewPage extends React.Component {
 		const postsOnMap = this.state.listData.filter(post =>
 			this._checkRegion(post, this.state.mapRegion)
 		);
-		console.log(this.state.listData.length, postsOnMap.length);
 		return (
 			<View style={styles.container}>
 				<PostOrCenterModal
