@@ -12,7 +12,7 @@
     "icon": "./assets/images/logo_icon_background.png",
     "loading": {
       "backgroundImage": "./assets/images/home_background.png",
-      "icon": "./assets/images/logo_icon.png",
+      "icon": "./assets/images/logo.png",
       "hideExponentText": true
     },
     "packagerOpts": {
