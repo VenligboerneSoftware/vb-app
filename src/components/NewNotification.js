@@ -224,6 +224,7 @@ export default class NewNotification extends React.Component {
 							style={{ width: '80%', alignSelf: 'center' }}
 							selectedValue={this.state.newSubscription.radius}
 							onValueChange={itemValue => this._setRadius(itemValue)}
+							mode="dropdown"
 						>
 							{[2.5, 5, 7.5, 10, 15, 20, 25, 40, 50].map(distance =>
 								<Picker.Item
