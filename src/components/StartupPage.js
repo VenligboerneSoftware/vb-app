@@ -1,8 +1,16 @@
-import { Notifications, Font } from 'expo';
-import { View, Image, StyleSheet, AsyncStorage, Alert } from 'react-native';
+import {
+	View,
+	Image,
+	StyleSheet,
+	AsyncStorage,
+	Alert,
+	Text
+} from 'react-native';
+import Expo, { Font, Location, Notifications, Permissions } from 'expo';
 import * as Progress from 'react-native-progress';
 import React from 'react';
 import * as firebase from 'firebase';
+
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
 import history from '../utils/history.js';
@@ -10,6 +18,10 @@ import history from '../utils/history.js';
 export default class StartupPage extends React.Component {
 	constructor(props) {
 		super(props);
+
+		this.state = {
+			displayText: ''
+		};
 
 		global.db = {
 			categories: {},
@@ -21,6 +33,7 @@ export default class StartupPage extends React.Component {
 	_loadDatabasePromises = async () => {
 		// Preload all of the images for icons and pins so they don't lag later.
 		// Note: Only works on hardware devices, not emulators.
+		this.setState({ displayText: 'Loading Icons' });
 		const iconPromise = firebase
 			.database()
 			.ref('categories')
@@ -85,6 +98,7 @@ export default class StartupPage extends React.Component {
 		// possibly helpful: https://developers.facebook.com/docs/facebook-login/access-tokens/debugging-and-error-handling
 
 		try {
+			this.setState({ displayText: 'Attempting Login' });
 			global.token = token;
 			return await this.authenticate(token);
 		} catch (error) {
@@ -97,6 +111,7 @@ export default class StartupPage extends React.Component {
 
 	async componentDidMount() {
 		// Language data must be loaded before language selection page
+		this.setState({ displayText: 'Loading Language Info' });
 		global.db.language = (await firebase
 			.database()
 			.ref('language')
@@ -110,6 +125,7 @@ export default class StartupPage extends React.Component {
 		});
 		console.log('Loaded language');
 
+		this.setState({ displayText: 'Loading Fonts' });
 		Font.loadAsync([
 			Ionicons.font,
 			FontAwesome.font,
@@ -158,6 +174,11 @@ export default class StartupPage extends React.Component {
 					'/picture?height=400'
 			);
 
+			let { status } = await Permissions.askAsync(Permissions.LOCATION);
+			if (status === 'granted') {
+				global.location = await Location.getCurrentPositionAsync({});
+			}
+
 			try {
 				await this._loadDatabasePromises();
 			} catch (error) {
@@ -190,7 +211,9 @@ export default class StartupPage extends React.Component {
 						source={require('../../assets/images/logo.png')}
 						style={styles.logo}
 					/>
-
+					<Text style={styles.displayText}>
+						{this.state.displayText}
+					</Text>
 					<View style={styles.loadingCircle}>
 						<Progress.Circle
 							size={60}
@@ -230,5 +253,11 @@ const styles = StyleSheet.create({
 	gradient: {
 		width: '100%',
 		height: '100%'
+	},
+	displayText: {
+		fontSize: 24,
+		color: '#fff',
+		alignSelf: 'center',
+		flex: 1
 	}
 });

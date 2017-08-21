@@ -74,18 +74,18 @@ export default class Profile extends React.Component {
 
 	_renderScene = route => {
 		const scenes = {
-			'1':
+			'1': (
 				<PostList
 					listData={route.navigationState.listData}
 					message={
 						route.navigationState.listData.length === 0
-							? <Text>
+							? <Text style={styles.empty}>
 									{translate('You have not created any posts.')}
 								</Text>
 							: null
 					}
 				/>
-			,
+			),
 			'2': <MyApplications />
 		};
 		return scenes[route.route.key];
@@ -144,5 +144,9 @@ const styles = StyleSheet.create({
 	profileName: {
 		fontSize: 22,
 		marginRight: 20
+	},
+	empty: {
+		alignSelf: 'center',
+		marginTop: 10
 	}
 });

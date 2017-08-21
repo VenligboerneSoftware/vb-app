@@ -99,6 +99,7 @@ export default class TopBar extends React.Component {
 						// Hide when clicking outside the menu
 						this.setState({ languageModalVisible: false });
 					}}
+					activeOpacity={1}
 				>
 					<LanguageMenu
 						onPress={() => {
@@ -123,7 +124,6 @@ export default class TopBar extends React.Component {
 				style={SharedStyles.fullscreen}
 			>
 				<SearchLocation
-					location={this.props.location}
 					onPress={(data, details) => {
 						if (this.props.onSelectLocation) {
 							// Give a default viewport. Mostly for 'Current location'

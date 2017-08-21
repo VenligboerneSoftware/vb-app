@@ -1,4 +1,5 @@
-import { ImagePicker, Location, Permissions } from 'expo';
+import { Calendar } from 'react-native-calendars';
+import { ImagePicker } from 'expo';
 import {
 	StyleSheet,
 	View,
@@ -9,7 +10,6 @@ import {
 	ScrollView,
 	TextInput
 } from 'react-native';
-import { Calendar } from 'react-native-calendars';
 import Modal from 'react-native-modal';
 import React from 'react';
 import * as firebase from 'firebase';
@@ -18,15 +18,15 @@ import geolib from 'geolib';
 import { FontAwesome } from '@expo/vector-icons';
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
 import Colors from 'venligboerneapp/src/styles/Colors.js';
-import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
 import Moment from 'moment';
+import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
 
+import { formatDate } from '../utils/dates';
 import MapWithCircle from './MapWithCircle.js';
 import SearchLocation from './SearchLocation.js';
 import TopBar from './TopBar.js';
 import mortonize from '../utils/mortonize';
 import pushNotify from '../utils/pushNotify';
-import { formatDate } from '../utils/dates';
 
 const initialState = {
 	newPost: {},
@@ -67,14 +67,6 @@ export default class NewPost extends React.Component {
 	componentWillReceiveProps(props) {
 		// Clear all the data every time we leave and come back
 		this.setState(initialState);
-	}
-
-	async componentDidMount() {
-		let { status } = await Permissions.askAsync(Permissions.LOCATION);
-		if (status === 'granted') {
-			const location = await Location.getCurrentPositionAsync({});
-			this.setState({ location: location });
-		}
 	}
 
 	/* _onIconPressed
@@ -460,9 +452,6 @@ export default class NewPost extends React.Component {
 							hide={() => {
 								this.setState({ searchModalVisible: false });
 							}}
-							location={
-								this.state.location !== null ? this.state.location.coords : null
-							}
 						/>
 					</Modal>
 				</TouchableOpacity>
