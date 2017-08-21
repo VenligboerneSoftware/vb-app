@@ -6,6 +6,7 @@ import {
 	NetInfo,
 	Text
 } from 'react-native';
+import { Route, Router, Switch } from 'react-router-native';
 import Expo, { Font, Location, Notifications, Permissions } from 'expo';
 import React from 'react';
 import * as firebase from 'firebase';
@@ -13,12 +14,14 @@ import * as firebase from 'firebase';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
 
+import { setLanguage } from './src/utils/internationalization';
 import APIKeys from './src/utils/APIKeys.js';
 import FacebookAuth from './src/components/FacebookAuth.js';
 import HomePage from './src/components/HomePage.js';
 import LanguageSelect from './src/components/IntroLanguageSelect.js';
 import StartupPage from './src/components/StartupPage';
 import Tutorial from './src/components/Tutorial.js';
+import history from './src/utils/history';
 
 // The warnings are caused by an issue in Firebase. Hopefully a future firebase
 // update will fix them.
@@ -56,17 +59,34 @@ export default class App extends React.Component {
 		Expo.Amplitude.initialize(APIKeys.Amplitude);
 		Expo.Amplitude.logEvent('Startup');
 
-		global.language = await AsyncStorage.getItem('language');
+		const language = await AsyncStorage.getItem('language');
 		await Promise.all([
 			this.assetPromises.language,
 			this.assetPromises.languageOptions
 		]);
-		if (global.language) {
+		if (language) {
 			this.isFirstTime = false;
-			this._afterLanguageSelect();
+			this._afterLanguageSelect(language);
 		} else {
 			this.isFirstTime = true;
-			this._goToStage('IntroLanguageSelect');
+
+			// Check if we support the system language. If so, use it automatically.
+			// TODO should we just always prompt the user?
+			Expo.Util.getCurrentLocaleAsync().then(locale => {
+				locale = locale.split('_')[0]; // Only get the language component
+				Object.values(global.db.languageOptions).forEach(lang => {
+					if (lang.code === locale) {
+						console.log('Automatically setting language to', lang);
+						setLanguage(lang.name);
+						this._afterLanguageSelect(lang.name);
+					}
+				});
+
+				// Ask the user if their system language is not supported
+				history.push('/IntroLanguageSelect', {
+					onDone: this._afterLanguageSelect
+				});
+			});
 		}
 	}
 
@@ -77,13 +97,17 @@ export default class App extends React.Component {
 		);
 	}
 
-	_afterLanguageSelect = async () => {
+	_afterLanguageSelect = async language => {
+		global.language = language;
 		const storedToken = await AsyncStorage.getItem('token');
-		this.agreedToEula = await AsyncStorage.getItem('eula');
-		if (this.agreedToEula && storedToken) {
+		const agreedToEula = await AsyncStorage.getItem('eula');
+		if (agreedToEula && storedToken) {
 			this._afterLogin(storedToken);
 		} else {
-			this._goToStage('FacebookAuth');
+			history.push('/FacebookAuth', {
+				onDone: this._afterLogin,
+				eula: !agreedToEula
+			});
 		}
 	};
 
@@ -118,7 +142,7 @@ export default class App extends React.Component {
 		);
 
 		if (this.isFirstTime) {
-			this._goToStage('Tutorial');
+			history.push('/Tutorial');
 		} else {
 			let { status } = await Permissions.askAsync(Permissions.LOCATION);
 			if (status === 'granted') {
@@ -130,14 +154,8 @@ export default class App extends React.Component {
 				this.assetPromises.categories,
 				this.assetPromises.centers
 			]);
-			this._goToStage('HomePage');
+			history.push('/HomePage');
 		}
-	};
-
-	_goToStage = stage => {
-		console.log(Date.now(), 'Going to startup stage', stage);
-		this.setState({ startupStage: stage });
-		// TODO log in Amplitude
 	};
 
 	// Function: authenticate
@@ -169,7 +187,12 @@ export default class App extends React.Component {
 			console.error('Facebook authentication error', error);
 			AsyncStorage.removeItem('token');
 			Alert.alert('Your Facebook session has expired!', 'Please log in again!');
-			this._goToStage('FacebookAuth');
+			AsyncStorage.getItem('eula').then(agreedToEula => {
+				history.push('/FacebookAuth', {
+					onDone: this._afterLogin,
+					eula: !agreedToEula
+				});
+			});
 		});
 	};
 
@@ -276,22 +299,22 @@ export default class App extends React.Component {
 	};
 
 	render() {
-		switch (this.state.startupStage) {
-			case 'IntroLanguageSelect':
-				return <LanguageSelect onDone={this._afterLanguageSelect} />;
-			case 'FacebookAuth':
-				return (
-					<FacebookAuth
-						onDone={this._afterLogin}
-						agreedToEula={this.agreedToEula}
-					/>
-				);
-			case 'Tutorial':
-				return <Tutorial onDone={this._goToStage.bind(this, 'HomePage')} />;
-			case 'HomePage':
-				return <HomePage />;
-			default:
-				return <StartupPage displayText={this.state.displayText} />;
+		if (this.state.isLoading) {
+			// Can't display loading text and works on iOS only
+			// return <AppLoading />;
+			return <StartupPage displayText={this.state.displayText} />;
 		}
+
+		return (
+			<Router history={history}>
+				<Switch>
+					<Route path="/HomePage" component={HomePage} />
+					<Route path="/Tutorial" component={Tutorial} />
+					<Route path="/FacebookAuth" component={FacebookAuth} />
+					<Route path="/StartupPage" component={StartupPage} />
+					<Route path="/IntroLanguageSelect" component={LanguageSelect} />
+				</Switch>
+			</Router>
+		);
 	}
 }

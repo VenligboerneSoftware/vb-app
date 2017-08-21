@@ -30,7 +30,10 @@ export default class Menu extends React.Component {
 	_logout = async () => {
 		await AsyncStorage.removeItem('token');
 		const agreedToEula = await AsyncStorage.getItem('eula');
-		history.push('/facebook', { eula: !agreedToEula });
+		history.push('/FacebookAuth', {
+			onDone: history.push.bind(this, '/HomePage'),
+			eula: !agreedToEula
+		});
 	};
 
 	_showModal = () => this.setState({ manageNotificationsModal: true });
@@ -94,7 +97,7 @@ export default class Menu extends React.Component {
 						},
 						{
 							title: 'Tutorial',
-							onPress: () => history.push('/tutorial')
+							onPress: () => history.push('/Tutorial')
 						}
 					].map(button =>
 						<View key={button.title} style={{ width: '100%' }}>

@@ -1,10 +1,11 @@
-import Swiper from 'react-native-swiper';
-
 import { StyleSheet, TouchableOpacity, View, Text, Image } from 'react-native';
 import React, { Component } from 'react';
-import history from '../utils/history.js';
-import Colors from '../styles/Colors';
+import Swiper from 'react-native-swiper';
+
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
+
+import Colors from '../styles/Colors';
+import history from '../utils/history';
 
 export default class ExitBar extends Component {
 	constructor(props) {
@@ -20,8 +21,9 @@ export default class ExitBar extends Component {
 		this.setState({ isLastSlide: index === numSlides - 1 ? true : false });
 	};
 
-	_goHome = () => {
-		history.push('/homepage');
+	_finishTutorial = () => {
+		console.log('Done with tutorial');
+		history.push('/HomePage');
 	};
 
 	render() {
@@ -72,7 +74,7 @@ export default class ExitBar extends Component {
 				</Swiper>
 				<TouchableOpacity
 					style={this.state.isLastSlide ? styles.doneButton : styles.skipButton}
-					onPress={this._goHome}
+					onPress={this._finishTutorial}
 				>
 					<Text
 						style={

@@ -8,9 +8,9 @@ import {
 	View
 } from 'react-native';
 import Exponent, { WebBrowser } from 'expo';
+import Modal from 'react-native-modal';
 import React from 'react';
 import * as firebase from 'firebase';
-import Modal from 'react-native-modal';
 
 import { FontAwesome } from '@expo/vector-icons';
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
@@ -18,7 +18,6 @@ import APIKeys from 'venligboerneapp/src/utils/APIKeys.js';
 
 import Colors from '../styles/Colors';
 import ExitBar from './ExitBar';
-import history from '../utils/history.js';
 
 export default class FacebookAuth extends React.Component {
 	constructor(props) {
@@ -82,7 +81,7 @@ export default class FacebookAuth extends React.Component {
 						await AsyncStorage.setItem('eula', 'true');
 					}
 
-					this.props.onDone(token);
+					this.props.location.state.onDone(token);
 				} else if (type === 'cancel') {
 					// Don't let the user close it
 				} else {

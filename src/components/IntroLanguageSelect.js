@@ -15,7 +15,6 @@ import {
 	setLanguage
 } from '../utils/internationalization.js';
 import Colors from '../styles/Colors';
-import history from '../utils/history.js';
 
 export default class IntroLanguageSelect extends React.Component {
 	constructor() {
@@ -24,19 +23,6 @@ export default class IntroLanguageSelect extends React.Component {
 			testLanguages: getAvailableLanguages(),
 			currentLanguageIndex: 0
 		};
-
-		// Check if we support the system language. If so, use it automatically.
-		Expo.Util.getCurrentLocaleAsync().then(locale => {
-			locale = locale.split('_')[0]; // Only get the language component
-			Object.values(global.db.languageOptions).forEach(async language => {
-				if (language.code === locale) {
-					console.log('Automatically setting language to', global.language);
-					setLanguage(language.name);
-					global.language = language.name;
-					history.goBack();
-				}
-			});
-		});
 	}
 
 	componentDidMount() {
@@ -75,7 +61,7 @@ export default class IntroLanguageSelect extends React.Component {
 							onPressIn={async () => {
 								setLanguage(item.English);
 							}}
-							onPressOut={this.props.onDone}
+							onPressOut={this.props.location.state.onDone}
 							style={styles.buttonContainer}
 						>
 							<Image
