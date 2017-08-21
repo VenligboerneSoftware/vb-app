@@ -24,8 +24,7 @@ export default class MyApplications extends React.Component {
 		this.state = {
 			isModalVisible: false,
 			selectedApp: null,
-			applications: {},
-			applicationsLoaded: false
+			applications: {}
 		};
 		this._loadApplications();
 	}
@@ -58,8 +57,7 @@ export default class MyApplications extends React.Component {
 			) {
 				this.applications[applicationKey].status = snap.val();
 				this.setState({
-					applications: this.applications,
-					applicationsLoaded: true
+					applications: this.applications
 				});
 			}
 		});
@@ -152,44 +150,40 @@ export default class MyApplications extends React.Component {
 						app={this.state.selectedApp}
 					/>
 				</Modal>
-				{this.state.applicationsLoaded
-					? Object.values(this.state.applications).length > 0
-						? <FlatList
-								data={Object.values(this.state.applications).sort(
-									this._alphabetize
-								)}
-								ItemSeparatorComponent={() =>
-									<View style={SharedStyles.divider} />}
-								renderItem={({ item }) =>
-									<TouchableOpacity
-										style={styles.appRow}
-										key={item.key}
-										onPress={() => {
-											this._showModal(item);
-										}}
-									>
-										<EventIcon item={item.postData} />
+				{Object.values(this.state.applications).length > 0
+					? <FlatList
+							data={Object.values(this.state.applications).sort(
+								this._alphabetize
+							)}
+							ItemSeparatorComponent={() =>
+								<View style={SharedStyles.divider} />}
+							renderItem={({ item }) =>
+								<TouchableOpacity
+									style={styles.appRow}
+									key={item.key}
+									onPress={() => {
+										this._showModal(item);
+									}}
+								>
+									<EventIcon item={item.postData} />
 
-										<View style={styles.appInfo}>
-											<Text style={styles.title}>
-												{item.postData.title}
-											</Text>
+									<View style={styles.appInfo}>
+										<Text style={styles.title}>
+											{item.postData.title}
+										</Text>
 
-											<ApplicationStatus status={item.status} modal={false} />
+										<ApplicationStatus status={item.status} modal={false} />
 
-											<Text style={styles.message}>
-												{translate('Your Application') + ':'} {item.message}
-											</Text>
-										</View>
-									</TouchableOpacity>}
-							/>
-						: <View style={styles.empty}>
-								<Text>
-									{translate('You have not applied to any events.')}
-								</Text>
-							</View>
-					: <View style={{ justifyContent: 'center', marginTop: 10 }}>
-							<ActivityIndicator animating={true} size={'large'} />
+										<Text style={styles.message}>
+											{translate('Your Application') + ':'} {item.message}
+										</Text>
+									</View>
+								</TouchableOpacity>}
+						/>
+					: <View style={styles.empty}>
+							<Text>
+								{translate('You have not applied to any events.')}
+							</Text>
 						</View>}
 			</View>
 		);
