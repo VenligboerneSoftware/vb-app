@@ -48,6 +48,10 @@ export default class MapViewPage extends React.Component {
 		post.longitude < region.longitude + region.longitudeDelta;
 
 	render() {
+		const postsOnMap = this.state.listData.filter(post =>
+			this._checkRegion(post, this.state.mapRegion)
+		);
+		console.log(this.state.listData.length, postsOnMap.length);
 		return (
 			<View style={styles.container}>
 				<PostOrCenterModal
@@ -55,8 +59,7 @@ export default class MapViewPage extends React.Component {
 					post={this.state.selectedPost}
 					hide={this._hideModal}
 				/>
-				{console.log(this.props.listData)}
-				{this.props.listData.length === 0 ? this.props.message : null}
+				{postsOnMap.length === 0 ? this.props.message : null}
 				<MapView
 					style={styles.map}
 					region={this.state.mapRegion}
@@ -83,22 +86,20 @@ export default class MapViewPage extends React.Component {
 					pitchEnabled={false}
 				>
 					{// Render post and center icons
-					this.state.listData
-						.filter(post => this._checkRegion(post, this.state.mapRegion))
-						.map(marker =>
-							<MapView.Marker
-								key={marker.key}
-								coordinate={marker}
-								onPress={this._showModal.bind(this, marker)}
-								image={{
-									uri: global.db.categories[marker.icon].pinURL
-								}}
-								style={{
-									/* keep marker order from flickering (Android only) */
-									zIndex: marker.latitude
-								}}
-							/>
-						)}
+					postsOnMap.map(marker =>
+						<MapView.Marker
+							key={marker.key}
+							coordinate={marker}
+							onPress={this._showModal.bind(this, marker)}
+							image={{
+								uri: global.db.categories[marker.icon].pinURL
+							}}
+							style={{
+								/* keep marker order from flickering (Android only) */
+								zIndex: marker.latitude
+							}}
+						/>
+					)}
 				</MapView>
 			</View>
 		);
