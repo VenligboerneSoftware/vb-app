@@ -258,15 +258,6 @@ export default class App extends React.Component {
 				Georgia: require('venligboerneapp/assets/fonts/Georgia.ttf')
 			}
 		]);
-
-		// TODO how do I catch this?
-		// console.warn('Database load error', error);
-		// if (error.code === 'PERMISSION_DENIED') {
-		// 	alert(
-		// 		'You have been banned by an administrator for inappropriate use of the app. Please email venligboerneapp@gmail.com for more details.'
-		// 	);
-		// }
-		// return;
 	};
 
 	addInternetEventListeners = () => {

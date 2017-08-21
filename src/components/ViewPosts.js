@@ -8,6 +8,7 @@ import FilterBar from './FilterBar.js';
 import MapViewPage from './MapViewPage';
 import PostList from './PostList';
 import TopBar from './TopBar.js';
+import history from '../utils/history';
 
 export default class ViewPosts extends React.Component {
 	constructor() {
@@ -55,15 +56,26 @@ export default class ViewPosts extends React.Component {
 	// current posts table in Firebase, with updates.
 	_syncFriendliness = () => {
 		// TODO make this listener more efficient with child_changed
-		firebase.database().ref('posts').on('value', async posts => {
-			this.posts = posts.val();
-			for (var key in this.posts) {
-				this.posts[key].key = key;
-				// Default to an empty object if there are no applications
-				this.posts[key].applications = this.posts[key].applications || {};
+		firebase.database().ref('posts').on(
+			'value',
+			async posts => {
+				this.posts = posts.val();
+				for (var key in this.posts) {
+					this.posts[key].key = key;
+					// Default to an empty object if there are no applications
+					this.posts[key].applications = this.posts[key].applications || {};
+				}
+				this._getPosts();
+			},
+			error => {
+				console.warn('Database load error', error);
+				if (error.code === 'PERMISSION_DENIED') {
+					alert(
+						'You have been banned by an administrator for inappropriate use of the app. Please email venligboerneapp@gmail.com for more details.'
+					);
+				}
 			}
-			this._getPosts();
-		});
+		);
 	};
 
 	_setFilter = filter => {
