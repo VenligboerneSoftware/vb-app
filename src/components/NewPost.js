@@ -350,14 +350,9 @@ export default class NewPost extends React.Component {
 			console.log('Notifying', tokens, 'of this new post', event);
 			if (tokens.length > 0) {
 				// Notify all of the users who match the subscription
-				pushNotify(
-					tokens,
-					'New post in your area!',
-					'title' + ':' + event.title,
-					{
-						url: '+post/' + event.key
-					}
-				);
+				pushNotify(tokens, 'New post in your area!', 'title: ' + event.title, {
+					url: '+post/' + event.key
+				});
 			}
 		});
 	};
