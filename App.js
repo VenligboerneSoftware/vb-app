@@ -146,7 +146,7 @@ export default class App extends React.Component {
 				global.location = await Location.getCurrentPositionAsync({});
 			}
 
-			// When login succeeds and the databse is loaded, proceed to the homepage
+			// When login succeeds and the database is loaded, proceed to the homepage
 			await Promise.all([
 				this.assetPromises.categories,
 				this.assetPromises.centers
