@@ -8,7 +8,8 @@ import {
 	Image,
 	ScrollView,
 	Alert,
-	Picker
+	Picker,
+	I18nManager
 } from 'react-native';
 import ExitBar from './ExitBar';
 import Colors from '../styles/Colors';
@@ -18,7 +19,7 @@ import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
 import Modal from 'react-native-modal';
 import SearchLocation from './SearchLocation.js';
 
-import { FontAwesome, Entypo } from '@expo/vector-icons';
+import { FontAwesome, Entypo, Ionicons } from '@expo/vector-icons';
 
 export default class NewNotification extends React.Component {
 	constructor(props) {
@@ -147,7 +148,7 @@ export default class NewNotification extends React.Component {
 							.database()
 							.ref('subscriptions')
 							.push(this.state.newSubscription);
-						this.props.hide();
+						this.props.back();
 					}
 				}
 			]
@@ -157,6 +158,12 @@ export default class NewNotification extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
+				<TouchableOpacity onPress={this.props.back} style={SharedStyles.back}>
+					<Ionicons
+						name={I18nManager.isRTL ? 'ios-arrow-forward' : 'ios-arrow-back'}
+						size={42}
+					/>
+				</TouchableOpacity>
 				<ExitBar title={'Create New Notification'} hide={this.props.hide} />
 
 				{/* Icon Selection */}

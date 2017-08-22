@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
 		backgroundColor: 'transparent'
 	},
 	logo: {
-		width: 200,
-		marginTop: '40%',
+		width: '90%',
+		marginTop: '20%',
 		flex: 3.5,
 		resizeMode: 'contain',
 		alignSelf: 'center'

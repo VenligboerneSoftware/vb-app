@@ -497,7 +497,7 @@ export default class NewPost extends React.Component {
 							</View>
 						: <Text>
 								{this.state.datepickerVisible
-									? translate('Choose Date')
+									? translate('Choose Date Below')
 									: translate('Optional Date')}
 							</Text>}
 				</TouchableOpacity>
