@@ -297,10 +297,8 @@ export default class NewPost extends React.Component {
 			this._notifySubscribers(newPost);
 		}
 
-		if (this.state.base64) {
-			// Upload the image to Firebase under the same ID as the post
-			firebase.database().ref('images').child(eventKey).set(this.state.base64);
-		}
+		// Upload the image to Firebase under the same ID as the post
+		firebase.database().ref('images').child(eventKey).set(this.state.base64);
 
 		// Switch to MapViewPage and zoom in to new event
 		global.changeTab('Map', () => {

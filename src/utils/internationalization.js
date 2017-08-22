@@ -140,9 +140,8 @@ export function setLanguage(language) {
 	AsyncStorage.setItem('language', global.language);
 
 	const shouldBeRTL = global.db.languageOptions[global.language].isRTL;
+	I18nManager.forceRTL(shouldBeRTL);
 	if (shouldBeRTL !== I18nManager.isRTL) {
-		I18nManager.forceRTL(shouldBeRTL);
-
 		// Wait a bit to display the alert. Showing an alert in the middle of a RTL
 		// switch crashes on iOS.
 		setTimeout(() => {
