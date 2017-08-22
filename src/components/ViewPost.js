@@ -138,11 +138,20 @@ export default class ViewPost extends Component {
 	// the 'Apply Now!' button
 	_applyPressed = () => {
 		if (this.state.applyClicked) {
-			this.submit();
-			this.props.hide();
-			global.changeTab('Me', () => {
-				global.profileIndex(1);
-			});
+			if (this.application === '') {
+				Alert.alert(
+					translate('Please type a message to the event owner'),
+					translate('Responses cannot be blank'),
+					[{ text: translate('Ok') }],
+					{ cancelable: false }
+				);
+			} else {
+				this.submit();
+				this.props.hide();
+				global.changeTab('Me', () => {
+					global.profileIndex(1);
+				});
+			}
 		} else {
 			this.setState({ applyClicked: true });
 		}
