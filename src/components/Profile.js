@@ -18,7 +18,7 @@ export default class Profile extends React.Component {
 			index: 0,
 			routes: [
 				{ key: '1', title: translate('My Posts') },
-				{ key: '2', title: translate('My Applications') }
+				{ key: '2', title: translate('My Replies') }
 			],
 			listData: []
 		};
@@ -28,7 +28,7 @@ export default class Profile extends React.Component {
 			this.setState({
 				routes: [
 					{ key: '1', title: translate('My Posts') },
-					{ key: '2', title: translate('My Applications') }
+					{ key: '2', title: translate('My Replies') }
 				]
 			});
 		};
@@ -60,7 +60,7 @@ export default class Profile extends React.Component {
 	_handleIndexChange = index => {
 		this.setState({ index: index });
 		Expo.Amplitude.logEventWithProperties('Switching My Profile tab', {
-			to: index === 1 ? 'My Posts' : 'My Applications'
+			to: index === 1 ? 'My Posts' : 'My Replies'
 		});
 	};
 
@@ -74,7 +74,7 @@ export default class Profile extends React.Component {
 
 	_renderScene = route => {
 		const scenes = {
-			'1':
+			'1': (
 				<PostList
 					listData={route.navigationState.listData}
 					message={
@@ -85,7 +85,7 @@ export default class Profile extends React.Component {
 							: null
 					}
 				/>
-			,
+			),
 			'2': <MyApplications />
 		};
 		return scenes[route.route.key];

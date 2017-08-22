@@ -213,7 +213,7 @@ const slides = [
 		num: 6,
 		image: require('../../assets/images/tutorial/6.png'),
 		textBig: '',
-		textSmall: 'You can apply to a post to contact the owner'
+		textSmall: 'You can reply to a post to contact the owner'
 	},
 	{
 		num: 7,
@@ -255,8 +255,8 @@ const slides = [
 	{
 		num: 13,
 		image: require('../../assets/images/tutorial/13.png'),
-		textBig: 'This is the My Applications page of your profile',
-		textSmall: "Here you can see all the posts that you've applied to"
+		textBig: 'This is the My Replies page of your profile',
+		textSmall: "Here you can see all the posts that you've replied to"
 	},
 	{
 		num: 14,

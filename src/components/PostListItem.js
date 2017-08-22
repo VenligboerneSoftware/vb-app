@@ -56,7 +56,7 @@ const ApplicationCount = ({ applications }) => {
 	return (
 		<Text style={styles.numAppText}>
 			{numApplications}{' '}
-			{translate(numApplications === 1 ? 'Application' : 'Applications')}
+			{translate(numApplications === 1 ? 'Response' : 'Responses')}
 		</Text>
 	);
 };

@@ -26,8 +26,8 @@ export default class OwnerViewApplicant extends React.Component {
 	acceptApplicant = () => {
 		//TODO: translate
 		Alert.alert(
-			'Are you sure you want to accept this application?',
-			'This applicant will be able to view your Facebook Profile',
+			'Are you sure you want to accept?',
+			'This person will be able to view your Facebook Profile',
 			[
 				{ text: translate('No') },
 				{
@@ -44,8 +44,8 @@ export default class OwnerViewApplicant extends React.Component {
 	rejectApplicant = () => {
 		//TODO: translate
 		Alert.alert(
-			'Are you sure you want to reject this application?',
-			'This applicant will not be able to contact you',
+			'Are you sure you want to reject?',
+			'This person will not be able to contact you',
 			[
 				{ text: translate('No') },
 				{
@@ -89,12 +89,12 @@ export default class OwnerViewApplicant extends React.Component {
 						<View style={SharedStyles.divider} />
 
 						<Text style={SharedStyles.message}>
-							{translate('Application') + ':'} {this.props.application.message}
+							{translate('Response') + ':'} {this.props.application.message}
 						</Text>
 
 						<View style={SharedStyles.divider} />
 
-						{this.props.application.status === 'Applied'
+						{this.props.application.status === 'Waiting For Response'
 							? <View style={styles.acceptRejectContainer}>
 									<TouchableOpacity
 										style={styles.acceptRejectButton}
@@ -134,7 +134,7 @@ export default class OwnerViewApplicant extends React.Component {
 				</ScrollView>
 				<FacebookContactButton
 					owner={this.props.application.applicantInfo}
-					description={'Contact Applicant'}
+					description={'Contact Responder'}
 				/>
 			</View>
 		);
