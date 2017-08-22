@@ -36,7 +36,7 @@ export default class ApplicationStatus extends React.Component {
 							<Text
 								style={{
 									color: {
-										Applied: 'orange',
+										'Waiting For Response': 'orange',
 										Accepted: 'green',
 										Rejected: 'red'
 									}[this.props.status]
