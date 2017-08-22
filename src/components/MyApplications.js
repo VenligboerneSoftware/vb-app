@@ -174,14 +174,14 @@ export default class MyApplications extends React.Component {
 										<ApplicationStatus status={item.status} modal={false} />
 
 										<Text style={styles.message}>
-											{translate('Your Application') + ':'} {item.message}
+											{translate('Your Reply') + ':'} {item.message}
 										</Text>
 									</View>
 								</TouchableOpacity>}
 						/>
 					: <View style={styles.empty}>
 							<Text>
-								{translate('You have not applied to any events.')}
+								{translate('You have not replied to any posts.')}
 							</Text>
 						</View>}
 			</View>

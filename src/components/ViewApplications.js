@@ -84,7 +84,7 @@ export default class ViewApplications extends React.Component {
 					console.log('Push notifying', snap.val());
 					pushNotify(
 						snap.val(),
-						'Your application to an event has been accepted!',
+						'Your reply to an event has been accepted!',
 						'title: ' + application.post.title,
 						{
 							type: 'applicantAccepted',
@@ -148,7 +148,7 @@ export default class ViewApplications extends React.Component {
 		return this.state.applicationsLoaded
 			? listData.length === 0
 				? <Text style={{ alignSelf: 'center', marginTop: 10 }}>
-						{translate('There are no applications to display')}
+						{translate('There are no responses to display')}
 					</Text>
 				: //actually render flatlist
 					<FlatList
@@ -171,17 +171,14 @@ export default class ViewApplications extends React.Component {
 					appStatusChange={this.changeApplicantStatus}
 				/>
 			: <View style={styles.container}>
-					<ExitBar
-						hide={this.props.hide}
-						title={translate('View Applicants')}
-					/>
+					<ExitBar hide={this.props.hide} title={translate('View Responses')} />
 					<Text style={styles.title}>
 						{this.props.post.title}
 					</Text>
 
 					<View style={styles.applicantsTextStyle}>
 						<Text style={styles.applicantsText}>
-							{'APPLICANTS' /* TODO translate */}
+							{translate('RESPONDERS') /* TODO translate */}
 						</Text>
 					</View>
 					<View style={SharedStyles.divider} />

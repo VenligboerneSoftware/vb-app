@@ -109,7 +109,7 @@ export default class ViewPost extends Component {
 			applicant: firebase.auth().currentUser.uid,
 			post: this.props.post.key,
 			message: this.application,
-			status: 'Applied'
+			status: 'Waiting For Response'
 		});
 		this.setState({ alreadySubmitted: true });
 
@@ -120,7 +120,7 @@ export default class ViewPost extends Component {
 				console.log('Push notifying', snap.val());
 				pushNotify(
 					snap.val(),
-					'New application to your event!',
+					'New reply to your event!',
 					'title: ' + this.props.post.title,
 					{
 						type: 'applicationSent',
@@ -215,9 +215,9 @@ export default class ViewPost extends Component {
 				>
 					<Text style={styles.applyText}>
 						{this.isOwner
-							? translate('View Applicants') + ` (${numApplications})`
+							? translate('View Responses') + ` (${numApplications})`
 							: translate(
-									this.state.applyClicked ? 'Submit Application' : 'Apply Now!'
+									this.state.applyClicked ? 'Submit Reply' : 'Reply Now!'
 								)}
 					</Text>
 				</TouchableOpacity>

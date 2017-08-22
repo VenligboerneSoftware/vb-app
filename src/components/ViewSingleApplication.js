@@ -33,7 +33,7 @@ export default class ViewSingleApplication extends React.Component {
 	_deleteApp = () => {
 		console.log('Attempting to delete item');
 		Alert.alert(
-			translate('Are you sure you want to remove this application?'),
+			translate('Are you sure you want to remove this reply?'),
 			translate('This cannot be undone'),
 			[
 				{ text: translate('No') },
@@ -63,7 +63,7 @@ export default class ViewSingleApplication extends React.Component {
 						<View style={SharedStyles.divider} />
 
 						<Text style={SharedStyles.message}>
-							{translate('Your Application') + ':'} {this.props.app.message}
+							{translate('Your Reply') + ':'} {this.props.app.message}
 						</Text>
 						<View style={SharedStyles.divider} />
 						<Time dates={this.props.app.postData.dates} />
@@ -82,7 +82,7 @@ export default class ViewSingleApplication extends React.Component {
 						>
 							<FontAwesome name={'trash-o'} size={40} />
 							<Text style={styles.deleteText}>
-								{translate('Delete Application')}
+								{translate('Delete Reply')}
 							</Text>
 						</TouchableOpacity>
 					</View>
