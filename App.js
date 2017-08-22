@@ -293,13 +293,10 @@ export default class App extends React.Component {
 						path="/StartupPage"
 						render={() => <StartupPage displayText={this.state.displayText} />}
 					/>
-					<Route path="/HomePage" render={() => <HomePage />} />
-					<Route path="/Tutorial" render={() => <Tutorial />} />
-					<Route path="/FacebookAuth" render={() => <FacebookAuth />} />
-					<Route
-						path="/IntroLanguageSelect"
-						render={() => <IntroLanguageSelect />}
-					/>
+					<Route path="/HomePage" component={HomePage} />
+					<Route path="/Tutorial" component={Tutorial} />
+					<Route path="/FacebookAuth" component={FacebookAuth} />
+					<Route path="/IntroLanguageSelect" component={IntroLanguageSelect} />
 				</Switch>
 			</Router>
 		);

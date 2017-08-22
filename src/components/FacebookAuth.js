@@ -197,7 +197,7 @@ export default class FacebookAuth extends React.Component {
 							}}
 						>
 							{translate(
-								'In order to create or apply to posts, you must log in to Facebook for security reasons.  Your Facebook profile and information will only be visible to the people you choose to show it to. If you reply to an post, your profile will be visible to the post owner. If someone responds to your event, once you accept, they will be able to see your profile.'
+								'In order to create or reply to posts, you must log in to Facebook for security reasons.  Your Facebook profile and information will only be visible to the people you choose to show it to. If you reply to an post, your profile will be visible to the post owner. If someone responds to your event, once you accept, they will be able to see your profile.'
 							)}
 						</Text>
 					</View>
