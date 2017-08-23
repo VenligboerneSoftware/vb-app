@@ -56,6 +56,9 @@ export function translate(word, language) {
 		if (translation.charAt(0) === '~') {
 			translation = translation.slice(1);
 		}
+		firebase.database().ref('language').child(key).update({
+			'.priority': Date.now()
+		});
 		return translation;
 	}
 }
@@ -147,7 +150,7 @@ export function setLanguage(language) {
 		setTimeout(() => {
 			alert(
 				translate(
-					'You need to restart the app to change between right to left and left to right languages.'
+					'Please restart the app to see proper formatting for the language you selected'
 				)
 			);
 		}, 1000);
