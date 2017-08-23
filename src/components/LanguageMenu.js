@@ -1,4 +1,11 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+	Image,
+	Platform,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View
+} from 'react-native';
 import React from 'react';
 
 import Colors from 'venligboerneapp/src/styles/Colors.js';
@@ -59,7 +66,7 @@ const styles = StyleSheet.create({
 	languageDropdown: {
 		backgroundColor: Colors.grey.light,
 		position: 'absolute',
-		top: 35,
+		top: Platform.OS === 'ios' ? 60 : 35,
 		right: 0,
 		width: 200,
 		borderRadius: 5,
