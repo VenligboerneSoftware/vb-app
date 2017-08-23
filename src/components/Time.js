@@ -12,8 +12,12 @@ export default class Time extends Component {
 	render() {
 		return (
 			<View style={styles.time}>
-				<FontAwesome name={'calendar'} size={35} style={{ marginRight: 10 }} />
-				<Text style={{ marginLeft: 10 }}>
+				<FontAwesome
+					name={'calendar'}
+					size={35}
+					style={{ flex: 1, marginRight: 10, marginLeft: 10 }}
+				/>
+				<Text style={{ flex: 6 }}>
 					{this.props.dates
 						? sortedDatesString(this.props.dates)
 						: translate('Date Not Specified')}
@@ -25,6 +29,7 @@ export default class Time extends Component {
 
 const styles = StyleSheet.create({
 	time: {
+		flex: 1,
 		flexDirection: 'row',
 		justifyContent: 'center',
 		padding: 15,
