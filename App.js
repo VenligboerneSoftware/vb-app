@@ -53,8 +53,8 @@ export default class App extends React.Component {
 		console.log(Date.now(), 'Assets loading');
 		this.addInternetEventListeners();
 
-		Expo.Amplitude.initialize(APIKeys.Amplitude);
-		Expo.Amplitude.logEvent('Startup');
+		// Expo.Amplitude.initialize(APIKeys.Amplitude);
+		// Expo.Amplitude.logEvent('Startup');
 
 		const language = await AsyncStorage.getItem('language');
 		await Promise.all([
@@ -116,8 +116,8 @@ export default class App extends React.Component {
 		let userProfile = firebase.auth().currentUser;
 		userProfile = JSON.parse(JSON.stringify(userProfile));
 		userProfile.language = global.language;
-		Expo.Amplitude.setUserId(userProfile.uid);
-		Expo.Amplitude.setUserProperties(userProfile);
+		// Expo.Amplitude.setUserId(userProfile.uid);
+		// Expo.Amplitude.setUserProperties(userProfile);
 
 		// Add the users push token to the database so they can be notified about events.
 		// Get the token that uniquely identifies this device.
@@ -143,14 +143,15 @@ export default class App extends React.Component {
 			global.location = await Location.getCurrentPositionAsync({});
 		}
 
+		await Promise.all([
+			this.assetPromises.categories,
+			this.assetPromises.centers
+		]);
+
+		// When login succeeds and the database is loaded, proceed
 		if (this.isFirstTime) {
 			history.push('/Tutorial');
 		} else {
-			// When login succeeds and the database is loaded, proceed to the homepage
-			await Promise.all([
-				this.assetPromises.categories,
-				this.assetPromises.centers
-			]);
 			history.push('/HomePage');
 		}
 	};
