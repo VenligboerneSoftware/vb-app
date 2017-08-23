@@ -30,7 +30,7 @@ export default class Menu extends React.Component {
 		await AsyncStorage.removeItem('token');
 		const agreedToEula = await AsyncStorage.getItem('eula');
 		history.push('/FacebookAuth', {
-			onDone: history.push.bind(this, '/HomePage'),
+			onDone: history.push.bind(this, '/HomePage', {}),
 			eula: !agreedToEula
 		});
 	};
