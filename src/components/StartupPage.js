@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	loadingCircle: {
-		width: '95%',
 		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center',

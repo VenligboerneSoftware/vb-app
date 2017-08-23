@@ -150,7 +150,7 @@ export function setLanguage(language) {
 		setTimeout(() => {
 			alert(
 				translate(
-					'You need to restart the app to change between right to left and left to right languages.'
+					'Please restart the app to see proper formatting for the language you selected'
 				)
 			);
 		}, 1000);
