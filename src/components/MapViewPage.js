@@ -39,17 +39,32 @@ export default class MapViewPage extends React.Component {
 			isPostModalVisible: false
 		});
 
-	// Includes a region twice the size of the map in each direction.
+	// If checkOutsideRegion, includes a region twice the size of the map in each direction.
 	// The wide viewport makes scrolling around more pleasant.
-	_checkRegion = (post, region) =>
-		post.latitude > region.latitude - region.latitudeDelta &&
-		post.latitude < region.latitude + region.latitudeDelta &&
-		post.longitude > region.longitude - region.longitudeDelta &&
-		post.longitude < region.longitude + region.longitudeDelta;
+	_checkRegion = (post, region, checkOutsideRegion) => {
+		if (!checkOutsideRegion) {
+			return (
+				post.latitude > region.latitude - region.latitudeDelta / 2 &&
+				post.latitude < region.latitude + region.latitudeDelta / 2 &&
+				post.longitude > region.longitude - region.longitudeDelta / 2 &&
+				post.longitude < region.longitude + region.longitudeDelta / 2
+			);
+		} else {
+			return (
+				post.latitude > region.latitude - region.latitudeDelta &&
+				post.latitude < region.latitude + region.latitudeDelta &&
+				post.longitude > region.longitude - region.longitudeDelta &&
+				post.longitude < region.longitude + region.longitudeDelta
+			);
+		}
+	};
 
 	render() {
-		const postsOnMap = this.state.listData.filter(post =>
-			this._checkRegion(post, this.state.mapRegion)
+		const postsNearMap = this.state.listData.filter(post =>
+			this._checkRegion(post, this.state.mapRegion, true)
+		);
+		const postsInMapRegion = postsNearMap.filter(post =>
+			this._checkRegion(post, this.state.mapRegion, false)
 		);
 		return (
 			<View style={styles.container}>
@@ -58,7 +73,7 @@ export default class MapViewPage extends React.Component {
 					post={this.state.selectedPost}
 					hide={this._hideModal}
 				/>
-				{postsOnMap.length === 0 ? this.props.message : null}
+				{postsInMapRegion.length === 0 ? this.props.message : null}
 				<MapView
 					style={styles.map}
 					region={this.state.mapRegion}
@@ -86,7 +101,7 @@ export default class MapViewPage extends React.Component {
 					pitchEnabled={false}
 				>
 					{// Render post and center icons
-					postsOnMap.map(marker =>
+					postsNearMap.map(marker =>
 						<MapView.Marker
 							key={marker.key}
 							coordinate={marker}

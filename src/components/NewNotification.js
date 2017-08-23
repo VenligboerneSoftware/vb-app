@@ -125,25 +125,25 @@ export default class NewNotification extends React.Component {
 		}
 
 		Alert.alert(
-			'Ready?',
-			'Category: ' +
-				this.state.newSubscription.iconText +
+			translate('Ready?'),
+			translate('Category') +
+				': ' +
+				translate(this.state.newSubscription.iconText) +
 				'\n' +
 				this.state.newSubscription.formatted_address +
 				'\n' +
-				'Distance: ' +
+				translate('Distance') +
+				': ' +
 				this.state.newSubscription.radius +
 				' km',
 			[
 				{
-					text: 'Cancel',
-					onPress: () => console.log('Cancel Pressed'),
+					text: translate('No'),
 					style: 'cancel'
 				},
 				{
-					text: 'Submit',
+					text: translate('Yes'),
 					onPress: () => {
-						// TODO: Add to firebase and translate text once we decide wording is right
 						firebase
 							.database()
 							.ref('subscriptions')

@@ -17,14 +17,7 @@ export default class StartupPage extends React.Component {
 					<Text style={styles.displayText}>
 						{this.props.displayText}
 					</Text>
-					<View style={styles.loadingCircle}>
-						<Progress.Circle
-							size={60}
-							indeterminate={true}
-							color={'rgba(255, 255, 255, 0.3)'}
-							thickness={100}
-						/>
-					</View>
+					<View style={styles.loadingCircle} />
 				</Image>
 			</View>
 		);
@@ -43,9 +36,10 @@ const styles = StyleSheet.create({
 	loadingCircle: {
 		width: '95%',
 		flex: 1,
-		alignItems: 'center',
+		alignSelf: 'center',
 		justifyContent: 'center',
-		backgroundColor: 'transparent'
+		backgroundColor: 'transparent',
+		flexDirection: 'row'
 	},
 	logo: {
 		width: '90%',
@@ -61,7 +55,8 @@ const styles = StyleSheet.create({
 	displayText: {
 		fontSize: 24,
 		color: '#fff',
-		alignSelf: 'center',
-		flex: 1
+		textAlign: 'center',
+		flex: 1,
+		marginLeft: 5
 	}
 });
