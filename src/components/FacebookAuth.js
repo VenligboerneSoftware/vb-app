@@ -18,6 +18,7 @@ import APIKeys from 'venligboerneapp/src/utils/APIKeys.js';
 
 import Colors from '../styles/Colors';
 import ExitBar from './ExitBar';
+import history from '../utils/history';
 
 export default class FacebookAuth extends React.Component {
 	constructor(props) {
@@ -76,6 +77,7 @@ export default class FacebookAuth extends React.Component {
 				);
 
 				if (type === 'success') {
+					history.push('/StartupPage');
 					await AsyncStorage.setItem('token', token);
 					if (this.eula) {
 						await AsyncStorage.setItem('eula', 'true');
@@ -86,11 +88,12 @@ export default class FacebookAuth extends React.Component {
 					// Don't let the user close it
 				} else {
 					// error with logInWithReadPermissionsAsync call
-					Alert.alert('fail #1', type);
+					// TODO better error messages
+					Alert.alert('ERROR #1', type);
 				}
 			} catch (e) {
 				// all other errors signInWithCredential call
-				Alert.alert('fail #2', e.toString());
+				Alert.alert('ERROR #2', e.toString());
 			}
 		}
 	};
