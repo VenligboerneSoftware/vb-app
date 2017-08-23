@@ -92,7 +92,7 @@ export default class ExitBar extends Component {
 		);
 	}
 }
-const numSlides = 17;
+const numSlides = 19;
 
 const styles = StyleSheet.create({
 	wrapper: {},
@@ -269,11 +269,24 @@ const slides = [
 		image: require('../../assets/images/tutorial/15.png'),
 		textBig: 'This is the Menu button',
 		textSmall:
-			'Here, you will find more features, including this tutorial if you want to rewatch it'
+			'Here, you will find more features, including this tutorial if you want to rewatch it.'
 	},
 	{
 		num: 16,
 		image: require('../../assets/images/tutorial/16.png'),
+		textBig: '',
+		textSmall: "Let's click on the Manage Notifications button in the menu"
+	},
+	{
+		num: 17,
+		image: require('../../assets/images/tutorial/17.png'),
+		textBig: '',
+		textSmall:
+			'Here, you can create notifications.  This will send you alerts when new posts are available matching your category, and within the range that you selected.'
+	},
+	{
+		num: 18,
+		image: require('../../assets/images/tutorial/0.png'),
 		textBig: '',
 		textSmall: ''
 	}
