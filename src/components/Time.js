@@ -15,9 +15,13 @@ export default class Time extends Component {
 				<FontAwesome
 					name={'calendar'}
 					size={35}
-					style={{ flex: 1, marginRight: 10, marginLeft: 10 }}
+					style={{
+						marginRight: 10,
+						marginLeft: 10,
+						justifyContent: 'center'
+					}}
 				/>
-				<Text style={{ flex: 6 }}>
+				<Text style={{ textAlign: 'center' }}>
 					{this.props.dates
 						? sortedDatesString(this.props.dates)
 						: translate('Date Not Specified')}
@@ -29,7 +33,7 @@ export default class Time extends Component {
 
 const styles = StyleSheet.create({
 	time: {
-		flex: 1,
+		width: '90%',
 		flexDirection: 'row',
 		justifyContent: 'center',
 		padding: 15,

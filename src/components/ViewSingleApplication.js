@@ -123,13 +123,14 @@ const styles = StyleSheet.create({
 		paddingVertical: 5,
 		borderRadius: 10,
 		flexDirection: 'row',
-		justifyContent: 'space-around',
+		justifyContent: 'center',
 		marginBottom: 15
 	},
 	deleteText: {
 		marginTop: 5,
 		alignSelf: 'center',
 		marginBottom: 10,
-		fontSize: 18
+		fontSize: 18,
+		paddingLeft: 15
 	}
 });
