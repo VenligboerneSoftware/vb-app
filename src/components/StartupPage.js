@@ -43,9 +43,10 @@ const styles = StyleSheet.create({
 	loadingCircle: {
 		width: '95%',
 		flex: 1,
-		alignItems: 'center',
+		alignSelf: 'center',
 		justifyContent: 'center',
-		backgroundColor: 'transparent'
+		backgroundColor: 'transparent',
+		flexDirection: 'row'
 	},
 	logo: {
 		width: '90%',
@@ -61,7 +62,8 @@ const styles = StyleSheet.create({
 	displayText: {
 		fontSize: 24,
 		color: '#fff',
-		alignSelf: 'center',
-		flex: 1
+		textAlign: 'center',
+		flex: 1,
+		marginLeft: 5
 	}
 });
