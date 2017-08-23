@@ -138,14 +138,14 @@ export default class App extends React.Component {
 				'/picture?height=400'
 		);
 
+		let { status } = await Permissions.askAsync(Permissions.LOCATION);
+		if (status === 'granted') {
+			global.location = await Location.getCurrentPositionAsync({});
+		}
+
 		if (this.isFirstTime) {
 			history.push('/Tutorial');
 		} else {
-			let { status } = await Permissions.askAsync(Permissions.LOCATION);
-			if (status === 'granted') {
-				global.location = await Location.getCurrentPositionAsync({});
-			}
-
 			// When login succeeds and the database is loaded, proceed to the homepage
 			await Promise.all([
 				this.assetPromises.categories,
