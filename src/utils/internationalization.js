@@ -56,6 +56,9 @@ export function translate(word, language) {
 		if (translation.charAt(0) === '~') {
 			translation = translation.slice(1);
 		}
+		firebase.database().ref('language').child(key).update({
+			'.priority': Date.now()
+		});
 		return translation;
 	}
 }
