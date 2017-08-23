@@ -31,7 +31,7 @@ export default class App extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			displayText: 'Starting App'
+			displayText: 'Starting Application'
 		};
 		console.log(Date.now(), 'Entering App.js');
 		this.assetPromises = {};
