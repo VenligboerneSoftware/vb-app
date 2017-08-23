@@ -130,6 +130,8 @@ export default class NewNotification extends React.Component {
 				': ' +
 				translate(this.state.newSubscription.iconText) +
 				'\n' +
+				translate('Location') +
+				': ' +
 				this.state.newSubscription.formatted_address +
 				'\n' +
 				translate('Distance') +
