@@ -121,13 +121,17 @@ export default class App extends React.Component {
 
 		// Add the users push token to the database so they can be notified about events.
 		// Get the token that uniquely identifies this device.
-		Notifications.getExpoPushTokenAsync().then(pushToken => {
+		Notifications.getExpoPushTokenAsync().then(async pushToken => {
+			const userRef = firebase.database().ref('users').child(userProfile.uid);
+			// Set default permissions to normal
+			const permissions = await userRef.child('permissions').once('value');
 			// Store user data in the database
-			firebase.database().ref('users').child(userProfile.uid).update({
+			userRef.update({
 				facebookUID: userProfile.providerData[0].uid,
 				photoURL: userProfile.providerData[0].photoURL,
 				pushToken: pushToken,
-				displayName: userProfile.providerData[0].displayName
+				displayName: userProfile.providerData[0].displayName,
+				permissions: permissions.val() || 'normal'
 			});
 		});
 
