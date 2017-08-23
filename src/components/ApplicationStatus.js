@@ -12,39 +12,22 @@ export default class ApplicationStatus extends React.Component {
 			<View
 				style={this.props.modal ? styles.statusModal : styles.statusRegular}
 			>
-				{global.language === 'Arabic' || global.language === 'Farsi'
-					? <View style={{ flexDirection: 'row' }}>
-							<Text
-								style={{
-									color: {
-										'Waiting For Response': 'orange',
-										Accepted: 'green',
-										Rejected: 'red'
-									}[this.props.status]
-								}}
-							>
-								{' ' + translate(this.props.status)}
-							</Text>
-							<Text>
-								{translate('Status') + ':'}
-							</Text>
-						</View>
-					: <View style={{ flexDirection: 'row' }}>
-							<Text>
-								{translate('Status') + ':'}
-							</Text>
-							<Text
-								style={{
-									color: {
-										'Waiting For Response': 'orange',
-										Accepted: 'green',
-										Rejected: 'red'
-									}[this.props.status]
-								}}
-							>
-								{' ' + translate(this.props.status)}
-							</Text>
-						</View>}
+				<View style={{ flexDirection: 'row' }}>
+					<Text>
+						{translate('Status') + ':'}
+					</Text>
+					<Text
+						style={{
+							color: {
+								'Waiting For Response': 'orange',
+								Accepted: 'green',
+								Rejected: 'red'
+							}[this.props.status]
+						}}
+					>
+						{' ' + translate(this.props.status)}
+					</Text>
+				</View>
 			</View>
 		);
 	}
