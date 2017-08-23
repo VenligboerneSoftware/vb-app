@@ -17,14 +17,7 @@ export default class StartupPage extends React.Component {
 					<Text style={styles.displayText}>
 						{this.props.displayText}
 					</Text>
-					<View style={styles.loadingCircle}>
-						<Progress.Circle
-							size={60}
-							indeterminate={true}
-							color={'rgba(255, 255, 255, 0.3)'}
-							thickness={100}
-						/>
-					</View>
+					<View style={styles.loadingCircle} />
 				</Image>
 			</View>
 		);
