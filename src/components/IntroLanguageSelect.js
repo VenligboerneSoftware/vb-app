@@ -61,7 +61,9 @@ export default class IntroLanguageSelect extends React.Component {
 							onPressIn={async () => {
 								setLanguage(item.English);
 							}}
-							onPressOut={this.props.location.state.onDone}
+							onPressOut={() => {
+								this.props.location.state.onDone(item.English);
+							}}
 							style={styles.buttonContainer}
 						>
 							<Image
