@@ -61,9 +61,9 @@ export default class Profile extends React.Component {
 
 	_handleIndexChange = index => {
 		this.setState({ index: index });
-		Expo.Amplitude.logEventWithProperties('Switching My Profile tab', {
-			to: index === 1 ? 'My Posts' : 'My Replies'
-		});
+		// Expo.Amplitude.logEventWithProperties('Switching My Profile tab', {
+		// 	to: index === 1 ? 'My Posts' : 'My Replies'
+		// });
 	};
 
 	_renderHeader = props =>
