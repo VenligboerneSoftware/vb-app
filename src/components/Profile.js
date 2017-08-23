@@ -1,6 +1,5 @@
-import { StyleSheet, View, Text, Image } from 'react-native';
+import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
 import { TabViewAnimated, TabBar } from 'react-native-tab-view';
-import Expo from 'expo';
 import React from 'react';
 import firebase from 'firebase';
 
@@ -19,8 +18,7 @@ export default class Profile extends React.Component {
 			routes: [
 				{ key: '1', title: translate('My Posts') },
 				{ key: '2', title: translate('My Replies') }
-			],
-			listData: []
+			]
 		};
 
 		global.onLanguageChange.profile = () => {
@@ -76,18 +74,18 @@ export default class Profile extends React.Component {
 
 	_renderScene = route => {
 		const scenes = {
-			'1': (
-				<PostList
-					listData={route.navigationState.listData}
-					message={
-						route.navigationState.listData.length === 0
-							? <Text style={styles.empty}>
-									{translate('You have not created any posts.')}
-								</Text>
-							: null
-					}
-				/>
-			),
+			'1': route.navigationState.listData
+				? <PostList
+						listData={route.navigationState.listData}
+						message={
+							route.navigationState.listData.length === 0
+								? <Text style={styles.empty}>
+										{translate('You have not created any posts.')}
+									</Text>
+								: null
+						}
+					/>
+				: <ActivityIndicator animating={true} size={'large'} />,
 			'2': <MyApplications />
 		};
 		return scenes[route.route.key];
