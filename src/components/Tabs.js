@@ -26,10 +26,7 @@ export default class HomePage extends React.Component {
 
 	componentDidMount() {
 		// Load the posts on the Me page
-		this.setState({ selectedTab: 'Me' }, () => {
-			// Switch to the Map once everything else has started loading
-			this.setState({ selectedTab: 'Map' });
-		});
+		this.setState({ selectedTab: 'Map' });
 	}
 
 	_setTab = tab => {
