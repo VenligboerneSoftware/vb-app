@@ -141,7 +141,7 @@ export default class FacebookAuth extends React.Component {
 									}}
 								>
 									<Text style={{ textDecorationLine: 'underline' }}>
-										User End Licencing Agreement
+										End User Licencing Agreement
 									</Text>
 								</TouchableOpacity>
 							</View>
