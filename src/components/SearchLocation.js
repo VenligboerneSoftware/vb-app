@@ -35,7 +35,9 @@ export default class SearchLocation extends React.Component {
 					key: APIKeys.googleTranslateKey,
 					language: getCode(global.language),
 					location: global.location
-						? global.location.latitude + ',' + global.location.longitude
+						? global.location.coords.latitude +
+							',' +
+							global.location.coords.longitude
 						: '55.6761,12.5683', //Default to Copenhagen
 					radius: 2500 //TODO: test and decide radius / if needed
 				}}
