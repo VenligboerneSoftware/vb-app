@@ -31,7 +31,6 @@ export default class ViewSingleApplication extends React.Component {
 	};
 
 	_deleteApp = () => {
-		console.log('Attempting to delete item');
 		Alert.alert(
 			translate('Are you sure you want to remove this reply?'),
 			translate('This cannot be undone'),
