@@ -28,12 +28,10 @@ export default class ManageNotifications extends Component {
 	}
 
 	async componentDidMount() {
-		// TODO fuckity fuck fuck permissions
 		firebase
 			.database()
 			.ref('subscriptions')
-			.orderByChild('owner')
-			.equalTo(firebase.auth().currentUser.uid)
+			.child(firebase.auth().currentUser.uid)
 			.on('value', snap => {
 				let subscriptions = snap.val() || {};
 				for (const key in subscriptions) {
@@ -57,6 +55,7 @@ export default class ManageNotifications extends Component {
 						firebase
 							.database()
 							.ref('subscriptions')
+							.child(firebase.auth().currentUser.uid)
 							.child(subscription.key)
 							.remove();
 					}

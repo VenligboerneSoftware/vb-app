@@ -25,7 +25,6 @@ export default class NewNotification extends React.Component {
 		super(props);
 		this.state = {
 			newSubscription: {
-				owner: firebase.auth().currentUser.uid,
 				radius: 10
 			},
 			searchModalVisible: false
@@ -148,6 +147,7 @@ export default class NewNotification extends React.Component {
 						firebase
 							.database()
 							.ref('subscriptions')
+							.child(firebase.auth().currentUser.uid)
 							.push(this.state.newSubscription);
 						this.props.back();
 					}
