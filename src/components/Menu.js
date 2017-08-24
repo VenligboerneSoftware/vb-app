@@ -68,13 +68,25 @@ export default class Menu extends React.Component {
 
 					{[
 						{
+							title: 'About Venligboerne',
+							onPress: () =>
+								WebBrowser.openBrowserAsync(this._getLocalizedWiki())
+						},
+						{
 							title: 'Manage Notifications',
 							onPress: this._showModal
 						},
 						{
-							title: 'About Venligboerne',
+							title: 'Tutorial',
+							onPress: () => history.push('/Tutorial')
+						},
+
+						{
+							title: 'Photos',
 							onPress: () =>
-								WebBrowser.openBrowserAsync(this._getLocalizedWiki())
+								WebBrowser.openBrowserAsync(
+									this._getLocalizedWiki() + '/instagram'
+								)
 						},
 						{
 							title: 'FAQ About Denmark',
@@ -84,10 +96,6 @@ export default class Menu extends React.Component {
 								)
 						},
 						{
-							title: 'Logout',
-							onPress: this._logout
-						},
-						{
 							title: 'Give Feedback',
 							onPress: () =>
 								WebBrowser.openBrowserAsync(
@@ -95,8 +103,8 @@ export default class Menu extends React.Component {
 								)
 						},
 						{
-							title: 'Tutorial',
-							onPress: () => history.push('/Tutorial')
+							title: 'Logout',
+							onPress: this._logout
 						}
 					].map(button =>
 						<View key={button.title} style={{ width: '100%' }}>
