@@ -6,7 +6,6 @@ import {
 	View,
 	TouchableOpacity,
 	Image,
-	ScrollView,
 	Alert,
 	Picker,
 	I18nManager
@@ -169,28 +168,23 @@ export default class NewNotification extends React.Component {
 				<ExitBar title={'Create New Notification'} hide={this.props.hide} />
 
 				{/* Icon Selection */}
-				<ScrollView
-					keyboardShouldPersistTaps={'handled'}
-					contentContainerStyle={{
-						flexDirection: 'column',
-						alignItems: 'center'
-					}}
-				>
+				<View style={[styles.section, { flex: 4 }]}>
 					<Text style={styles.questionText}>
-						{translate('Choose A Category')}
+						{translate('Choose a Category')}
 					</Text>
 					<FlatList
-						style={styles.list}
 						data={Object.values(global.db.categories)
 							.filter(icon => icon.key !== 'center')
 							.sort((a, b) => a.order - b.order)}
 						numColumns={4}
-						scrollEnabled={false}
+						scrollEnabled={true}
 						renderItem={this._renderIcon}
 					/>
-					<View style={[SharedStyles.divider, { marginBottom: 20 }]} />
+				</View>
+				<View style={SharedStyles.divider} />
 
-					{/* Location Selection */}
+				{/* Location Selection */}
+				<View style={[styles.section, { flex: 2 }]}>
 					<Text style={styles.questionText}>
 						{translate('What Location Should We Notify You About?')}
 					</Text>
@@ -202,7 +196,7 @@ export default class NewNotification extends React.Component {
 						}}
 					>
 						<FontAwesome name={'map-marker'} size={22} style={styles.pinIcon} />
-						<Text>
+						<Text style={styles.questionText}>
 							{this.state.newSubscription.formatted_address
 								? this.state.newSubscription.formatted_address
 								: translate('Select Event Location')}
@@ -220,19 +214,22 @@ export default class NewNotification extends React.Component {
 							/>
 						</Modal>
 					</TouchableOpacity>
-					<View style={[SharedStyles.divider, { marginBottom: 20 }]} />
+				</View>
+				<View style={SharedStyles.divider} />
 
-					{/* Distance Selection */}
+				{/* Distance Selection */}
+				<View style={[styles.section, { flex: 3 }]}>
 					<Text style={styles.questionText}>
 						{translate('Within What Distance Would You Like To Be Notified?')}
 					</Text>
 					<View style={styles.radiusContainer}>
 						<Entypo name={'ruler'} size={35} style={styles.pinIcon} />
 						<Picker
-							style={{ width: '80%', alignSelf: 'center' }}
+							style={{ width: '75%', alignSelf: 'center' }}
 							selectedValue={this.state.newSubscription.radius}
 							onValueChange={itemValue => this._setRadius(itemValue)}
 							mode="dropdown"
+							itemStyle={{ height: 80, fontSize: 14 }}
 						>
 							{[2.5, 5, 7.5, 10, 15, 20, 25, 40, 50].map(distance =>
 								<Picker.Item
@@ -243,7 +240,7 @@ export default class NewNotification extends React.Component {
 							)}
 						</Picker>
 					</View>
-				</ScrollView>
+				</View>
 
 				{/* Submit Button */}
 				<View style={SharedStyles.fixedBottomButton}>
@@ -261,19 +258,24 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: Colors.white
 	},
-	list: {
-		marginHorizontal: 10,
-		marginBottom: 10
+	section: {
+		marginTop: 5,
+		marginBottom: 5,
+		marginHorizontal: 5,
+		flexDirection: 'column',
+		alignItems: 'center',
+		justifyContent: 'space-around'
 	},
 	iconButton: {
-		width: '23%',
-		margin: '1%',
+		width: '24%',
+		margin: '0.5%',
 		height: 60,
 		flexDirection: 'column',
 		alignItems: 'center',
 		justifyContent: 'space-around',
 		borderRadius: 10,
-		padding: 10
+		paddingHorizontal: 5,
+		paddingBottom: 5
 	},
 	iconText: {
 		fontSize: 10,
@@ -281,36 +283,31 @@ const styles = StyleSheet.create({
 	},
 	iconImage: {
 		width: '60%',
-		height: '100%',
+		height: '80%',
 		resizeMode: 'contain'
 	},
 	searchBar: {
-		width: '80%',
+		width: '90%',
 		height: 40,
 		alignSelf: 'center',
 		backgroundColor: Colors.grey.light,
 		flexDirection: 'row',
 		alignItems: 'center',
-		borderRadius: 10,
-		marginBottom: 20
+		borderRadius: 10
 	},
 	pinIcon: {
 		marginHorizontal: 10
 	},
 	radiusContainer: {
 		width: '90%',
-		alignSelf: 'center',
 		backgroundColor: Colors.grey.light,
 		flexDirection: 'row',
 		alignItems: 'center',
-		borderRadius: 10,
-		marginBottom: 20
+		borderRadius: 10
 	},
 	questionText: {
 		textAlign: 'center',
-		marginTop: 10,
-		marginBottom: 10,
-		marginHorizontal: 15
+		fontSize: 13
 	},
 	submit: {
 		backgroundColor: '#4565A9',
