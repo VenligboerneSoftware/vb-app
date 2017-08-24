@@ -11,7 +11,7 @@ import Expo, { Font, Location, Notifications, Permissions } from 'expo';
 import React from 'react';
 import * as firebase from 'firebase';
 
-import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import { Ionicons, FontAwesome, Entypo } from '@expo/vector-icons';
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
 
 import { setLanguage } from './src/utils/internationalization';
@@ -94,6 +94,27 @@ export default class App extends React.Component {
 		);
 	}
 
+	firstTimeLocationAlert = async => {
+		Alert.alert(
+			translate('Enable Location Services'),
+			translate(
+				'The app will ask to use your location. Your location will not be stored and will be used to help you find posts nearby you.'
+			),
+			[
+				{
+					text: translate('Ok'),
+					onPress: async () => {
+						let { status } = await Permissions.askAsync(Permissions.LOCATION);
+						if (status === 'granted') {
+							global.location = await Location.getCurrentPositionAsync({});
+						}
+					}
+				}
+			],
+			{ cancelable: false }
+		);
+	};
+
 	_afterLanguageSelect = async language => {
 		global.language = language;
 		const storedToken = await AsyncStorage.getItem('token');
@@ -142,9 +163,13 @@ export default class App extends React.Component {
 				'/picture?height=400'
 		);
 
-		let { status } = await Permissions.askAsync(Permissions.LOCATION);
-		if (status === 'granted') {
-			global.location = await Location.getCurrentPositionAsync({});
+		if (this.isFirstTime) {
+			this.firstTimeLocationAlert();
+		} else {
+			let { status } = await Permissions.askAsync(Permissions.LOCATION);
+			if (status === 'granted') {
+				global.location = await Location.getCurrentPositionAsync({});
+			}
 		}
 
 		await Promise.all([
@@ -259,6 +284,7 @@ export default class App extends React.Component {
 		this.assetPromises.fonts = Font.loadAsync([
 			Ionicons.font,
 			FontAwesome.font,
+			Entypo.font,
 			{
 				Georgia: require('venligboerneapp/assets/fonts/Georgia.ttf')
 			}
