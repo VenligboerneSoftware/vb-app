@@ -48,7 +48,7 @@ export default class Menu extends React.Component {
 			<View style={{ flex: 1 }}>
 				<TouchableOpacity
 					style={styles.tapCloseMenu}
-					onPress={this.props.hide}
+					onPress={this.manageNotificationsModal ? null : this.props.hide}
 				/>
 				<View style={styles.modalContainer}>
 					<Modal
