@@ -37,12 +37,7 @@ export default class FlagContent extends React.Component {
 			this.props.flaggedUser,
 			report
 		);
-		firebase
-			.database()
-			.ref('users')
-			.child(this.props.flaggedUser)
-			.child('flags')
-			.push(report);
+		firebase.database().ref('flags').child(this.props.flaggedUser).push(report);
 		this.setState({ isModalVisible: false });
 	};
 
