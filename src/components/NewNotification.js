@@ -60,8 +60,7 @@ export default class NewNotification extends React.Component {
 					this.setState({
 						newSubscription: {
 							...this.state.newSubscription,
-							icon: item.key,
-							iconText: item.title
+							icon: item.key
 						}
 					})}
 				style={[
@@ -126,7 +125,7 @@ export default class NewNotification extends React.Component {
 			translate('Ready?'),
 			translate('Category') +
 				': ' +
-				translate(this.state.newSubscription.iconText) +
+				translate(global.db.categories[this.state.newSubscription.icon].title) +
 				'\n' +
 				translate('Location') +
 				': ' +
