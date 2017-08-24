@@ -11,7 +11,7 @@ import Expo, { Font, Location, Notifications, Permissions } from 'expo';
 import React from 'react';
 import * as firebase from 'firebase';
 
-import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import { Ionicons, FontAwesome, Entypo } from '@expo/vector-icons';
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
 
 import { setLanguage } from './src/utils/internationalization';
@@ -259,6 +259,7 @@ export default class App extends React.Component {
 		this.assetPromises.fonts = Font.loadAsync([
 			Ionicons.font,
 			FontAwesome.font,
+			Entypo.font,
 			{
 				Georgia: require('venligboerneapp/assets/fonts/Georgia.ttf')
 			}
