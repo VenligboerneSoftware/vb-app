@@ -275,7 +275,8 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-around',
 		borderRadius: 10,
 		paddingHorizontal: 5,
-		paddingBottom: 5
+		paddingBottom: 5,
+		paddingTop: 1
 	},
 	iconText: {
 		fontSize: 10,
