@@ -14,7 +14,6 @@ import { ImagePicker } from 'expo';
 import Modal from 'react-native-modal';
 import React from 'react';
 import * as firebase from 'firebase';
-import geolib from 'geolib';
 
 import { FontAwesome } from '@expo/vector-icons';
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
@@ -74,13 +73,6 @@ export default class NewPost extends React.Component {
   --------------------------------------------------
   Stores the selected icon and scrolls down to the rest of the form. */
 	_onIconPressed = icon => {
-		// console.log('Notifying on icon press');
-		// this._notifySubscribers({
-		// 	latitude: 55.6583076,
-		// 	longitude: 12.6274396,
-		// 	icon: icon,
-		// 	key: '-KrVR7FIGUAnCPUmHrIt'
-		// });
 		this.setState({ newPost: { ...this.state.newPost, icon: icon } }, () => {
 			// When the user clicks an icon scroll down automatically
 			// Use .then to wait for the lower half to be laid out
@@ -312,47 +304,25 @@ export default class NewPost extends React.Component {
 	};
 
 	_notifySubscribers = async event => {
-		const subs = await firebase
-			.database()
-			.ref('subscriptions')
-			.orderByChild('icon')
-			.equalTo(event.icon)
-			.once('value');
-
-		// There are no matching subscriptions
-		if (!subs.exists()) {
-			return;
-		}
-
-		// TODO run this computation at the server for privacy
-		Promise.all(
-			Object.values(subs.val()).map(async sub => {
-				// Get the push token if the subscription covers this post
-				// Otherwise return null
-				if (
-					geolib.getDistance(sub, event) < sub.radius * 1000 &&
-					sub.owner !== firebase.auth().currentUser.uid
-					// Don't notify self
-				) {
-					return (await firebase
-						.database()
-						.ref('users')
-						.child(sub.owner)
-						.child('pushToken')
-						.once('value')).val();
+		try {
+			const response = await fetch(
+				'https://us-central1-test-b5dbd.cloudfunctions.net/getSubscribers',
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						post: event,
+						userID: firebase.auth().currentUser.uid
+					})
 				}
-				return null;
-			})
-		).then(tokens => {
-			tokens = tokens.filter(token => token !== null);
-			console.log('Notifying', tokens, 'of this new post', event);
-			if (tokens.length > 0) {
-				// Notify all of the users who match the subscription
-				pushNotify(tokens, 'New post in your area!', 'title: ' + event.title, {
-					url: '+post/' + event.key
-				});
-			}
-		});
+			);
+			const parsedResponse = await response.json();
+			console.log('subscribers to notify', parsedResponse);
+			pushNotify(parsedResponse, event.title, 'New post in your area!', {
+				url: '+post/' + event.key
+			});
+		} catch (error) {
+			console.warn('Error while getting relevant subscribers', error);
+		}
 	};
 
 	//removes selected date from state
