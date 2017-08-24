@@ -10,9 +10,7 @@ import {
 import Modal from 'react-native-modal';
 import React, { Component } from 'react';
 import firebase from 'firebase';
-import { FontAwesome } from '@expo/vector-icons';
-
-import { Entypo } from '@expo/vector-icons';
+import { FontAwesome, Entypo } from '@expo/vector-icons';
 
 import { translate } from '../utils/internationalization';
 import Colors from '../styles/Colors';
