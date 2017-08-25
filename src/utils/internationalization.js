@@ -6,7 +6,7 @@
 // Never use strings directly which will be user facing. Call
 // translate("Your String")
 
-import { Alert, AsyncStorage, I18nManager } from 'react-native';
+import { AsyncStorage, I18nManager } from 'react-native';
 import Expo from 'expo';
 import * as firebase from 'firebase';
 import * as queryString from 'query-string';
@@ -133,11 +133,11 @@ export function getAvailableLanguages() {
 // Set the global language setting, store it in AsyncStorage, update the RTL
 // setting, and prompt the user to restart if RTL changed.
 export function setLanguage(language) {
-	// Expo.Amplitude.logEventWithProperties('Language Change', {
-	// 	from: global.language,
-	// 	to: language
-	// });
-	// Expo.Amplitude.setUserProperties({ language: language });
+	Expo.Amplitude.logEventWithProperties('Language Change', {
+		from: global.language,
+		to: language
+	});
+	Expo.Amplitude.setUserProperties({ language: language });
 
 	global.language = language;
 	AsyncStorage.setItem('language', global.language);
