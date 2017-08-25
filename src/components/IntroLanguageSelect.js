@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
 		color: Colors.grey.dark,
 		flex: 1,
 		alignSelf: 'center'
-		// fontFamily: 'tigrinya' // TODO this needs to be in the global stylesheet if we want to really support tigrinya
 	},
 	flag: {
 		width: 99,

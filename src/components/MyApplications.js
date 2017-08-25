@@ -33,7 +33,6 @@ export default class MyApplications extends React.Component {
 	 * @returns {Object} Returns the data about the application, the post it is
 	 * for, and if it is accepted, the post's owner.
 	 */
-	// TODO make this data update live, like say application status
 	_getApplicationByKey = async applicationKey => {
 		let application = (await firebase
 			.database()
