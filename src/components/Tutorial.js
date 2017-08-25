@@ -1,4 +1,11 @@
-import { StyleSheet, TouchableOpacity, View, Text, Image } from 'react-native';
+import {
+	I18nManager,
+	Image,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View
+} from 'react-native';
 import React, { Component } from 'react';
 import Swiper from 'react-native-swiper';
 
@@ -36,12 +43,16 @@ export default class ExitBar extends Component {
 					onIndexChanged={index => this._checkLastSlide(index)}
 					nextButton={
 						<View style={[styles.prevNextButton, { paddingLeft: 30 }]}>
-							<Text style={styles.prevNextButtonText}>›</Text>
+							<Text style={styles.prevNextButtonText}>
+								{I18nManager.isRTL ? '‹' : '›'}
+							</Text>
 						</View>
 					}
 					prevButton={
 						<View style={[styles.prevNextButton, { paddingRight: 30 }]}>
-							<Text style={styles.prevNextButtonText}>‹</Text>
+							<Text style={styles.prevNextButtonText}>
+								{I18nManager.isRTL ? '›' : '‹'}
+							</Text>
 						</View>
 					}
 				>
