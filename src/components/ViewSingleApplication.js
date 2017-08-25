@@ -1,13 +1,16 @@
 import {
 	Alert,
+	I18nManager,
 	ScrollView,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
 	View
 } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
 import React from 'react';
+import firebase from 'firebase';
+
+import { FontAwesome } from '@expo/vector-icons';
 
 import { deleteApplication } from '../utils/ApplicationManager';
 import { translate } from '../utils/internationalization';
@@ -19,6 +22,7 @@ import MapWithCircle from './MapWithCircle';
 import SharedStyles from '../styles/SharedStyles';
 import Time from './Time';
 import TitleAndIcon from './TitleAndIcon.js';
+import pushNotify from '../utils/pushNotify';
 
 export default class ViewSingleApplication extends React.Component {
 	constructor(props) {
@@ -37,6 +41,40 @@ export default class ViewSingleApplication extends React.Component {
 			[
 				{ text: translate('No') },
 				{ text: translate('Yes'), onPress: this.removeListing }
+			],
+			{ cancelable: false }
+		);
+	};
+
+	_sendReminder = () => {
+		console.log('Reminding', this.props.app.postData.owner);
+		firebase
+			.database()
+			.ref('users')
+			.child(this.props.app.postData.owner)
+			.child('pushToken')
+			.once('value')
+			.then(token => {
+				// TODO make this open the exact application
+				console.log('Push notifying', token.val(), this.props.app);
+				pushNotify(
+					token.val(),
+					'Please review reply to your post',
+					this.props.app.postData.title,
+					{
+						type: 'applicationSent'
+					}
+				);
+			});
+	};
+
+	_remindOwner = () => {
+		Alert.alert(
+			translate('Remind Post Owner'),
+			translate('Do to notify the post owner about your application again?'),
+			[
+				{ text: translate('No') },
+				{ text: translate('Yes'), onPress: this._sendReminder }
 			],
 			{ cancelable: false }
 		);
@@ -73,17 +111,32 @@ export default class ViewSingleApplication extends React.Component {
 							longitude={this.props.app.postData.longitude}
 						/>
 
-						<TouchableOpacity
-							style={styles.deleteButton}
-							onPress={() => {
-								this._deleteApp();
-							}}
-						>
-							<FontAwesome name={'trash-o'} size={40} />
-							<Text style={styles.deleteText}>
-								{translate('Delete Reply')}
-							</Text>
-						</TouchableOpacity>
+						<View style={styles.buttonBar}>
+							<TouchableOpacity
+								style={styles.bottomButton}
+								onPress={this._deleteApp}
+							>
+								<FontAwesome name={'trash-o'} size={40} />
+								<Text style={styles.buttonText}>
+									{translate('Delete Reply')}
+								</Text>
+							</TouchableOpacity>
+
+							{this.props.app.status === 'Waiting For Response'
+								? <TouchableOpacity
+										style={styles.bottomButton}
+										onPress={this._remindOwner}
+									>
+										<FontAwesome
+											name={I18nManager.isRTL ? 'hand-o-left' : 'hand-o-right'}
+											size={40}
+										/>
+										<Text style={styles.buttonText}>
+											{translate('Remind')}
+										</Text>
+									</TouchableOpacity>
+								: null}
+						</View>
 					</View>
 				</ScrollView>
 
@@ -116,20 +169,23 @@ const styles = StyleSheet.create({
 		marginRight: 20,
 		fontSize: 15
 	},
-	deleteButton: {
+	buttonBar: {
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		marginBottom: 15
+	},
+	bottomButton: {
+		flex: 1,
 		backgroundColor: Colors.grey.light,
-		width: 250,
 		paddingVertical: 5,
 		borderRadius: 10,
 		flexDirection: 'row',
 		justifyContent: 'center',
-		marginBottom: 15
+		alignItems: 'center',
+		margin: 10
 	},
-	deleteText: {
-		marginTop: 5,
-		alignSelf: 'center',
-		marginBottom: 10,
+	buttonText: {
 		fontSize: 18,
-		paddingLeft: 15
+		paddingLeft: 5
 	}
 });
