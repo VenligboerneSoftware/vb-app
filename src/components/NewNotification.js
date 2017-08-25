@@ -15,7 +15,7 @@ import Colors from '../styles/Colors';
 import * as firebase from 'firebase';
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
-import Modal from 'react-native-modal';
+import Modal from './Modal.js';
 import SearchLocation from './SearchLocation.js';
 
 import { FontAwesome, Entypo, Ionicons } from '@expo/vector-icons';

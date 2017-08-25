@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import Modal from 'react-native-modal';
+import Modal from './Modal.js';
 import React from 'react';
 
 import PostOrCenterModal from './PostOrCenterModal';

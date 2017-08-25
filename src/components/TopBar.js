@@ -6,7 +6,7 @@ import {
 	TouchableOpacity,
 	View
 } from 'react-native';
-import Modal from 'react-native-modal';
+import Modal from './Modal.js';
 import React from 'react';
 
 import { Ionicons, FontAwesome } from '@expo/vector-icons';

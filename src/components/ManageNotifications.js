@@ -7,7 +7,7 @@ import {
 	View,
 	Alert
 } from 'react-native';
-import Modal from 'react-native-modal';
+import Modal from './Modal.js';
 import React, { Component } from 'react';
 import firebase from 'firebase';
 import { FontAwesome, Entypo } from '@expo/vector-icons';

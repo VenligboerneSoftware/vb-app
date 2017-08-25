@@ -8,7 +8,7 @@ import {
 	View
 } from 'react-native';
 import Exponent, { WebBrowser } from 'expo';
-import Modal from 'react-native-modal';
+import Modal from './Modal.js';
 import React from 'react';
 import * as firebase from 'firebase';
 
