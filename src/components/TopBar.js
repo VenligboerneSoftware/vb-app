@@ -92,6 +92,7 @@ export default class TopBar extends React.Component {
 			<Modal
 				visible={this.state.languageModalVisible}
 				style={SharedStyles.fullscreen}
+				name={'LanguageMenu'}
 			>
 				<TouchableOpacity
 					style={SharedStyles.fullscreen}

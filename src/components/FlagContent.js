@@ -44,7 +44,7 @@ export default class FlagContent extends React.Component {
 	render() {
 		return (
 			<View>
-				<Modal isVisible={this.state.isModalVisible}>
+				<Modal isVisible={this.state.isModalVisible} name={'FlagContent'}>
 					<View style={styles.container}>
 						<ExitBar
 							title={translate('Report As Inappropriate')}

@@ -213,6 +213,7 @@ export default class News extends React.Component {
 					isVisible={this.state.isModalVisible}
 					animationIn={'zoomIn'}
 					animationOut={'zoomOut'}
+					name={'Article'}
 				>
 					{this.state.selectedArticle ? this._renderModal() : <View />}
 				</Modal>

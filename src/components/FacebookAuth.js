@@ -174,6 +174,7 @@ export default class FacebookAuth extends React.Component {
 					isVisible={this.state.isModalVisible}
 					animationIn={'zoomIn'}
 					animationOut={'zoomOut'}
+					name={'WhyLogIn'}
 				>
 					<View style={{ flex: 1, backgroundColor: 'white' }}>
 						<ExitBar
