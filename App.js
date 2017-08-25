@@ -133,6 +133,8 @@ export default class App extends React.Component {
 		await this.attemptLoginWithStoredToken(token);
 		console.log('Logged in');
 
+		this._loadCenters();
+
 		// Initialize Amplitude with user data
 		let userProfile = firebase.auth().currentUser;
 
@@ -214,7 +216,7 @@ export default class App extends React.Component {
 		this.setState({ displayText: 'Attempting Login' });
 		global.token = token;
 		return this.authenticate(token).catch(error => {
-			console.error('Facebook authentication error', error);
+			console.warn('Facebook authentication error', error);
 			AsyncStorage.removeItem('token');
 			Alert.alert('Your Facebook session has expired!', 'Please log in again!');
 			AsyncStorage.getItem('eula').then(agreedToEula => {
@@ -268,6 +270,17 @@ export default class App extends React.Component {
 				this.setState({ displayText: 'Loaded Icons' });
 			});
 
+		this.assetPromises.fonts = Font.loadAsync([
+			Ionicons.font,
+			FontAwesome.font,
+			Entypo.font,
+			{
+				Georgia: require('venligboerneapp/assets/fonts/Georgia.ttf')
+			}
+		]);
+	};
+
+	_loadCenters = () => {
 		// Queries firebase and downloads all center data from the firebase server.
 		// Creates a vector of local centers to appear on initial render.
 		this.assetPromises.centers = firebase
@@ -283,15 +296,6 @@ export default class App extends React.Component {
 				}
 				console.log('Loaded centers');
 			});
-
-		this.assetPromises.fonts = Font.loadAsync([
-			Ionicons.font,
-			FontAwesome.font,
-			Entypo.font,
-			{
-				Georgia: require('venligboerneapp/assets/fonts/Georgia.ttf')
-			}
-		]);
 	};
 
 	addInternetEventListeners = () => {
