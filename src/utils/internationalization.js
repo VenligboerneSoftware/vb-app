@@ -40,16 +40,21 @@ export function translate(word, language) {
 		// If the database hasn't loaded, just return the key
 		// (which is probably the English translation)
 		return word;
-	} else if (!global.db.language[key]) {
+	} else if (!global.db.language[key] || !global.db.language[key][language]) {
 		// If the translation isn't available, add it to the database and automatically
 		// translate it.
 		console.log('Translation for', word, 'is unavailable');
-		// Add a new entry to the translation table with google translated values.
-		// Return the google translated value.
-		addNewWord(word, key);
-		return word;
-	} else if (!global.db.language[key][language]) {
-		console.log('Translation for', word, 'is unavailable');
+
+		// TODO remove this when dev is over
+		if (!global.db.language[key]) {
+			// Add a new entry to the translation table with google translated values.
+			translateToAll(word, key).then(newWordEntry => {
+				global.db.language[key] = newWordEntry;
+				firebase.database().ref('language/' + key).set(newWordEntry);
+				console.log('Automatically translated', word, newWordEntry);
+			});
+		}
+
 		return word;
 	} else {
 		var translation = global.db.language[key][language];
@@ -67,7 +72,7 @@ export function translate(word, language) {
 // -----------------------------------------------------------------------------
 // If an unknown word is encountered, automatically translate it to all available
 // languages and add it to the database.
-async function addNewWord(word, key) {
+export async function translateToAll(word, key) {
 	const languages = getAvailableLanguages();
 	let newWordEntry = {};
 	for (var i = 0; i < languages.length; i++) {
@@ -75,34 +80,48 @@ async function addNewWord(word, key) {
 		if (languages[i].English === 'English') {
 			newWordEntry.English = word;
 		} else {
-			const options = {
-				q: word,
-				source: 'en',
-				target: getCode(languages[i].English),
-				format: 'text',
-				key: APIKeys.googleMapsKey
-			};
-			if (!options.target) {
+			const targetLanguageCode = getCode(languages[i].English);
+			// the language is not supported
+			if (!targetLanguageCode) {
+				console.warn(
+					'Language not supported for translation',
+					languages[i].English
+				);
 				continue;
-			} // the language is not supported
-			let response = await fetch(
-				'https://translation.googleapis.com/language/translate/v2?' +
-					queryString.stringify(options),
-				{
-					method: 'POST'
-				}
-			);
-			response = await response.json();
+			}
+			const response = await googleTranslate(word, 'en', targetLanguageCode);
 			if (response.data !== undefined) {
 				newWordEntry[languages[i].English] =
 					'~' + response.data.translations[0].translatedText;
 			} else {
-				console.error('Invalid response to translate request', response);
+				console.warn('Invalid response to translate request', response);
 			}
 		}
 	}
-	firebase.database().ref('language/' + key).set(newWordEntry);
-	console.log('Automatically translating', word, newWordEntry);
+	return newWordEntry;
+}
+
+// googleTranslate
+// -----------------------------------------------------------------------------
+// Use the Google Cloud translate API to translate the given text from one
+// language to another. The source and target are expected to be 2 leter language
+// codes. Quota 2,000,000 characters per day.
+export async function googleTranslate(word, sourceLanguage, targetLanguage) {
+	const options = {
+		q: word,
+		source: sourceLanguage,
+		target: targetLanguage,
+		format: 'text',
+		key: APIKeys.googleMapsKey
+	};
+	const response = await fetch(
+		'https://translation.googleapis.com/language/translate/v2?' +
+			queryString.stringify(options),
+		{
+			method: 'POST'
+		}
+	);
+	return await response.json();
 }
 
 // getAvailableLanguages
