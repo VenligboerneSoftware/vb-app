@@ -23,18 +23,7 @@ export function translate(word, language) {
 	// Default to global language setting
 	language = language || global.language;
 
-	if (!(typeof word === 'string')) {
-		console.error('Non string input to translate', word);
-		return '';
-	}
-
-	// Certain characters are illegal in Firebase keys. Strip them.
-	let key = word
-		.replace(/\./g, '')
-		.replace(/#/g, '')
-		.replace(/\$/g, '')
-		.replace(/\[/g, '')
-		.replace(/\]/g, '');
+	let key = stripInvalidCharacters(word);
 
 	if (!global.db.language) {
 		// If the database hasn't loaded, just return the key
@@ -48,7 +37,7 @@ export function translate(word, language) {
 		// TODO remove this when dev is over
 		if (!global.db.language[key]) {
 			// Add a new entry to the translation table with google translated values.
-			translateToAll(word, key).then(newWordEntry => {
+			translateToAll(word, key, 'en').then(newWordEntry => {
 				global.db.language[key] = newWordEntry;
 				firebase.database().ref('language/' + key).set(newWordEntry);
 				console.log('Automatically translated', word, newWordEntry);
@@ -68,11 +57,68 @@ export function translate(word, language) {
 	}
 }
 
-// addNewWord
+export function translateFreeform(translationBundle) {
+	if (typeof translationBundle === 'string') {
+		// fallback for untranslated things
+		return translationBundle;
+	}
+	console.log('Freeform translating', translationBundle);
+	if (true /*global.autotranslate*/) {
+		return translationBundle.translated[global.language];
+	} else {
+		return translationBundle.original;
+	}
+}
+
+// Certain characters are illegal in Firebase keys. Strip them.
+function stripInvalidCharacters(word) {
+	if (!(typeof word === 'string')) {
+		console.error('Non string input to translate', word);
+		return '';
+	}
+
+	// Certain characters are illegal in Firebase keys. Strip them.
+	return word
+		.replace(/\./g, '')
+		.replace(/#/g, '')
+		.replace(/\$/g, '')
+		.replace(/\[/g, '')
+		.replace(/\]/g, '');
+}
+
+export async function bundleTranslations(word) {
+	const languages = getAvailableLanguages();
+	let newWordEntry = {};
+	for (var i = 0; i < languages.length; i++) {
+		const targetLanguageCode = getCode(languages[i].English);
+		// the language is not supported
+		if (!targetLanguageCode) {
+			console.warn(
+				'Language not supported for translation',
+				languages[i].English
+			);
+			continue;
+		}
+		const response = await googleTranslate(word, undefined, targetLanguageCode);
+		if (response.data !== undefined) {
+			newWordEntry[languages[i].English] =
+				response.data.translations[0].translatedText;
+		} else {
+			console.warn('Invalid response to translate request', response);
+		}
+	}
+
+	return {
+		original: word,
+		translated: newWordEntry
+	};
+}
+
+// translateToAll
 // -----------------------------------------------------------------------------
 // If an unknown word is encountered, automatically translate it to all available
 // languages and add it to the database.
-export async function translateToAll(word, key) {
+export async function translateToAll(word, key, sourceLanguageCode) {
 	const languages = getAvailableLanguages();
 	let newWordEntry = {};
 	for (var i = 0; i < languages.length; i++) {
@@ -89,7 +135,11 @@ export async function translateToAll(word, key) {
 				);
 				continue;
 			}
-			const response = await googleTranslate(word, 'en', targetLanguageCode);
+			const response = await googleTranslate(
+				word,
+				sourceLanguageCode,
+				targetLanguageCode
+			);
 			if (response.data !== undefined) {
 				newWordEntry[languages[i].English] =
 					'~' + response.data.translations[0].translatedText;

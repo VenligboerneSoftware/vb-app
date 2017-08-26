@@ -3,9 +3,9 @@ import React from 'react';
 import firebase from 'firebase';
 
 import { formatDate, getNextDate } from '../utils/dates';
-import { translate } from '../utils/internationalization';
-import getDistance from '../utils/getDistance';
+import { translate, translateFreeform } from '../utils/internationalization';
 import EventIcon from './EventIcon';
+import getDistance from '../utils/getDistance';
 
 export default class PostListItem extends React.PureComponent {
 	render() {
@@ -17,7 +17,7 @@ export default class PostListItem extends React.PureComponent {
 				<EventIcon item={this.props.item} />
 
 				<Text style={styles.rowText}>
-					{this.props.item.title}
+					{translateFreeform(this.props.item.title)}
 				</Text>
 
 				{this.props.item.owner === firebase.auth().currentUser.uid

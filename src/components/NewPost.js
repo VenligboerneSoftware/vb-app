@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { ImagePicker } from 'expo';
-import Modal from './Modal.js';
 import React from 'react';
 import * as firebase from 'firebase';
 
@@ -21,8 +20,10 @@ import Colors from 'venligboerneapp/src/styles/Colors.js';
 import Moment from 'moment';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
 
+import { bundleTranslations } from '../utils/internationalization';
 import { formatDate } from '../utils/dates';
 import MapWithCircle from './MapWithCircle.js';
+import Modal from './Modal.js';
 import SearchLocation from './SearchLocation.js';
 import TopBar from './TopBar.js';
 import mortonize from '../utils/mortonize';
@@ -271,6 +272,9 @@ export default class NewPost extends React.Component {
 			owner: firebase.auth().currentUser.uid
 		};
 
+		newPost.title = await bundleTranslations(newPost.title);
+		newPost.description = await bundleTranslations(newPost.description);
+
 		// If we are editing, then overwrite the old index. If we are creating
 		// a new post, push a new entry to the database.
 		let eventKey = null;
@@ -359,7 +363,9 @@ export default class NewPost extends React.Component {
 						}}
 						style={[styles.title, styles.textInput]}
 						onChangeText={this._titleChange}
-						defaultValue={this.state.newPost.title}
+						defaultValue={
+							this.state.newPost.title ? this.state.newPost.title.original : ''
+						}
 						multiline={false}
 						maxLength={45}
 						returnKeyType="done"
@@ -381,7 +387,11 @@ export default class NewPost extends React.Component {
 						}}
 						style={[styles.description, styles.textInput]}
 						onChangeText={this._descriptionChange}
-						defaultValue={this.state.newPost.description}
+						defaultValue={
+							this.state.newPost.description
+								? this.state.newPost.description.original
+								: ''
+						}
 						multiline={true}
 						blurOnSubmit={true}
 						returnKeyType="done"

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 
+import { translateFreeform } from '../utils/internationalization';
 import EventIcon from './EventIcon';
 
 export default class TitleAndIcon extends React.Component {
@@ -13,7 +14,7 @@ export default class TitleAndIcon extends React.Component {
 			<View style={{ margin: 10 }}>
 				{/* Title */}
 				<Text style={styles.title}>
-					{this.props.post.title}
+					{translateFreeform(this.props.post.title)}
 				</Text>
 				<EventIcon item={this.props.post} />
 			</View>
