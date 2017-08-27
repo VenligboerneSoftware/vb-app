@@ -71,7 +71,7 @@ export default class ViewSingleApplication extends React.Component {
 	_remindOwner = () => {
 		Alert.alert(
 			translate('Remind Post Owner'),
-			translate('Do to notify the post owner about your application again?'),
+			translate('Do you want to remind the post owner about your application?'),
 			[
 				{ text: translate('No') },
 				{ text: translate('Yes'), onPress: this._sendReminder }
@@ -83,7 +83,7 @@ export default class ViewSingleApplication extends React.Component {
 	render() {
 		return (
 			<View style={{ flex: 1, backgroundColor: 'white' }}>
-				<ExitBar hide={this.props.hide} />
+				<ExitBar hide={this.props.hide} title={translate('View Reply')} />
 				<ScrollView keyboardShouldPersistTaps={'handled'}>
 					<View style={styles.container}>
 						<TitleAndIcon post={this.props.app.postData} />
