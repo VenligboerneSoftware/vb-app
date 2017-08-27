@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import firebase from 'firebase';
 
-import { FontAwesome } from '@expo/vector-icons';
+import { MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 
 import { deleteApplication } from '../utils/ApplicationManager';
 import { translate } from '../utils/internationalization';
@@ -127,9 +127,10 @@ export default class ViewSingleApplication extends React.Component {
 										style={styles.bottomButton}
 										onPress={this._remindOwner}
 									>
-										<FontAwesome
-											name={I18nManager.isRTL ? 'hand-o-left' : 'hand-o-right'}
+										<MaterialCommunityIcons
+											name={'alarm'}
 											size={40}
+											style={{ marginTop: 6 }}
 										/>
 										<Text style={styles.buttonText}>
 											{translate('Remind')}
