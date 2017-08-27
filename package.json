@@ -47,6 +47,7 @@
     "react-native-keyboard-aware-view": "0.0.12",
     "react-native-modal": "git+https://github.com/tomasreimers/react-native-modal.git#patch-2",
     "react-native-progress": "^3.3.0",
+    "react-native-statusbar-alert": "^0.2.0",
     "react-native-swiper": "^1.5.10",
     "react-native-tab-navigator": "^0.3.3",
     "react-native-tab-view": "0.0.68",

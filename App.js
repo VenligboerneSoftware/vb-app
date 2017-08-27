@@ -4,7 +4,9 @@ import {
 	I18nManager,
 	Image,
 	NetInfo,
-	Text
+	Text,
+	View,
+	StatusBar
 } from 'react-native';
 import { Route, Router, Switch } from 'react-router-native';
 import Expo, { Font, Location, Notifications, Permissions } from 'expo';
@@ -22,6 +24,7 @@ import IntroLanguageSelect from './src/components/IntroLanguageSelect.js';
 import StartupPage from './src/components/StartupPage';
 import Tutorial from './src/components/Tutorial.js';
 import history from './src/utils/history';
+import StatusBarAlert from 'react-native-statusbar-alert';
 
 // The warnings are caused by an issue in Firebase. Hopefully a future firebase
 // update will fix them.
@@ -31,7 +34,8 @@ export default class App extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			displayText: 'Starting Application'
+			displayText: 'Starting Application',
+			internetAlertVisible: false
 		};
 		console.log(Date.now(), 'Entering App.js');
 		this.assetPromises = {};
@@ -299,40 +303,48 @@ export default class App extends React.Component {
 			'change',
 			this._handleConnectivityChange
 		);
-		// This must be called after you add the listener due to a bug in NetInfo
-		// https://github.com/facebook/react-native/issues/8615
-		// NetInfo.isConnected.fetch().then(isConnected => {
-		// 	console.log('First, is ' + (isConnected ? 'online' : 'offline'));
-		// });
 	};
 
 	_handleConnectivityChange = isConnected => {
-		if (!isConnected) {
-			Alert.alert(
-				translate('Internet Connection Error'),
-				translate(
-					'You are not connected to the internet.  Please Reconnect to the internet to use the app'
-				),
-				[{ text: translate('OK') }],
-				{ cancelable: false }
-			);
-		}
+		this.setState({
+			internetAlertVisible: isConnected ? false : true
+		});
 	};
 
 	render() {
 		return (
-			<Router history={history}>
-				<Switch>
-					<Route
-						path="/StartupPage"
-						render={() => <StartupPage displayText={this.state.displayText} />}
-					/>
-					<Route path="/HomePage" component={HomePage} />
-					<Route path="/Tutorial" component={Tutorial} />
-					<Route path="/FacebookAuth" component={FacebookAuth} />
-					<Route path="/IntroLanguageSelect" component={IntroLanguageSelect} />
-				</Switch>
-			</Router>
+			<View style={{ flex: 1 }}>
+				<StatusBar barStyle="dark-content" />
+				<StatusBarAlert
+					visible={this.state.internetAlertVisible}
+					message={translate('No Internet Connection')}
+					backgroundColor="red"
+					color="white"
+				/>
+				<View
+					style={{
+						flex: 1,
+						marginTop: this.state.internetAlertVisible ? 0 : -20
+					}}
+				>
+					<Router history={history} style={{ marginTop: 200 }}>
+						<Switch>
+							<Route
+								path="/StartupPage"
+								render={() =>
+									<StartupPage displayText={this.state.displayText} />}
+							/>
+							<Route path="/HomePage" component={HomePage} />
+							<Route path="/Tutorial" component={Tutorial} />
+							<Route path="/FacebookAuth" component={FacebookAuth} />
+							<Route
+								path="/IntroLanguageSelect"
+								component={IntroLanguageSelect}
+							/>
+						</Switch>
+					</Router>
+				</View>
+			</View>
 		);
 	}
 }
