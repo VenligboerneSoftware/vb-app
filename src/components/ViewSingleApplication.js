@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
 		marginBottom: 15
 	},
 	bottomButton: {
-		flex: 1,
+		width: '44%',
 		backgroundColor: Colors.grey.light,
 		paddingVertical: 5,
 		borderRadius: 10,
@@ -187,6 +187,7 @@ const styles = StyleSheet.create({
 	},
 	buttonText: {
 		fontSize: 18,
-		paddingLeft: 5
+		paddingLeft: 5,
+		backgroundColor: 'transparent'
 	}
 });
