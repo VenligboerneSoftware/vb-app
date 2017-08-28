@@ -60,10 +60,10 @@ export function translate(word, language) {
 export function translateFreeform(translationBundle) {
 	if (typeof translationBundle === 'string') {
 		// fallback for untranslated things
+		// console.warn('translateFreeform on raw string', translationBundle);
 		return translationBundle;
 	}
-	console.log('Freeform translating', translationBundle);
-	if (true /*global.autotranslate*/) {
+	if (global.autotranslate) {
 		return translationBundle.translated[global.language];
 	} else {
 		return translationBundle.original;

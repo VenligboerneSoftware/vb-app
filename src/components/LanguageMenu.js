@@ -1,7 +1,9 @@
 import {
+	AsyncStorage,
 	Image,
 	Platform,
 	StyleSheet,
+	Switch,
 	Text,
 	TouchableOpacity,
 	View
@@ -14,12 +16,9 @@ import {
 	getAvailableLanguages,
 	setLanguage
 } from '../utils/internationalization.js';
+import { translate } from '../utils/internationalization';
 
 export default class LanguageMenu extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
 		return (
 			<View style={styles.languageDropdown}>
@@ -57,6 +56,21 @@ export default class LanguageMenu extends React.Component {
 						</Text>
 					</TouchableOpacity>
 				)}
+				<Switch
+					value={global.autotranslate}
+					onValueChange={value => {
+						console.log('Autotranslate?', value);
+						global.autotranslate = value;
+						// Empty strings are falsy, and nonempty strings are truey
+						AsyncStorage.setItem('autotranslate', value ? 'true' : '');
+						Object.values(global.onLanguageChange).forEach(callback => {
+							callback();
+						});
+					}}
+				/>
+				<Text>
+					{translate('Auto Translate')}
+				</Text>
 			</View>
 		);
 	}

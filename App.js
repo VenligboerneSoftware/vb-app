@@ -57,6 +57,7 @@ export default class App extends React.Component {
 		Expo.Amplitude.logEvent('Startup');
 
 		const language = await AsyncStorage.getItem('language');
+		global.autotranslate = Boolean(await AsyncStorage.getItem('autotranslate'));
 		await Promise.all([
 			this.assetPromises.language,
 			this.assetPromises.languageOptions
