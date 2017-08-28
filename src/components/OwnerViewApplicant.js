@@ -134,7 +134,7 @@ export default class OwnerViewApplicant extends React.Component {
 				</ScrollView>
 				<FacebookContactButton
 					owner={this.props.application.applicantInfo}
-					description={'Contact Responder'}
+					description={'Contact'}
 				/>
 			</View>
 		);

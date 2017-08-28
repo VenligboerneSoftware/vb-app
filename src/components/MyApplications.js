@@ -92,12 +92,12 @@ export default class MyApplications extends React.Component {
 	 * @returns {Number} 1, -1, or 0 depending on how the two elements compare
 	 */
 	_alphabetize = (obj1, obj2) => {
-		if (obj1.status > obj2.status) {
-			return 1;
-		} else if (obj1.status < obj2.status) {
+		if (obj1.status === obj2.status) {
+			return 0;
+		} else if (obj1.status === 'Accepted' || obj2.status === 'Rejected') {
 			return -1;
 		} else {
-			return 0;
+			return 1;
 		}
 	};
 
