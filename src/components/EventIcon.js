@@ -4,15 +4,6 @@ import { translate } from '../utils/internationalization';
 import Colors from '../styles/Colors.js';
 
 export default class EventIcon extends React.Component {
-	componentWillMount() {
-		this.listenerID = Math.floor(Math.random() * 100000000000);
-		global.onLanguageChange[this.listenerID] = this.forceUpdate.bind(this);
-	}
-
-	componentWillUnmount() {
-		delete global.onLanguageChange[this.listenerID];
-	}
-
 	render() {
 		return (
 			<View style={styles.container}>

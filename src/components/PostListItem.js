@@ -8,6 +8,15 @@ import EventIcon from './EventIcon';
 import getDistance from '../utils/getDistance';
 
 export default class PostListItem extends React.PureComponent {
+	componentWillMount() {
+		this.listenerID = Math.floor(Math.random() * 100000000000);
+		global.onLanguageChange[this.listenerID] = this.forceUpdate.bind(this);
+	}
+
+	componentWillUnmount() {
+		delete global.onLanguageChange[this.listenerID];
+	}
+
 	render() {
 		return (
 			<TouchableOpacity
