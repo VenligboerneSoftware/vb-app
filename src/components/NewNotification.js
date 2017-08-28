@@ -308,7 +308,8 @@ const styles = StyleSheet.create({
 	questionText: {
 		textAlign: 'center',
 		fontSize: 13,
-		backgroundColor: 'transparent'
+		backgroundColor: 'transparent',
+		width: '80%'
 	},
 	submit: {
 		backgroundColor: '#4565A9',

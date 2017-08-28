@@ -113,7 +113,11 @@ export default class ViewSingleApplication extends React.Component {
 
 						<View style={styles.buttonBar}>
 							<TouchableOpacity
-								style={styles.bottomButton}
+								style={
+									this.props.app.status === 'Waiting For Response'
+										? styles.bottomButton
+										: styles.onlyBottomButton
+								}
 								onPress={this._deleteApp}
 							>
 								<FontAwesome name={'trash-o'} size={40} />
@@ -189,5 +193,15 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		paddingLeft: 5,
 		backgroundColor: 'transparent'
+	},
+	onlyBottomButton: {
+		width: 250,
+		backgroundColor: Colors.grey.light,
+		paddingVertical: 5,
+		borderRadius: 10,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		margin: 10
 	}
 });
