@@ -5,15 +5,18 @@ import {
 	TouchableOpacity,
 	View
 } from 'react-native';
-import Modal from './Modal.js';
 import React from 'react';
 import firebase from 'firebase';
 
-import { translate } from 'venligboerneapp/src/utils/internationalization.js';
+import {
+	translate,
+	translateFreeform
+} from 'venligboerneapp/src/utils/internationalization.js';
 
 import ApplicationStatus from './ApplicationStatus';
 import Colors from '../styles/Colors';
 import EventIcon from './EventIcon';
+import Modal from './Modal.js';
 import SharedStyles from '../styles/SharedStyles';
 import ViewSingleApplication from './ViewSingleApplication';
 
@@ -167,13 +170,14 @@ export default class MyApplications extends React.Component {
 
 									<View style={styles.appInfo}>
 										<Text style={styles.title}>
-											{item.postData.title}
+											{translateFreeform(item.postData.title)}
 										</Text>
 
 										<ApplicationStatus status={item.status} modal={false} />
 
 										<Text style={styles.message}>
-											{translate('Your Reply') + ':'} {item.message}
+											{translate('Your Reply') + ': '}
+											{translateFreeform(item.message)}
 										</Text>
 									</View>
 								</TouchableOpacity>}

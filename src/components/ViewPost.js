@@ -283,8 +283,8 @@ export default class ViewPost extends Component {
 					{/* Share icon */}
 					<ShareButton
 						deepLink={'post/' + this.props.post.key}
-						description={this.props.post.description.original}
-						title={this.props.post.title.orignal}
+						description={this.props.post.description}
+						title={this.props.post.title}
 					/>
 
 					<ExitBar hide={this.props.hide} />

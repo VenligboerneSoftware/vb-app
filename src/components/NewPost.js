@@ -54,6 +54,8 @@ export default class NewPost extends React.Component {
 		});
 
 		global.editPost = post => {
+			post.title = post.title.original;
+			post.description = post.description.original;
 			this.setState({
 				newPost: post
 			});
@@ -321,9 +323,15 @@ export default class NewPost extends React.Component {
 			);
 			const parsedResponse = await response.json();
 			console.log('subscribers to notify', parsedResponse);
-			pushNotify(parsedResponse, event.title, 'New post in your area!', {
-				url: '+post/' + event.key
-			});
+			// TODO translate depending on receivers language
+			pushNotify(
+				parsedResponse,
+				event.title.original,
+				'New post in your area!',
+				{
+					url: '+post/' + event.key
+				}
+			);
 		} catch (error) {
 			console.warn('Error while getting relevant subscribers', error);
 		}
@@ -363,9 +371,7 @@ export default class NewPost extends React.Component {
 						}}
 						style={[styles.title, styles.textInput]}
 						onChangeText={this._titleChange}
-						defaultValue={
-							this.state.newPost.title ? this.state.newPost.title.original : ''
-						}
+						defaultValue={this.state.newPost.title}
 						multiline={false}
 						maxLength={45}
 						returnKeyType="done"
@@ -387,11 +393,7 @@ export default class NewPost extends React.Component {
 						}}
 						style={[styles.description, styles.textInput]}
 						onChangeText={this._descriptionChange}
-						defaultValue={
-							this.state.newPost.description
-								? this.state.newPost.description.original
-								: ''
-						}
+						defaultValue={this.state.newPost.description}
 						multiline={true}
 						blurOnSubmit={true}
 						returnKeyType="done"

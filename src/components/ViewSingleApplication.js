@@ -60,7 +60,7 @@ export default class ViewSingleApplication extends React.Component {
 				pushNotify(
 					token.val(),
 					'Please review reply to your post',
-					this.props.app.postData.title,
+					this.props.app.postData.title.original,
 					{
 						type: 'applicationSent'
 					}
@@ -100,7 +100,8 @@ export default class ViewSingleApplication extends React.Component {
 						<View style={SharedStyles.divider} />
 
 						<Text style={SharedStyles.message}>
-							{translate('Your Reply') + ':'} {this.props.app.message}
+							{translate('Your Reply') + ': '}
+							{translateFreeform(this.props.app.message)}
 						</Text>
 						<View style={SharedStyles.divider} />
 						<Time dates={this.props.app.postData.dates} />
