@@ -26,8 +26,8 @@ export default class OwnerViewApplicant extends React.Component {
 	acceptApplicant = () => {
 		//TODO: translate
 		Alert.alert(
-			'Are you sure you want to accept?',
-			'This person will be able to view your Facebook Profile',
+			translate('Are you sure you want to accept?'),
+			translate('This person will be able to view your Facebook Profile'),
 			[
 				{ text: translate('No') },
 				{
@@ -44,8 +44,8 @@ export default class OwnerViewApplicant extends React.Component {
 	rejectApplicant = () => {
 		//TODO: translate
 		Alert.alert(
-			'Are you sure you want to reject?',
-			'This person will not be able to contact you',
+			translate('Are you sure you want to reject?'),
+			translate('This person will not be able to contact you'),
 			[
 				{ text: translate('No') },
 				{
