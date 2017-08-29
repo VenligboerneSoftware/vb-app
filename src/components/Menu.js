@@ -51,14 +51,6 @@ export default class Menu extends React.Component {
 					onPress={this.manageNotificationsModal ? null : this.props.hide}
 				/>
 				<View style={styles.modalContainer}>
-					<Modal
-						isVisible={this.state.manageNotificationsModal}
-						animationIn={'zoomIn'}
-						animationOut={'zoomOut'}
-					>
-						<ManageNotifications hide={this._hideModal} />
-					</Modal>
-
 					<TouchableOpacity
 						style={{ alignSelf: 'flex-end', marginRight: 10, marginTop: 10 }}
 						onPress={this.props.hide}
@@ -74,7 +66,10 @@ export default class Menu extends React.Component {
 						},
 						{
 							title: 'Manage Notifications',
-							onPress: this._showModal
+							onPress: () => {
+								this.props.hide();
+								global.setCurrentModal('/ManageNotifications');
+							}
 						},
 						{
 							title: 'Tutorial',

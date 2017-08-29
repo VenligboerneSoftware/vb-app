@@ -1,10 +1,12 @@
-import { Linking, Platform, StatusBar, View } from 'react-native';
+import { Linking, Platform, View } from 'react-native';
 import { Permissions, Notifications } from 'expo';
 import React from 'react';
 import firebase from 'firebase';
 
 import PostOrCenterModal from './PostOrCenterModal';
 import Tabs from './Tabs.js';
+import DropdownAlert from 'react-native-dropdownalert';
+import ModalRouter from './ModalRouter';
 
 export default class HomePage extends React.Component {
 	constructor() {
@@ -14,7 +16,8 @@ export default class HomePage extends React.Component {
 			badgeCounts: {
 				Me: 0,
 				Map: 0
-			}
+			},
+			loaded: false
 		};
 
 		// TODO there must be a better pattern for this
@@ -108,6 +111,15 @@ export default class HomePage extends React.Component {
 		Notifications.addListener(this._handleNotification);
 	}
 
+	componentDidMount() {
+		this.setState({ loaded: true });
+
+		global.setDropDown = (title, message) => {
+			this.dropdown.alertWithType('info', title, message);
+			console.log('Alert FIRED');
+		};
+	}
+
 	render() {
 		return (
 			<View style={{ flex: 1 }}>
@@ -120,6 +132,13 @@ export default class HomePage extends React.Component {
 					badgeCounts={this.state.badgeCounts}
 					setBadgeCount={(tab, count) => {
 						this.state.badgeCounts[tab] = count;
+					}}
+				/>
+				<ModalRouter />
+				<DropdownAlert
+					ref={ref => (this.dropdown = ref)}
+					onClose={data => {
+						console.log(data);
 					}}
 				/>
 			</View>

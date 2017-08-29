@@ -148,17 +148,24 @@ export default class NewNotification extends React.Component {
 							.ref('subscriptions')
 							.child(firebase.auth().currentUser.uid)
 							.push(this.state.newSubscription);
-						this.props.back();
+						this._backToManageNotifications();
 					}
 				}
 			]
 		);
 	};
 
+	_backToManageNotifications = () => {
+		global.setCurrentModal('/ManageNotifications');
+	};
+
 	render() {
 		return (
 			<View style={styles.container}>
-				<TouchableOpacity onPress={this.props.back} style={SharedStyles.back}>
+				<TouchableOpacity
+					onPress={this._backToManageNotifications}
+					style={SharedStyles.back}
+				>
 					<Ionicons
 						name={I18nManager.isRTL ? 'ios-arrow-forward' : 'ios-arrow-back'}
 						size={42}
@@ -254,7 +261,8 @@ export default class NewNotification extends React.Component {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
+		width: '100%',
+		height: '100%',
 		backgroundColor: Colors.white
 	},
 	section: {
