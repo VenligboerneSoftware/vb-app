@@ -34,6 +34,8 @@ export default class ModalRouter extends React.Component {
 			<Modal
 				open={this.state.path !== null}
 				containerStyle={{ flex: 1 }}
+				animationDuration={200}
+				animationTension={0}
 				modalStyle={{
 					marginTop: 20,
 					marginBottom: 15,
