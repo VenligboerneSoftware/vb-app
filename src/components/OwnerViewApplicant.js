@@ -16,11 +16,11 @@ import ApplicationStatus from './ApplicationStatus.js';
 import Colors from '../styles/Colors';
 import ExitBar from './ExitBar';
 import FacebookContactButton from './FacebookContactButton.js';
-import FlagContent from './FlagContent';
 import MapWithCircle from './MapWithCircle';
 import SharedStyles from '../styles/SharedStyles';
 import Time from './Time';
 import TitleAndIcon from './TitleAndIcon.js';
+import FlagButton from './FlagButton';
 
 export default class OwnerViewApplicant extends React.Component {
 	acceptApplicant = () => {
@@ -61,7 +61,7 @@ export default class OwnerViewApplicant extends React.Component {
 
 	render() {
 		return (
-			<View style={{ flex: 1, backgroundColor: 'white' }}>
+			<View style={[SharedStyles.modalContent, { backgroundColor: 'white' }]}>
 				<TouchableOpacity onPress={this.props.back} style={SharedStyles.back}>
 					<Ionicons
 						name={I18nManager.isRTL ? 'ios-arrow-forward' : 'ios-arrow-back'}
@@ -69,7 +69,7 @@ export default class OwnerViewApplicant extends React.Component {
 					/>
 				</TouchableOpacity>
 
-				<ExitBar hide={this.props.hide} />
+				<ExitBar exit={this.props.exit} />
 
 				<ScrollView keyboardShouldPersistTaps={'handled'}>
 					<View style={styles.container}>
@@ -126,9 +126,10 @@ export default class OwnerViewApplicant extends React.Component {
 							latitude={this.props.post.latitude}
 							longitude={this.props.post.longitude}
 						/>
-						<FlagContent
+						<FlagButton
 							applicationID={this.props.application.key}
 							flaggedUser={this.props.application.applicant}
+							exit={this.props.exit}
 						/>
 					</View>
 				</ScrollView>

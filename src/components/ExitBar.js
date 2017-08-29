@@ -20,7 +20,13 @@ export default class ExitBar extends Component {
 							{this.props.title}
 						</Text>
 					: null}
-				<TouchableOpacity onPress={this.props.hide} style={styles.exit}>
+				<TouchableOpacity
+					onPress={() => {
+						this.props.exit ? this.props.exit() : null;
+						global.setCurrentModal(null);
+					}}
+					style={styles.exit}
+				>
 					<FontAwesome
 						name={'close'}
 						size={this.props.size ? this.props.size : 40}

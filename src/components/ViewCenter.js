@@ -17,123 +17,105 @@ export default class ViewCenter extends Component {
 	}
 
 	render() {
-		if (this.state.isCalendar) {
-			return (
-				<CenterCalendar
-					center={this.props.center}
-					hide={() => {
-						this.setState({ isCalendar: false });
+		return (
+			<View style={[SharedStyles.modalContent, styles.container]}>
+				<TouchableOpacity
+					onPress={() => {
+						this.props.exit();
+						global.setCurrentModal(null);
+					}}
+					style={SharedStyles.exit}
+				>
+					<FontAwesome
+						name={'close'}
+						size={this.props.size ? this.props.size : 40}
+					/>
+				</TouchableOpacity>
+
+				{/* Logo */}
+				<Image
+					style={styles.logo}
+					source={{
+						uri: this.props.center.image
 					}}
 				/>
-			);
-		} else {
-			return (
-				<View style={styles.container}>
-					<TouchableOpacity onPress={this.props.hide} style={SharedStyles.exit}>
-						<FontAwesome
-							name={'close'}
-							size={this.props.size ? this.props.size : 40}
-						/>
-					</TouchableOpacity>
 
-					{/* Logo */}
-					<Image
-						style={styles.logo}
-						source={{
-							uri: this.props.center.image
-						}}
-					/>
+				{/* Facebook */}
+				<TouchableOpacity
+					style={styles.dataRow}
+					onPress={() => {
+						if (this.props.center.facebookID) {
+							WebBrowser.openBrowserAsync(
+								'https://www.facebook.com/groups/' +
+									this.props.center.facebookID
+							);
+						}
+					}}
+				>
+					<FontAwesome style={styles.icon} name="facebook-square" size={40} />
+					<Text style={styles.label}>
+						{this.props.center.title}
+					</Text>
+				</TouchableOpacity>
 
-					{/* Facebook */}
-					<TouchableOpacity
-						style={styles.dataRow}
-						onPress={() => {
-							if (this.props.center.facebookID) {
-								WebBrowser.openBrowserAsync(
-									'https://www.facebook.com/groups/' +
-										this.props.center.facebookID
-								);
-							}
-						}}
-					>
-						<FontAwesome style={styles.icon} name="facebook-square" size={40} />
-						<Text style={styles.label}>
-							{this.props.center.title}
-						</Text>
-					</TouchableOpacity>
-
-					{/* Address */}
-					<View style={styles.dataRow}>
-						<FontAwesome style={styles.icon} name="home" size={40} />
-						<Text style={styles.label}>
-							{this.props.center.address}
-						</Text>
-					</View>
-
-					{/* Phone number */}
-					<View style={styles.dataRow}>
-						<FontAwesome style={styles.icon} name="phone" size={40} />
-						<Text style={styles.label}>
-							{this.props.center.phone}
-						</Text>
-					</View>
-
-					{/* Hours */}
-					{this.props.center.hours
-						? <View style={styles.dataRow}>
-								<FontAwesome style={styles.icon} name="clock-o" size={40} />
-								<View>
-									{[
-										'Monday',
-										'Tuesday',
-										'Wednesday',
-										'Thursday',
-										'Friday',
-										'Saturday',
-										'Sunday'
-									].map(day =>
-										<Text key={day}>
-											{translate(day)}: {this.props.center.hours[day]}
-										</Text>
-									)}
-								</View>
-							</View>
-						: null}
-
-					<View style={styles.buttonContainer}>
-						{/* Calendar button */}
-						{/* <TouchableOpacity
-							style={styles.button}
-							onPress={() => {
-								this.setState({ isCalendar: true });
-							}}
-						>
-							<Text style={{ textAlign: 'center' }}>
-								{translate('View Calendar')}
-							</Text>
-						</TouchableOpacity> */}
-
-						{/* Directions button */}
-						<TouchableOpacity
-							style={styles.button}
-							onPress={getDirections.bind(this, {
-								destination: this.props.center
-							})}
-						>
-							<Text style={{ textAlign: 'center' }}>
-								{translate('Get Directions')}
-							</Text>
-						</TouchableOpacity>
-					</View>
+				{/* Address */}
+				<View style={styles.dataRow}>
+					<FontAwesome style={styles.icon} name="home" size={40} />
+					<Text style={styles.label}>
+						{this.props.center.address}
+					</Text>
 				</View>
-			);
-		}
+
+				{/* Phone number */}
+				<View style={styles.dataRow}>
+					<FontAwesome style={styles.icon} name="phone" size={40} />
+					<Text style={styles.label}>
+						{this.props.center.phone}
+					</Text>
+				</View>
+
+				{/* Hours */}
+				{this.props.center.hours
+					? <View style={styles.dataRow}>
+							<FontAwesome style={styles.icon} name="clock-o" size={40} />
+							<View>
+								{[
+									'Monday',
+									'Tuesday',
+									'Wednesday',
+									'Thursday',
+									'Friday',
+									'Saturday',
+									'Sunday'
+								].map(day =>
+									<Text key={day}>
+										{translate(day)}: {this.props.center.hours[day]}
+									</Text>
+								)}
+							</View>
+						</View>
+					: null}
+
+				<View style={styles.buttonContainer}>
+					{/* Directions button */}
+					<TouchableOpacity
+						style={styles.button}
+						onPress={getDirections.bind(this, {
+							destination: this.props.center
+						})}
+					>
+						<Text style={{ textAlign: 'center' }}>
+							{translate('Get Directions')}
+						</Text>
+					</TouchableOpacity>
+				</View>
+			</View>
+		);
 	}
 }
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		justifyContent: 'space-around',
 		padding: 10,
 		backgroundColor: 'white',

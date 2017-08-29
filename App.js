@@ -28,7 +28,7 @@ import StatusBarAlert from 'react-native-statusbar-alert';
 
 // The warnings are caused by an issue in Firebase. Hopefully a future firebase
 // update will fix them.
-console.ignoredYellowBox = ['Setting a timer'];
+console.ignoredYellowBox = ['Setting a timer', 'Warning:'];
 
 export default class App extends React.Component {
 	constructor() {

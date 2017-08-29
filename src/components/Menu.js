@@ -20,10 +20,6 @@ import history from '../utils/history.js';
 export default class Menu extends React.Component {
 	constructor() {
 		super();
-
-		this.state = {
-			manageNotificationsModal: false
-		};
 	}
 
 	_logout = async () => {
@@ -35,11 +31,6 @@ export default class Menu extends React.Component {
 		// });
 		history.push('/StartupPage'); //was loading old profile
 	};
-
-	_showModal = () => this.setState({ manageNotificationsModal: true });
-
-	_hideModal = () => this.setState({ manageNotificationsModal: false });
-
 	_getLocalizedWiki = () =>
 		'http://venligboerne.dk' +
 		(getCode(global.language) === 'en' ? '' : '/' + getCode(global.language));
@@ -49,17 +40,9 @@ export default class Menu extends React.Component {
 			<View style={{ flex: 1 }}>
 				<TouchableOpacity
 					style={styles.tapCloseMenu}
-					onPress={this.manageNotificationsModal ? null : this.props.hide}
+					onPress={this.props.hide}
 				/>
 				<View style={styles.modalContainer}>
-					<Modal
-						isVisible={this.state.manageNotificationsModal}
-						animationIn={'zoomIn'}
-						animationOut={'zoomOut'}
-					>
-						<ManageNotifications hide={this._hideModal} />
-					</Modal>
-
 					<TouchableOpacity
 						style={{ alignSelf: 'flex-end', marginRight: 10, marginTop: 10 }}
 						onPress={this.props.hide}
@@ -75,7 +58,10 @@ export default class Menu extends React.Component {
 						},
 						{
 							title: 'Manage Notifications',
-							onPress: this._showModal
+							onPress: () => {
+								this.props.hide();
+								global.setCurrentModal('/ManageNotifications');
+							}
 						},
 						{
 							title: 'Tutorial',

@@ -19,7 +19,7 @@ export default class FacebookContactButton extends Component {
 				<TouchableOpacity
 					style={styles.contact}
 					onPress={() => {
-						if (this.props.owner.facebookUID) {
+						if (this.props.owner) {
 							//intermittant error where not yet loaded
 							WebBrowser.openBrowserAsync(
 								'https://www.facebook.com/' + this.props.owner.facebookUID

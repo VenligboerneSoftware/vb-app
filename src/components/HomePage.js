@@ -1,10 +1,12 @@
-import { Linking, Platform, StatusBar, View } from 'react-native';
+import { Linking, Platform, View } from 'react-native';
 import { Permissions, Notifications } from 'expo';
 import React from 'react';
 import firebase from 'firebase';
 
 import PostOrCenterModal from './PostOrCenterModal';
 import Tabs from './Tabs.js';
+import DropdownAlert from 'react-native-dropdownalert';
+import ModalRouter from './ModalRouter';
 
 export default class HomePage extends React.Component {
 	constructor() {
@@ -14,7 +16,8 @@ export default class HomePage extends React.Component {
 			badgeCounts: {
 				Me: 0,
 				Map: 0
-			}
+			},
+			loaded: false
 		};
 
 		// TODO there must be a better pattern for this
@@ -85,6 +88,18 @@ export default class HomePage extends React.Component {
 			}
 		} else {
 			//iOS specific code
+			console.log(notification);
+			if (notification.data.type === 'applicationSent') {
+				global.setDropDown(
+					'You have a reply to your post!',
+					notification.data.postTitle
+				);
+			} else if (notification.data.type === 'applicantAccepted') {
+				global.setDropDown(
+					'Your reply has been accepted!',
+					notification.data.postTitle
+				);
+			}
 		}
 	};
 
@@ -93,18 +108,37 @@ export default class HomePage extends React.Component {
 		Notifications.addListener(this._handleNotification);
 	}
 
+	componentDidMount() {
+		this.setState({ loaded: true });
+
+		global.setDropDown = (title, message) => {
+			this.dropdown.alertWithType(
+				'info',
+				title ? title : '',
+				message ? message : ''
+			);
+		};
+	}
+
 	render() {
 		return (
 			<View style={{ flex: 1 }}>
 				<PostOrCenterModal
 					isVisible={this.state.showPost}
 					post={this.state.linkedPost}
-					hide={() => this.setState({ showPost: false })}
+					exit={() => this.setState({ showPost: false })}
 				/>
 				<Tabs
 					badgeCounts={this.state.badgeCounts}
 					setBadgeCount={(tab, count) => {
 						this.state.badgeCounts[tab] = count;
+					}}
+				/>
+				<ModalRouter />
+				<DropdownAlert
+					ref={ref => (this.dropdown = ref)}
+					onClose={data => {
+						console.log(data);
 					}}
 				/>
 			</View>

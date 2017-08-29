@@ -98,6 +98,7 @@ export default class ViewApplications extends React.Component {
 						{
 							type: 'applicantAccepted',
 							post: application.post,
+							postTitle: application.post.title,
 							uid: firebase.auth().currentUser.uid
 						}
 					);
@@ -175,12 +176,12 @@ export default class ViewApplications extends React.Component {
 			? <OwnerViewApplicant
 					application={this.state.applicant}
 					back={this._hideApplicant}
-					hide={this.props.hide}
+					exit={this.props.exit}
 					post={this.props.post}
 					appStatusChange={this.changeApplicantStatus}
 				/>
-			: <View style={styles.container}>
-					<ExitBar hide={this.props.hide} title={translate('View Responses')} />
+			: <View style={[SharedStyles.modalContent, styles.container]}>
+					<ExitBar exit={this.props.exit} title={translate('View Responses')} />
 					<Text style={styles.title}>
 						{this.props.post.title}
 					</Text>
@@ -233,8 +234,6 @@ const styles = StyleSheet.create({
 		justifyContent: 'center'
 	},
 	container: {
-		flex: 1,
-		// padding: 10,
 		backgroundColor: Colors.white
 	},
 	title: {

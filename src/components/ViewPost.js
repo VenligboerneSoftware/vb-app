@@ -23,13 +23,13 @@ import Colors from 'venligboerneapp/src/styles/Colors.js';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
 
 import ExitBar from './ExitBar.js';
-import FlagContent from './FlagContent.js';
 import MapWithCircle from './MapWithCircle.js';
 import ShareButton from './ShareButton.js';
 import Time from './Time';
 import TitleAndIcon from './TitleAndIcon';
 import ViewApplications from './ViewApplications.js';
 import pushNotify from '../utils/pushNotify';
+import FlagButton from './FlagButton';
 
 export default class ViewPost extends Component {
 	constructor(props) {
@@ -126,6 +126,7 @@ export default class ViewPost extends Component {
 					{
 						type: 'applicationSent',
 						post: this.props.post.key,
+						postTitle: this.props.post.title,
 						uid: firebase.auth().currentUser.uid
 					}
 				);
@@ -148,7 +149,7 @@ export default class ViewPost extends Component {
 				);
 			} else {
 				this.submit();
-				this.props.hide();
+				this._hideModal();
 				global.changeTab('Me', () => {
 					global.profileIndex(1);
 				});
@@ -184,7 +185,7 @@ export default class ViewPost extends Component {
 	// Sends the user to the my applications tab
 	_viewApplication = () => {
 		// TODO open the specific application
-		this.props.hide();
+		this._hideModal();
 		global.changeTab('Me', () => {
 			global.profileIndex(1);
 		});
@@ -232,7 +233,7 @@ export default class ViewPost extends Component {
 		global.changeTab('New Post', () => {
 			global.editPost(this.props.post);
 		});
-		this.props.hide();
+		this._hideModal();
 	};
 
 	_deleteItem = () => {
@@ -246,6 +247,11 @@ export default class ViewPost extends Component {
 			],
 			{ cancelable: false }
 		);
+	};
+
+	_hideModal = () => {
+		this.props.exit();
+		global.setCurrentModal(null);
 	};
 
 	_deletePost = () => {
@@ -270,97 +276,103 @@ export default class ViewPost extends Component {
 		// remove image
 		firebase.database().ref('images').child(this.props.post.key).remove();
 
-		this.props.hide();
+		this._hideModal();
 	};
 
 	render() {
 		return this.isOwner && this.state.applyClicked
-			? <ViewApplications hide={this.props.hide} post={this.props.post} />
-			: <KeyboardAwareView style={{ backgroundColor: 'white' }}>
-					{/* Share icon */}
-					<ShareButton
-						deepLink={'post/' + this.props.post.key}
-						description={this.props.post.description}
-						title={this.props.post.title}
-					/>
+			? <ViewApplications exit={this.props.exit} post={this.props.post} />
+			: <View style={SharedStyles.modalContent}>
+					<KeyboardAwareView style={{ backgroundColor: 'white' }}>
+						{/* Share icon */}
+						<ShareButton
+							deepLink={'post/' + this.props.post.key}
+							description={this.props.post.description}
+							title={this.props.post.title}
+						/>
 
-					<ExitBar hide={this.props.hide} />
+						<ExitBar exit={this.props.exit} />
 
-					<ScrollView
-						ref={scrollView => {
-							this.scrollView = scrollView;
-						}}
-						keyboardShouldPersistTaps={'handled'}
-					>
-						<View style={styles.container}>
-							<TitleAndIcon post={this.props.post} />
+						<ScrollView
+							ref={scrollView => {
+								this.scrollView = scrollView;
+							}}
+							keyboardShouldPersistTaps={'handled'}
+						>
+							<View style={styles.container}>
+								<TitleAndIcon post={this.props.post} />
 
-							{/* Edit and delete buttons */}
-							{this.isOwner
-								? <View style={styles.editDeleteContainer}>
-										<TouchableOpacity
-											onPress={this._editItem}
-											style={styles.editDelete}
-										>
-											<FontAwesome name={'edit'} size={35} />
-										</TouchableOpacity>
-										<TouchableOpacity
-											onPress={this._deleteItem}
-											style={styles.editDelete}
-										>
-											<FontAwesome name={'trash-o'} size={32} />
-										</TouchableOpacity>
-									</View>
-								: null}
+								{/* Edit and delete buttons */}
+								{this.isOwner
+									? <View style={styles.editDeleteContainer}>
+											<TouchableOpacity
+												onPress={this._editItem}
+												style={styles.editDelete}
+											>
+												<FontAwesome name={'edit'} size={35} />
+											</TouchableOpacity>
+											<TouchableOpacity
+												onPress={this._deleteItem}
+												style={styles.editDelete}
+											>
+												<FontAwesome name={'trash-o'} size={32} />
+											</TouchableOpacity>
+										</View>
+									: null}
 
-							<View style={SharedStyles.divider} />
+								<View style={SharedStyles.divider} />
 
-							<Time style={styles.dataRow} dates={this.props.post.dates} />
+								<Time style={styles.dataRow} dates={this.props.post.dates} />
 
-							<View style={SharedStyles.divider} />
+								<View style={SharedStyles.divider} />
 
-							<View style={styles.dataRow}>
-								<Text style={styles.description}>
-									{this.props.post.description}
-								</Text>
-							</View>
+								<View style={styles.dataRow}>
+									<Text style={styles.description}>
+										{this.props.post.description}
+									</Text>
+								</View>
 
-							<View style={SharedStyles.divider} />
+								<View style={SharedStyles.divider} />
 
-							{/*Display selected image*/}
-							{this.state.image
-								? <View>
-										<Image
-											source={{ uri: this.state.image }}
-											style={styles.imageUpload}
-										/>
-									</View>
-								: null}
+								{/*Display selected image*/}
+								{this.state.image
+									? <View>
+											<Image
+												source={{ uri: this.state.image }}
+												style={styles.imageUpload}
+											/>
+										</View>
+									: null}
 
-							{/*Image renders after divider so this is the only way to ensure
+								{/*Image renders after divider so this is the only way to ensure
 							that there arent double dividers*/}
-							{this.state.image ? <View style={SharedStyles.divider} /> : null}
+								{this.state.image
+									? <View style={SharedStyles.divider} />
+									: null}
 
-							{/* Map or application text*/}
-							{this.state.applyClicked
-								? this.returnApplicationTextbox()
-								: <MapWithCircle
-										latitude={this.props.post.latitude}
-										longitude={this.props.post.longitude}
-									/>}
+								{/* Map or application text*/}
+								{this.state.applyClicked
+									? this.returnApplicationTextbox()
+									: <MapWithCircle
+											latitude={this.props.post.latitude}
+											longitude={this.props.post.longitude}
+										/>}
 
-							{!this.isOwner && !this.state.applyClicked
-								? <FlagContent
-										flaggedUser={this.props.post.owner}
-										postID={this.props.post.key}
-									/>
-								: null}
+								{/* Flag Post Button */}
+								{!this.isOwner && !this.state.applyClicked
+									? <FlagButton
+											flaggedUser={this.props.post.owner}
+											postID={this.props.post.key}
+											exit={this._hideModal}
+										/>
+									: null}
+							</View>
+						</ScrollView>
+						<View style={SharedStyles.fixedBottomButton}>
+							{this.returnApplyButton()}
 						</View>
-					</ScrollView>
-					<View style={SharedStyles.fixedBottomButton}>
-						{this.returnApplyButton()}
-					</View>
-				</KeyboardAwareView>;
+					</KeyboardAwareView>
+				</View>;
 	}
 }
 

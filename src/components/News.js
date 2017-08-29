@@ -5,11 +5,9 @@ import {
 	Text,
 	Image,
 	TouchableOpacity,
-	ScrollView,
 	ActivityIndicator,
 	RefreshControl
 } from 'react-native';
-import HTMLView from 'react-native-htmlview';
 import Modal from 'react-native-modal';
 import React from 'react';
 import SpecialCharacter from 'he';
@@ -19,10 +17,8 @@ import { translate } from 'venligboerneapp/src/utils/internationalization';
 import Colors from 'venligboerneapp/src/styles/Colors.js';
 import Moment from 'moment';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles';
-import htmlStyles from 'venligboerneapp/src/utils/HTMLStyle.js';
-
-import ExitBar from './ExitBar';
 import TopBar from './TopBar.js';
+import SingleNewsArticle from './SingleNewsArticle.js';
 
 export default class News extends React.Component {
 	constructor() {
@@ -30,7 +26,6 @@ export default class News extends React.Component {
 		this.state = {
 			articles: [],
 			articlesLoaded: false,
-			isModalVisible: false,
 			selectedArticle: null,
 			refreshing: false
 		};
@@ -73,7 +68,7 @@ export default class News extends React.Component {
 								thumbnail: article.post.thumbnail_images
 									? article.post.thumbnail_images.large
 									: null,
-								date: article.post.date,
+								date: Moment(article.post.date),
 								author: article.post.author.name
 							};
 							return newArticle;
@@ -90,9 +85,7 @@ export default class News extends React.Component {
 		allArticles = [].concat(...allArticles);
 		//Sort articles by date
 		allArticles = allArticles.sort((a, b) => {
-			return Moment(b.date.replace(' ', 'T')).diff(
-				Moment(a.date.replace(' ', 'T'))
-			);
+			return b.date.diff(a.date);
 		});
 		this.setState({
 			articles: allArticles,
@@ -100,45 +93,10 @@ export default class News extends React.Component {
 		});
 	};
 
-	//Returns the date formatted for easy understanding
-	_getFormattedDate = date => {
-		date = Moment(date.replace(' ', 'T'));
-		return date.format('MM·DD·YY');
+	_selectArticle = item => this.setState({ selectedArticle: item });
+	_deselectArticle = () => {
+		this.setState({ selectedArticle: null });
 	};
-
-	//Renders the modal containing the selected Article
-	_renderModal = () =>
-		<View style={styles.articleModalContainer}>
-			<ExitBar hide={this._hideModal} />
-			<ScrollView keyboardShouldPersistTaps={'handled'}>
-				{/* Author and Date */}
-				<Text style={styles.selectedArticleHeader}>
-					{this.state.selectedArticle.author +
-						'   ' +
-						this._getFormattedDate(this.state.selectedArticle.date)}
-				</Text>
-				{/* Title */}
-				<Text style={styles.selectedArticleTitle}>
-					{this.state.selectedArticle.title}
-				</Text>
-				{/* Image */}
-				{this.state.selectedArticle.thumbnail
-					? <Image
-							style={styles.selectedArticleImage}
-							source={{ uri: this.state.selectedArticle.thumbnail.url }}
-							resizeMode={'cover'}
-						/>
-					: null}
-				<View style={SharedStyles.divider} />
-				{/* Content */}
-				<View style={styles.selectedArticleContent}>
-					<HTMLView
-						value={this.state.selectedArticle.content}
-						stylesheet={htmlStyles}
-					/>
-				</View>
-			</ScrollView>
-		</View>;
 
 	//Renders the list of news articles
 	_renderArticles = () =>
@@ -153,15 +111,13 @@ export default class News extends React.Component {
 			}
 			renderItem={({ item }) =>
 				<TouchableOpacity
-					onPress={() => {
-						this._showModal(item);
-					}}
+					onPress={() => this._selectArticle(item)}
 					style={styles.articleContainer}
 				>
 					<View style={styles.articleTitledatecontainer}>
 						{/* Date */}
 						<Text style={styles.articleDate}>
-							{this._getFormattedDate(item.date)}
+							{item.date.format('MM·DD·YY')}
 						</Text>
 						{/* Title */}
 						<Text style={styles.articleTitle}>
@@ -185,13 +141,6 @@ export default class News extends React.Component {
 				</TouchableOpacity>}
 		/>;
 
-	// Shows Modal when a news article is clicked
-	_showModal = item =>
-		this.setState({ selectedArticle: item, isModalVisible: true });
-
-	// Hides Modal when X button is clicked
-	_hideModal = () => this.setState({ isModalVisible: false });
-
 	// Renders animated loading icon when downloading articles
 	_loading = () =>
 		<View>
@@ -209,14 +158,12 @@ export default class News extends React.Component {
 		return (
 			<View style={styles.container}>
 				<TopBar title={translate('VenligboNews')} />
-				<Modal
-					isVisible={this.state.isModalVisible}
-					animationIn={'zoomIn'}
-					animationOut={'zoomOut'}
-					name={'Article'}
-				>
-					{this.state.selectedArticle ? this._renderModal() : <View />}
-				</Modal>
+				{this.state.selectedArticle
+					? global.setCurrentModal('/SingleNewsArticle', {
+							selectedArticle: this.state.selectedArticle,
+							exit: this._deselectArticle
+						})
+					: null}
 				{this.state.articlesLoaded ? this._renderArticles() : this._loading()}
 			</View>
 		);
@@ -262,33 +209,5 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		flex: 0.6,
 		marginRight: 20
-	},
-	articleModalContainer: {
-		flex: 1,
-		justifyContent: 'space-between',
-		backgroundColor: Colors.white,
-		alignItems: 'center'
-	},
-	selectedArticleContent: {
-		margin: 10
-	},
-	selectedArticleImage: {
-		height: 170,
-		marginHorizontal: 10,
-		marginVertical: 15
-	},
-	selectedArticleTitle: {
-		fontSize: 22,
-		fontWeight: 'bold',
-		marginTop: 5,
-		textAlign: 'center',
-		marginBottom: 10,
-		marginHorizontal: 10
-	},
-	selectedArticleHeader: {
-		alignSelf: 'center',
-		fontSize: 14,
-		marginVertical: 10,
-		color: Colors.grey.dark
 	}
 });

@@ -127,37 +127,20 @@ export default class MyApplications extends React.Component {
 			});
 	};
 
-	_unbold = async application => {
-		//update local copy
-		application.bold = false;
-
-		firebase
-			.database()
-			.ref('applications')
-			.child(application.key)
-			.child('bold')
-			.set(false);
-	};
-
-	_showModal = item =>
+	_showPostModal = item =>
 		this.setState({ selectedApp: item, isModalVisible: true });
 
 	_hideModal = () => this.setState({ isModalVisible: false });
 
 	render() {
+		if (this.state.isModalVisible) {
+			global.setCurrentModal('/ViewSingleApplication', {
+				app: this.state.selectedApp,
+				exit: this._hideModal
+			});
+		}
 		return (
 			<View style={styles.container}>
-				<Modal
-					isVisible={this.state.isModalVisible}
-					animationIn={'zoomIn'}
-					animationOut={'zoomOut'}
-				>
-					<ViewSingleApplication
-						hide={this._hideModal}
-						app={this.state.selectedApp}
-						unbold={this._unbold}
-					/>
-				</Modal>
 				{Object.values(this.state.applications).length > 0
 					? <FlatList
 							data={Object.values(this.state.applications).sort(
@@ -170,7 +153,7 @@ export default class MyApplications extends React.Component {
 									style={styles.appRow}
 									key={item.key}
 									onPress={() => {
-										this._showModal(item);
+										this._showPostModal(item);
 									}}
 								>
 									<EventIcon item={item.postData} />

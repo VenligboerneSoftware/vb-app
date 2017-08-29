@@ -31,13 +31,26 @@ export default class ViewSingleApplication extends React.Component {
 
 	async componentDidMount() {
 		if (this.props.app.bold) {
-			this.props.unbold(this.props.app);
+			this._unbold(this.props.app);
 		}
 	}
 
+	_unbold = async application => {
+		//update local copy
+		application.bold = false;
+
+		firebase
+			.database()
+			.ref('applications')
+			.child(application.key)
+			.child('bold')
+			.set(false);
+	};
+
 	removeListing = () => {
 		deleteApplication(this.props.app);
-		this.props.hide();
+		this.props.exit();
+		global.setCurrentModal(null);
 	};
 
 	_deleteApp = () => {
@@ -68,7 +81,8 @@ export default class ViewSingleApplication extends React.Component {
 					'Please review reply to your post',
 					this.props.app.postData.title,
 					{
-						type: 'applicationSent'
+						type: 'applicationSent',
+						postTitle: this.props.app.postData.title
 					}
 				);
 			});
@@ -88,8 +102,8 @@ export default class ViewSingleApplication extends React.Component {
 
 	render() {
 		return (
-			<View style={{ flex: 1, backgroundColor: 'white' }}>
-				<ExitBar hide={this.props.hide} title={translate('View Reply')} />
+			<View style={[SharedStyles.modalContent, { backgroundColor: 'white' }]}>
+				<ExitBar exit={this.props.exit} title={translate('View Reply')} />
 				<ScrollView keyboardShouldPersistTaps={'handled'}>
 					<View style={styles.container}>
 						<TitleAndIcon post={this.props.app.postData} />

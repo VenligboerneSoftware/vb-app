@@ -7,7 +7,6 @@ import {
 	View,
 	Alert
 } from 'react-native';
-import Modal from './Modal.js';
 import React, { Component } from 'react';
 import firebase from 'firebase';
 import { FontAwesome, Entypo } from '@expo/vector-icons';
@@ -15,7 +14,6 @@ import { FontAwesome, Entypo } from '@expo/vector-icons';
 import { translate } from '../utils/internationalization';
 import Colors from '../styles/Colors';
 import ExitBar from './ExitBar';
-import NewNotification from './NewNotification';
 import SharedStyles from '../styles/SharedStyles';
 
 export default class ManageNotifications extends Component {
@@ -66,104 +64,96 @@ export default class ManageNotifications extends Component {
 	}
 
 	render() {
-		return this.state.newNotificationVisible
-			? <NewNotification
-					back={() => this.setState({ newNotificationVisible: false })}
-					hide={this.props.hide}
-				/>
-			: <View style={styles.container}>
-					<ExitBar title={'Manage Notifications'} hide={this.props.hide} />
-					{Object.getOwnPropertyNames(this.state.subscriptions).length === 0
-						? <View style={{ flex: 1, justifyContent: 'center' }}>
-								<Text
+		return (
+			<View style={[SharedStyles.modalContent, styles.container]}>
+				<ExitBar title={'Manage Notifications'} />
+				{Object.getOwnPropertyNames(this.state.subscriptions).length === 0
+					? <View style={{ flex: 1, justifyContent: 'center' }}>
+							<Text
+								style={{
+									margin: 10,
+									textAlign: 'center'
+								}}
+							>
+								{translate(
+									'You have no subscriptions to display. Click the plus button below to create one.'
+								)}
+							</Text>
+						</View>
+					: <FlatList
+							style={{ width: '100%' }}
+							data={Object.values(this.state.subscriptions)}
+							ItemSeparatorComponent={() =>
+								<View style={SharedStyles.divider} />}
+							renderItem={({ item }) =>
+								<View
+									key={item.key}
 									style={{
-										margin: 10,
-										textAlign: 'center'
+										flexDirection: 'row',
+										justifyContent: 'space-around',
+										alignItems: 'center',
+										padding: 10
 									}}
 								>
-									{translate(
-										'You have no subscriptions to display. Click the plus button below to create one.'
-									)}
-								</Text>
-							</View>
-						: <FlatList
-								style={{ width: '100%' }}
-								data={Object.values(this.state.subscriptions)}
-								ItemSeparatorComponent={() =>
-									<View style={SharedStyles.divider} />}
-								renderItem={({ item }) =>
-									<View
-										key={item.key}
-										style={{
-											flexDirection: 'row',
-											justifyContent: 'space-around',
-											alignItems: 'center',
-											padding: 10
-										}}
-									>
-										<View style={{ alignItems: 'center', flex: 1 }}>
-											<Image
-												style={{
-													tintColor: Colors.grey.dark,
-													width: 50,
-													height: 50,
-													resizeMode: 'contain'
-												}}
-												source={{
-													uri: global.db.categories[item.icon].iconURL
-												}}
-											/>
-
-											<Text
-												style={{
-													color: Colors.grey.dark,
-													fontSize: 10,
-													textAlign: 'center'
-												}}
-											>
-												{translate(global.db.categories[item.icon].title)}
-											</Text>
-										</View>
+									<View style={{ alignItems: 'center', flex: 1 }}>
+										<Image
+											style={{
+												tintColor: Colors.grey.dark,
+												width: 50,
+												height: 50,
+												resizeMode: 'contain'
+											}}
+											source={{ uri: global.db.categories[item.icon].iconURL }}
+										/>
 
 										<Text
-											style={{ fontSize: 16, flex: 1, textAlign: 'center' }}
-										>
-											{item.radius + ' km'}
-										</Text>
-										<Text style={{ fontSize: 12, flex: 2 }} numberOfLines={2}>
-											{item.formatted_address}
-										</Text>
-
-										<TouchableOpacity
-											onPress={this._deleteSubscription.bind(this, item)}
 											style={{
-												backgroundColor: Colors.grey.light,
-												padding: 5,
-												borderRadius: 10,
-												marginLeft: 10
+												color: Colors.grey.dark,
+												fontSize: 10,
+												textAlign: 'center'
 											}}
 										>
-											<FontAwesome name={'trash-o'} size={26} />
-										</TouchableOpacity>
-									</View>}
-							/>}
+											{translate(global.db.categories[item.icon].title)}
+										</Text>
+									</View>
 
-					<View style={styles.bottomBar}>
-						<TouchableOpacity
-							style={styles.addCircle}
-							onPress={() => this.setState({ newNotificationVisible: true })}
-						>
-							<Entypo name={'plus'} size={44} style={styles.addIcon} />
-							{/* <Text style={styles.bottomText}>Create New Notification</Text> */}
-						</TouchableOpacity>
-					</View>
-				</View>;
+									<Text style={{ fontSize: 16, flex: 1, textAlign: 'center' }}>
+										{item.radius + ' km'}
+									</Text>
+									<Text style={{ fontSize: 12, flex: 2 }} numberOfLines={2}>
+										{item.formatted_address}
+									</Text>
+
+									<TouchableOpacity
+										onPress={this._deleteSubscription.bind(this, item)}
+										style={{
+											backgroundColor: Colors.grey.light,
+											padding: 5,
+											borderRadius: 10,
+											marginLeft: 10
+										}}
+									>
+										<FontAwesome name={'trash-o'} size={26} />
+									</TouchableOpacity>
+								</View>}
+						/>}
+				<View style={styles.bottomBar}>
+					<TouchableOpacity
+						style={styles.addCircle}
+						onPress={() => {
+							global.setCurrentModal('/NewNotification');
+						}}
+					>
+						<Entypo name={'plus'} size={44} style={styles.addIcon} />
+					</TouchableOpacity>
+				</View>
+			</View>
+		);
 	}
 }
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		justifyContent: 'flex-start',
 		alignItems: 'center',
 		backgroundColor: 'white'

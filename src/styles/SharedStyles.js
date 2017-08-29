@@ -63,5 +63,9 @@ export default {
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center'
+	},
+	modalContent: {
+		width: '100%',
+		height: '100%'
 	}
 };
