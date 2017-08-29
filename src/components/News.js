@@ -26,7 +26,6 @@ export default class News extends React.Component {
 		this.state = {
 			articles: [],
 			articlesLoaded: false,
-			isModalVisible: false,
 			selectedArticle: null,
 			refreshing: false
 		};
@@ -94,6 +93,11 @@ export default class News extends React.Component {
 		});
 	};
 
+	_selectArticle = item => this.setState({ selectedArticle: item });
+	_deselectArticle = () => {
+		this.setState({ selectedArticle: null });
+	};
+
 	//Renders the list of news articles
 	_renderArticles = () =>
 		<FlatList
@@ -107,9 +111,7 @@ export default class News extends React.Component {
 			}
 			renderItem={({ item }) =>
 				<TouchableOpacity
-					onPress={() => {
-						this._showModal(item);
-					}}
+					onPress={() => this._selectArticle(item)}
 					style={styles.articleContainer}
 				>
 					<View style={styles.articleTitledatecontainer}>
@@ -139,13 +141,6 @@ export default class News extends React.Component {
 				</TouchableOpacity>}
 		/>;
 
-	// Shows Modal when a news article is clicked
-	_showModal = item =>
-		this.setState({ selectedArticle: item, isModalVisible: true });
-
-	// Hides Modal when X button is clicked
-	_hideModal = () => this.setState({ isModalVisible: false });
-
 	// Renders animated loading icon when downloading articles
 	_loading = () =>
 		<View>
@@ -163,16 +158,13 @@ export default class News extends React.Component {
 		return (
 			<View style={styles.container}>
 				<TopBar title={translate('VenligboNews')} />
-				<Modal
-					isVisible={this.state.isModalVisible}
-					animationIn={'zoomIn'}
-					animationOut={'zoomOut'}
-					name={'Article'}
-				>
-					{this.state.selectedArticle
-						? <SingleNewsArticle selectedArticle={this.state.selectedArticle} />
-						: <View />}
-				</Modal>
+				{this.state.selectedArticle
+					? global.setCurrentModal(
+							'/SingleNewsArticle',
+							{ selectedArticle: this.state.selectedArticle },
+							this._deselectArticle
+						)
+					: null}
 				{this.state.articlesLoaded ? this._renderArticles() : this._loading()}
 			</View>
 		);

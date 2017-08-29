@@ -6,7 +6,9 @@ import { Route, Switch, Router } from 'react-router-native';
 
 import ManageNotifications from './ManageNotifications';
 import NewNotification from './NewNotification.js';
-import PostOrCenterModal from './PostOrCenterModal';
+// import PostOrCenterModal from './PostOrCenterModal';
+import ViewCenter from './ViewCenter';
+import ViewPost from './ViewPost';
 import SingleNewsArticle from './SingleNewsArticle';
 import ViewSingleApplication from './ViewSingleApplication';
 import ViewApplications from './ViewApplications';
@@ -17,31 +19,50 @@ export default class ModalRouter extends React.Component {
 		super(props);
 
 		this.state = {
-			currentModal: null
+			path: null,
+			params: null
 		};
 	}
 
 	componentDidMount() {
-		global.setCurrentModal = path => {
-			this.setState({ currentModal: path });
+		global.setCurrentModal = (path, params, exitFunction) => {
+			this.setState({ path: path, params: params, exit: exitFunction });
 			console.log('set Current Modal to ', path);
+			console.log('With Params', params);
 		};
 	}
 
 	render() {
-		console.log('currModal', this.state.currentModal);
 		return (
 			<Modal
-				open={this.state.currentModal !== null}
+				open={this.state.path !== null}
 				containerStyle={{ flex: 1 }}
 				modalStyle={{ margin: 20, padding: 0 }}
 				closeOnTouchOutside={false}
 			>
-				{/* <ManageNotifications /> */}
-				<Switch location={{ pathname: this.state.currentModal }}>
+				<Switch location={{ pathname: this.state.path }}>
 					<Route path="/ManageNotifications" component={ManageNotifications} />
 					<Route path="/NewNotification" component={NewNotification} />
-					<Route path="/Menu" component={Menu} />
+					<Route
+						path="/SingleNewsArticle"
+						render={() =>
+							<SingleNewsArticle
+								{...this.state.params}
+								exit={this.state.exit}
+							/>}
+					/>
+					<Route
+						path="/ViewCenter"
+						render={() => <ViewCenter {...this.state.params} />}
+					/>
+					<Route
+						path="/ViewPost"
+						render={() => <ViewPost {...this.state.params} />}
+					/>
+					<Route
+						path="/ViewApplications"
+						render={() => <ViewApplications {...this.state.params} />}
+					/>
 				</Switch>
 			</Modal>
 		);

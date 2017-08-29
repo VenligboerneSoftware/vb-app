@@ -16,7 +16,7 @@ export default class SingleNewsArticle extends React.Component {
 	render() {
 		return (
 			<View style={styles.articleModalContainer}>
-				<ExitBar />
+				<ExitBar exit={this.props.exit} />
 				<ScrollView keyboardShouldPersistTaps={'handled'}>
 					{/* Author and Date */}
 					<Text style={styles.selectedArticleHeader}>
@@ -52,7 +52,8 @@ export default class SingleNewsArticle extends React.Component {
 
 const styles = StyleSheet.create({
 	articleModalContainer: {
-		flex: 1,
+		width: '100%',
+		height: '100%',
 		justifyContent: 'space-between',
 		backgroundColor: Colors.white,
 		alignItems: 'center'
