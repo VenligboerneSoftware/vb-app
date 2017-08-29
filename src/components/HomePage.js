@@ -85,21 +85,6 @@ export default class HomePage extends React.Component {
 			}
 		} else {
 			//iOS specific code
-			if (notification.data.url) {
-				this.setState({
-					badgeCounts: {
-						...this.state.badgeCounts,
-						Map: this.state.badgeCounts.Map + 1
-					}
-				});
-			} else {
-				this.setState({
-					badgeCounts: {
-						...this.state.badgeCounts,
-						Me: this.state.badgeCounts.Me + 1
-					}
-				});
-			}
 		}
 	};
 
