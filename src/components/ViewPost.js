@@ -312,7 +312,7 @@ export default class ViewPost extends Component {
 									</View>
 								: null}
 
-							<View style={[SharedStyles.divider, { marginTop: 10 }]} />
+							<View style={SharedStyles.divider} />
 
 							<Time style={styles.dataRow} dates={this.props.post.dates} />
 
@@ -376,6 +376,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-around',
 		alignItems: 'center',
 		paddingTop: 10,
+		paddingBottom: 10,
 		borderTopWidth: 1,
 		borderColor: Colors.grey.medium
 	},
