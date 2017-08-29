@@ -38,59 +38,47 @@ export default class FlagContent extends React.Component {
 			report
 		);
 		firebase.database().ref('flags').child(this.props.flaggedUser).push(report);
-		this.setState({ isModalVisible: false });
+		this.props.exit();
+		global.setCurrentModal(null);
 	};
 
 	render() {
 		return (
 			<View>
-				<Modal isVisible={this.state.isModalVisible} name={'FlagContent'}>
-					<View style={styles.container}>
-						<ExitBar
-							title={translate('Report As Inappropriate')}
-							hide={() => this.setState({ isModalVisible: false })}
+				<View style={[SharedStyles.modalContent, styles.container]}>
+					<ExitBar
+						title={translate('Report As Inappropriate')}
+						exit={this.props.exit}
+					/>
+					<View style={{ flexDirection: 'row', width: '100%' }}>
+						<FontAwesome
+							name={'exclamation-circle'}
+							size={50}
+							style={{ marginRight: 10, alignSelf: 'center' }}
 						/>
-						<View style={{ flexDirection: 'row', width: '100%' }}>
-							<FontAwesome
-								name={'exclamation-circle'}
-								size={50}
-								style={{ marginRight: 10, alignSelf: 'center' }}
-							/>
-							<Text style={{ fontSize: 20, flex: 1 }}>
-								{translate(
-									'Why is this content inappropriate? Moderators will review this post based on your response.'
-								)}
-							</Text>
-						</View>
-						<TextInput
-							onChangeText={text => this.setState({ reason: text })}
-							style={styles.textInput}
-							underlineColorAndroid={'white'}
-							blurOnSubmit={true}
-							returnKeyType="done"
-							multiline={true}
-						/>
-						<Text
-							style={[SharedStyles.button, { textAlign: 'center' }]}
-							onPress={this._submitReport}
-						>
-							{translate('Submit Report')}
+						<Text style={{ fontSize: 20, flex: 1 }}>
+							{translate(
+								'Why is this content inappropriate? Moderators will review this post based on your response.'
+							)}
 						</Text>
 					</View>
-				</Modal>
-				<TouchableOpacity
-					style={styles.flag}
-					onPress={() => this.setState({ isModalVisible: true })}
-				>
-					<FontAwesome
-						name={'exclamation-circle'}
-						size={35}
-						style={{ backgroundColor: 'transparent', marginLeft: 10 }}
+					<TextInput
+						onChangeText={text => this.setState({ reason: text })}
+						style={styles.textInput}
+						underlineColorAndroid={'white'}
+						blurOnSubmit={true}
+						returnKeyType="done"
+						multiline={true}
 					/>
-					<Text style={{ alignSelf: 'center', margin: 10 }}>
-						{translate('Flag as inappropriate')}
-					</Text>
-				</TouchableOpacity>
+					<TouchableOpacity
+						style={SharedStyles.button}
+						onPress={this._submitReport}
+					>
+						<Text style={{ fontSize: 14, textAlign: 'center' }}>
+							{translate('Submit Report')}
+						</Text>
+					</TouchableOpacity>
+				</View>
 			</View>
 		);
 	}
@@ -98,7 +86,6 @@ export default class FlagContent extends React.Component {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		justifyContent: 'space-around',
 		padding: 10,
 		backgroundColor: 'white',
@@ -115,13 +102,5 @@ const styles = StyleSheet.create({
 		borderColor: Colors.grey.dark,
 		borderRadius: 10,
 		textAlignVertical: 'top'
-	},
-	flag: {
-		alignSelf: 'center',
-		backgroundColor: Colors.grey.light,
-		justifyContent: 'center',
-		flexDirection: 'row',
-		marginBottom: 10,
-		borderRadius: 10
 	}
 });

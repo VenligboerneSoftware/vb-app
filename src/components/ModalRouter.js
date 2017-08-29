@@ -10,6 +10,7 @@ import ViewPost from './ViewPost';
 import SingleNewsArticle from './SingleNewsArticle';
 import ViewSingleApplication from './ViewSingleApplication';
 import ViewApplications from './ViewApplications';
+import FlagContent from './FlagContent';
 
 export default class ModalRouter extends React.Component {
 	constructor(props) {
@@ -59,6 +60,10 @@ export default class ModalRouter extends React.Component {
 					<Route
 						path="/ViewSingleApplication"
 						render={() => <ViewSingleApplication {...this.state.params} />}
+					/>
+					<Route
+						path="/FlagContent"
+						render={() => <FlagContent {...this.state.params} />}
 					/>
 				</Switch>
 			</Modal>

@@ -23,7 +23,6 @@ import Colors from 'venligboerneapp/src/styles/Colors.js';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
 
 import ExitBar from './ExitBar.js';
-import FlagContent from './FlagContent.js';
 import MapWithCircle from './MapWithCircle.js';
 import ShareButton from './ShareButton.js';
 import Time from './Time';
@@ -357,11 +356,29 @@ export default class ViewPost extends Component {
 											longitude={this.props.post.longitude}
 										/>}
 
+								{/* Flag Post Button */}
 								{!this.isOwner && !this.state.applyClicked
-									? <FlagContent
-											flaggedUser={this.props.post.owner}
-											postID={this.props.post.key}
-										/>
+									? <TouchableOpacity
+											style={styles.flag}
+											onPress={() =>
+												global.setCurrentModal('/FlagContent', {
+													flaggedUser: this.props.post.owner,
+													postID: this.props.post.key,
+													exit: this._hideModal
+												})}
+										>
+											<FontAwesome
+												name={'exclamation-circle'}
+												size={35}
+												style={{
+													backgroundColor: 'transparent',
+													marginLeft: 10
+												}}
+											/>
+											<Text style={{ alignSelf: 'center', margin: 10 }}>
+												{translate('Flag as inappropriate')}
+											</Text>
+										</TouchableOpacity>
 									: null}
 							</View>
 						</ScrollView>
@@ -451,5 +468,13 @@ const styles = StyleSheet.create({
 	},
 	applyText: {
 		color: 'white'
+	},
+	flag: {
+		alignSelf: 'center',
+		backgroundColor: Colors.grey.light,
+		justifyContent: 'center',
+		flexDirection: 'row',
+		marginBottom: 10,
+		borderRadius: 10
 	}
 });
