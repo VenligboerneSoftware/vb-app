@@ -61,7 +61,7 @@ export default class OwnerViewApplicant extends React.Component {
 
 	render() {
 		return (
-			<View style={{ flex: 1, backgroundColor: 'white' }}>
+			<View style={[SharedStyles.modalContent, { backgroundColor: 'white' }]}>
 				<TouchableOpacity onPress={this.props.back} style={SharedStyles.back}>
 					<Ionicons
 						name={I18nManager.isRTL ? 'ios-arrow-forward' : 'ios-arrow-back'}
@@ -69,7 +69,7 @@ export default class OwnerViewApplicant extends React.Component {
 					/>
 				</TouchableOpacity>
 
-				<ExitBar hide={this.props.hide} />
+				<ExitBar exit={this.props.exit} />
 
 				<ScrollView keyboardShouldPersistTaps={'handled'}>
 					<View style={styles.container}>
