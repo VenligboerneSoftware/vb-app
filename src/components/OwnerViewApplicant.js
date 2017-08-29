@@ -16,11 +16,11 @@ import ApplicationStatus from './ApplicationStatus.js';
 import Colors from '../styles/Colors';
 import ExitBar from './ExitBar';
 import FacebookContactButton from './FacebookContactButton.js';
-import FlagContent from './FlagContent';
 import MapWithCircle from './MapWithCircle';
 import SharedStyles from '../styles/SharedStyles';
 import Time from './Time';
 import TitleAndIcon from './TitleAndIcon.js';
+import FlagButton from './FlagButton';
 
 export default class OwnerViewApplicant extends React.Component {
 	acceptApplicant = () => {
@@ -126,9 +126,10 @@ export default class OwnerViewApplicant extends React.Component {
 							latitude={this.props.post.latitude}
 							longitude={this.props.post.longitude}
 						/>
-						<FlagContent
+						<FlagButton
 							applicationID={this.props.application.key}
 							flaggedUser={this.props.application.applicant}
+							exit={this.props.exit}
 						/>
 					</View>
 				</ScrollView>

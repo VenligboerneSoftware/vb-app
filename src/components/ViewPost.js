@@ -29,6 +29,7 @@ import Time from './Time';
 import TitleAndIcon from './TitleAndIcon';
 import ViewApplications from './ViewApplications.js';
 import pushNotify from '../utils/pushNotify';
+import FlagButton from './FlagButton';
 
 export default class ViewPost extends Component {
 	constructor(props) {
@@ -358,27 +359,11 @@ export default class ViewPost extends Component {
 
 								{/* Flag Post Button */}
 								{!this.isOwner && !this.state.applyClicked
-									? <TouchableOpacity
-											style={styles.flag}
-											onPress={() =>
-												global.setCurrentModal('/FlagContent', {
-													flaggedUser: this.props.post.owner,
-													postID: this.props.post.key,
-													exit: this._hideModal
-												})}
-										>
-											<FontAwesome
-												name={'exclamation-circle'}
-												size={35}
-												style={{
-													backgroundColor: 'transparent',
-													marginLeft: 10
-												}}
-											/>
-											<Text style={{ alignSelf: 'center', margin: 10 }}>
-												{translate('Flag as inappropriate')}
-											</Text>
-										</TouchableOpacity>
+									? <FlagButton
+											flaggedUser={this.props.post.owner}
+											postID={this.props.post.key}
+											exit={this._hideModal}
+										/>
 									: null}
 							</View>
 						</ScrollView>
@@ -468,13 +453,5 @@ const styles = StyleSheet.create({
 	},
 	applyText: {
 		color: 'white'
-	},
-	flag: {
-		alignSelf: 'center',
-		backgroundColor: Colors.grey.light,
-		justifyContent: 'center',
-		flexDirection: 'row',
-		marginBottom: 10,
-		borderRadius: 10
 	}
 });
