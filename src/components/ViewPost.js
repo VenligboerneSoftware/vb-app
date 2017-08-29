@@ -231,7 +231,7 @@ export default class ViewPost extends Component {
 		global.changeTab('New Post', () => {
 			global.editPost(this.props.post);
 		});
-		this.props.exit();
+		this._hideModal();
 	};
 
 	_deleteItem = () => {
@@ -248,6 +248,7 @@ export default class ViewPost extends Component {
 	};
 
 	_hideModal = () => {
+		console.log('CLOSING');
 		this.props.exit();
 		global.setCurrentModal(null);
 	};

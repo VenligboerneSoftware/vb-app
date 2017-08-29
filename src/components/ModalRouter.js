@@ -1,18 +1,15 @@
-import { Linking, Platform, View } from 'react-native';
 import React from 'react';
 
 import Modal from 'react-native-simple-modal';
-import { Route, Switch, Router } from 'react-router-native';
+import { Route, Switch } from 'react-router-native';
 
 import ManageNotifications from './ManageNotifications';
 import NewNotification from './NewNotification.js';
-// import PostOrCenterModal from './PostOrCenterModal';
 import ViewCenter from './ViewCenter';
 import ViewPost from './ViewPost';
 import SingleNewsArticle from './SingleNewsArticle';
 import ViewSingleApplication from './ViewSingleApplication';
 import ViewApplications from './ViewApplications';
-import Menu from './Menu';
 
 export default class ModalRouter extends React.Component {
 	constructor(props) {

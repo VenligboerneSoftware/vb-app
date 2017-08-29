@@ -32,6 +32,7 @@ export default class ViewSingleApplication extends React.Component {
 	removeListing = () => {
 		deleteApplication(this.props.app);
 		this.props.exit();
+		global.setCurrentModal(null);
 	};
 
 	_deleteApp = () => {

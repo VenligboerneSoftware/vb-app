@@ -38,6 +38,12 @@ export default class PostList extends React.PureComponent {
 		});
 
 	render() {
+		if (this.state.isApplicationsModalVisible) {
+			global.setCurrentModal('/ViewApplications', {
+				exit: this._hideApplications,
+				post: this.state.selectedPost
+			});
+		}
 		return (
 			<View style={{ flex: 1 }}>
 				<PostOrCenterModal
@@ -47,7 +53,7 @@ export default class PostList extends React.PureComponent {
 				/>
 
 				{/* Modal to go straight to viewApplications */}
-				<Modal
+				{/* <Modal
 					isVisible={this.state.isApplicationsModalVisible}
 					animationIn={'zoomIn'}
 					animationOut={'zoomOut'}
@@ -56,7 +62,7 @@ export default class PostList extends React.PureComponent {
 						hide={this._hideApplications}
 						post={this.state.selectedPost}
 					/>
-				</Modal>
+				</Modal> */}
 
 				<BarePostList
 					listData={this.props.listData}
