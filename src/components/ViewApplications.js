@@ -151,6 +151,25 @@ export default class ViewApplications extends React.Component {
 		);
 	}
 
+	/**
+	 * Callback function for Array.sort which alphabetizes elements by their status.
+	 * @param {Object} obj1 The first object
+	 * @param {Object} obj2 The second object
+	 * @returns {Number} 1, -1, or 0 depending on how the two elements compare
+	 */
+	_sort = (obj1, obj2) => {
+		if (obj1.status === obj2.status) {
+			return 0;
+		} else if (
+			obj1.status === 'Waiting For Response' ||
+			obj2.status === 'Rejected'
+		) {
+			return -1;
+		} else {
+			return 1;
+		}
+	};
+
 	// function: applicantList
 	// ---------------------------------
 	// Returns a Flatlist containing applicants from the data source passed in
@@ -162,7 +181,7 @@ export default class ViewApplications extends React.Component {
 					</Text>
 				: //actually render flatlist
 					<FlatList
-						data={listData}
+						data={Object.values(listData).sort(this._sort)}
 						ItemSeparatorComponent={() => <View style={SharedStyles.divider} />}
 						renderItem={({ item }) => this.renderApplication(item)}
 					/>
