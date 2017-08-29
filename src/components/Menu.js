@@ -28,11 +28,12 @@ export default class Menu extends React.Component {
 
 	_logout = async () => {
 		await AsyncStorage.removeItem('token');
-		const agreedToEula = await AsyncStorage.getItem('eula');
-		history.push('/FacebookAuth', {
-			onDone: history.push.bind(this, '/HomePage', {}),
-			eula: !agreedToEula
-		});
+		// const agreedToEula = await AsyncStorage.getItem('eula');
+		// history.push('/FacebookAuth', {
+		// 	onDone: history.push.bind(this, '/HomePage', {}),
+		// 	eula: !agreedToEula
+		// });
+		history.push('/StartupPage'); //was loading old profile
 	};
 
 	_showModal = () => this.setState({ manageNotificationsModal: true });
