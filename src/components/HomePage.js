@@ -126,7 +126,7 @@ export default class HomePage extends React.Component {
 				<PostOrCenterModal
 					isVisible={this.state.showPost}
 					post={this.state.linkedPost}
-					hide={() => this.setState({ showPost: false })}
+					exit={() => this.setState({ showPost: false })}
 				/>
 				<Tabs
 					badgeCounts={this.state.badgeCounts}

@@ -71,7 +71,7 @@ export default class MapViewPage extends React.Component {
 				<PostOrCenterModal
 					isVisible={this.state.isPostModalVisible}
 					post={this.state.selectedPost}
-					hide={this._hideModal}
+					exit={this._hideModal}
 				/>
 				{postsInMapRegion.length === 0 ? this.props.message : null}
 				<MapView

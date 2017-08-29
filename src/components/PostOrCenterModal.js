@@ -5,21 +5,26 @@ import ViewCenter from './ViewCenter.js';
 import ViewPost from './ViewPost.js';
 
 export default class PostOrCenterModal extends React.Component {
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
 	}
 
 	render() {
-		return (
-			<Modal
-				isVisible={this.props.isVisible}
-				animationIn={'zoomIn'}
-				animationOut={'zoomOut'}
-			>
-				{this.props.post && this.props.post.icon === 'center'
-					? <ViewCenter hide={this.props.hide} center={this.props.post} />
-					: <ViewPost hide={this.props.hide} post={this.props.post} />}
-			</Modal>
-		);
+		if (this.props.isVisible) {
+			if (this.props.post && this.props.post.icon === 'center') {
+				global.setCurrentModal(
+					'/ViewCenter',
+					{ center: this.props.post },
+					this.props.exit
+				);
+			} else {
+				global.setCurrentModal(
+					'/ViewPost',
+					{ post: this.props.post },
+					this.props.exit
+				);
+			}
+		}
+		return null;
 	}
 }

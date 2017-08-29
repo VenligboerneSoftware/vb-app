@@ -43,7 +43,7 @@ export default class PostList extends React.PureComponent {
 				<PostOrCenterModal
 					isVisible={this.state.isPostModalVisible}
 					post={this.state.selectedPost}
-					hide={this._hideModal}
+					exit={this._hideModal}
 				/>
 
 				{/* Modal to go straight to viewApplications */}

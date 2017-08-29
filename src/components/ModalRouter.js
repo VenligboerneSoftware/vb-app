@@ -53,11 +53,13 @@ export default class ModalRouter extends React.Component {
 					/>
 					<Route
 						path="/ViewCenter"
-						render={() => <ViewCenter {...this.state.params} />}
+						render={() =>
+							<ViewCenter {...this.state.params} exit={this.state.exit} />}
 					/>
 					<Route
 						path="/ViewPost"
-						render={() => <ViewPost {...this.state.params} />}
+						render={() =>
+							<ViewPost {...this.state.params} exit={this.state.exit} />}
 					/>
 					<Route
 						path="/ViewApplications"
