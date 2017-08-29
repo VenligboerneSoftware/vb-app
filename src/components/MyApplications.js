@@ -130,7 +130,7 @@ export default class MyApplications extends React.Component {
 			});
 	};
 
-	_showModal = item =>
+	_showPostModal = item =>
 		this.setState({ selectedApp: item, isModalVisible: true });
 
 	_hideModal = () => this.setState({ isModalVisible: false });
@@ -156,7 +156,7 @@ export default class MyApplications extends React.Component {
 									style={styles.appRow}
 									key={item.key}
 									onPress={() => {
-										this._showModal(item);
+										this._showPostModal(item);
 									}}
 								>
 									<EventIcon item={item.postData} />

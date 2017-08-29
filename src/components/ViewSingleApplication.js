@@ -31,7 +31,7 @@ export default class ViewSingleApplication extends React.Component {
 
 	removeListing = () => {
 		deleteApplication(this.props.app);
-		this.props.hide();
+		this.props.exit();
 	};
 
 	_deleteApp = () => {
@@ -83,7 +83,7 @@ export default class ViewSingleApplication extends React.Component {
 	render() {
 		return (
 			<View style={[SharedStyles.modalContent, { backgroundColor: 'white' }]}>
-				<ExitBar hide={this.props.hide} title={translate('View Reply')} />
+				<ExitBar exit={this.props.exit} title={translate('View Reply')} />
 				<ScrollView keyboardShouldPersistTaps={'handled'}>
 					<View style={styles.container}>
 						<TitleAndIcon post={this.props.app.postData} />
