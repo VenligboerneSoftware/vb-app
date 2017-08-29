@@ -152,7 +152,7 @@ export default class ViewApplications extends React.Component {
 	}
 
 	/**
-	 * Callback function for Array.sort which alphabetizes elements by their status.
+	 * Callback function for Array.sort which sorts elements by their status.
 	 * @param {Object} obj1 The first object
 	 * @param {Object} obj2 The second object
 	 * @returns {Number} 1, -1, or 0 depending on how the two elements compare

@@ -83,12 +83,12 @@ export default class MyApplications extends React.Component {
 	};
 
 	/**
-	 * Callback function for Array.sort which alphabetizes elements by their status.
+	 * Callback function for Array.sort which sorts elements by their status.
 	 * @param {Object} obj1 The first object
 	 * @param {Object} obj2 The second object
 	 * @returns {Number} 1, -1, or 0 depending on how the two elements compare
 	 */
-	_alphabetize = (obj1, obj2) => {
+	_sort = (obj1, obj2) => {
 		if (obj1.status === obj2.status) {
 			return 0;
 		} else if (obj1.status === 'Accepted' || obj2.status === 'Rejected') {
@@ -143,9 +143,7 @@ export default class MyApplications extends React.Component {
 			<View style={styles.container}>
 				{Object.values(this.state.applications).length > 0
 					? <FlatList
-							data={Object.values(this.state.applications).sort(
-								this._alphabetize
-							)}
+							data={Object.values(this.state.applications).sort(this._sort)}
 							ItemSeparatorComponent={() =>
 								<View style={SharedStyles.divider} />}
 							renderItem={({ item }) =>
