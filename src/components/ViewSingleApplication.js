@@ -63,7 +63,8 @@ export default class ViewSingleApplication extends React.Component {
 					'Please review reply to your post',
 					this.props.app.postData.title,
 					{
-						type: 'applicationSent'
+						type: 'applicationSent',
+						postTitle: this.props.app.postData.title
 					}
 				);
 			});

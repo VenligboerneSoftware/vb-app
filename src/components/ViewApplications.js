@@ -89,6 +89,7 @@ export default class ViewApplications extends React.Component {
 						{
 							type: 'applicantAccepted',
 							post: application.post,
+							postTitle: application.post.title,
 							uid: firebase.auth().currentUser.uid
 						}
 					);
