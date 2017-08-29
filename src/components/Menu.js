@@ -20,10 +20,6 @@ import history from '../utils/history.js';
 export default class Menu extends React.Component {
 	constructor() {
 		super();
-
-		this.state = {
-			manageNotificationsModal: false
-		};
 	}
 
 	_logout = async () => {
@@ -34,11 +30,6 @@ export default class Menu extends React.Component {
 			eula: !agreedToEula
 		});
 	};
-
-	_showModal = () => this.setState({ manageNotificationsModal: true });
-
-	_hideModal = () => this.setState({ manageNotificationsModal: false });
-
 	_getLocalizedWiki = () =>
 		'http://venligboerne.dk' +
 		(getCode(global.language) === 'en' ? '' : '/' + getCode(global.language));
@@ -48,7 +39,7 @@ export default class Menu extends React.Component {
 			<View style={{ flex: 1 }}>
 				<TouchableOpacity
 					style={styles.tapCloseMenu}
-					onPress={this.manageNotificationsModal ? null : this.props.hide}
+					onPress={this.props.hide}
 				/>
 				<View style={styles.modalContainer}>
 					<TouchableOpacity
