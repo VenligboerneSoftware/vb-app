@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'transparent'
 	},
 	onlyBottomButton: {
-		width: 250,
+		width: 200,
 		backgroundColor: Colors.grey.light,
 		paddingVertical: 5,
 		borderRadius: 10,
