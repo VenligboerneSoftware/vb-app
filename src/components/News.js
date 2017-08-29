@@ -159,11 +159,10 @@ export default class News extends React.Component {
 			<View style={styles.container}>
 				<TopBar title={translate('VenligboNews')} />
 				{this.state.selectedArticle
-					? global.setCurrentModal(
-							'/SingleNewsArticle',
-							{ selectedArticle: this.state.selectedArticle },
-							this._deselectArticle
-						)
+					? global.setCurrentModal('/SingleNewsArticle', {
+							selectedArticle: this.state.selectedArticle,
+							exit: this._deselectArticle
+						})
 					: null}
 				{this.state.articlesLoaded ? this._renderArticles() : this._loading()}
 			</View>

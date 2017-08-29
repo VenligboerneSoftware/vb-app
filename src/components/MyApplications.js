@@ -136,18 +136,14 @@ export default class MyApplications extends React.Component {
 	_hideModal = () => this.setState({ isModalVisible: false });
 
 	render() {
+		if (this.state.isModalVisible) {
+			global.setCurrentModal('/ViewSingleApplication', {
+				app: this.state.selectedApp,
+				exit: this._hideModal
+			});
+		}
 		return (
 			<View style={styles.container}>
-				<Modal
-					isVisible={this.state.isModalVisible}
-					animationIn={'zoomIn'}
-					animationOut={'zoomOut'}
-				>
-					<ViewSingleApplication
-						hide={this._hideModal}
-						app={this.state.selectedApp}
-					/>
-				</Modal>
 				{Object.values(this.state.applications).length > 0
 					? <FlatList
 							data={Object.values(this.state.applications).sort(

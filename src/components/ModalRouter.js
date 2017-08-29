@@ -25,8 +25,8 @@ export default class ModalRouter extends React.Component {
 	}
 
 	componentDidMount() {
-		global.setCurrentModal = (path, params, exitFunction) => {
-			this.setState({ path: path, params: params, exit: exitFunction });
+		global.setCurrentModal = (path, params) => {
+			this.setState({ path: path, params: params });
 			console.log('set Current Modal to ', path);
 			console.log('With Params', params);
 		};
@@ -45,25 +45,23 @@ export default class ModalRouter extends React.Component {
 					<Route path="/NewNotification" component={NewNotification} />
 					<Route
 						path="/SingleNewsArticle"
-						render={() =>
-							<SingleNewsArticle
-								{...this.state.params}
-								exit={this.state.exit}
-							/>}
+						render={() => <SingleNewsArticle {...this.state.params} />}
 					/>
 					<Route
 						path="/ViewCenter"
-						render={() =>
-							<ViewCenter {...this.state.params} exit={this.state.exit} />}
+						render={() => <ViewCenter {...this.state.params} />}
 					/>
 					<Route
 						path="/ViewPost"
-						render={() =>
-							<ViewPost {...this.state.params} exit={this.state.exit} />}
+						render={() => <ViewPost {...this.state.params} />}
 					/>
 					<Route
 						path="/ViewApplications"
 						render={() => <ViewApplications {...this.state.params} />}
+					/>
+					<Route
+						path="/ViewSingleApplication"
+						render={() => <ViewSingleApplication {...this.state.params} />}
 					/>
 				</Switch>
 			</Modal>

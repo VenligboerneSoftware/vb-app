@@ -12,17 +12,15 @@ export default class PostOrCenterModal extends React.Component {
 	render() {
 		if (this.props.isVisible) {
 			if (this.props.post && this.props.post.icon === 'center') {
-				global.setCurrentModal(
-					'/ViewCenter',
-					{ center: this.props.post },
-					this.props.exit
-				);
+				global.setCurrentModal('/ViewCenter', {
+					center: this.props.post,
+					exit: this.props.exit
+				});
 			} else {
-				global.setCurrentModal(
-					'/ViewPost',
-					{ post: this.props.post },
-					this.props.exit
-				);
+				global.setCurrentModal('/ViewPost', {
+					post: this.props.post,
+					exit: this.props.exit
+				});
 			}
 		}
 		return null;

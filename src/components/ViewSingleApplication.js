@@ -82,7 +82,7 @@ export default class ViewSingleApplication extends React.Component {
 
 	render() {
 		return (
-			<View style={{ flex: 1, backgroundColor: 'white' }}>
+			<View style={[SharedStyles.modalContent, { backgroundColor: 'white' }]}>
 				<ExitBar hide={this.props.hide} title={translate('View Reply')} />
 				<ScrollView keyboardShouldPersistTaps={'handled'}>
 					<View style={styles.container}>
