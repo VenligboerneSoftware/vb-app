@@ -73,6 +73,15 @@ export default class ViewApplications extends React.Component {
 			.child(application.key)
 			.child('status')
 			.set(status);
+
+		//make bold on their local device
+		await firebase
+			.database()
+			.ref('applications')
+			.child(application.key)
+			.child('bold')
+			.set(true);
+
 		// keep local data updated
 		application.status = status;
 

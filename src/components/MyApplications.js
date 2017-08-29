@@ -42,18 +42,15 @@ export default class MyApplications extends React.Component {
 		application.key = applicationKey;
 
 		// Listen for application status changes
-		const ref = firebase
-			.database()
-			.ref('applications')
-			.child(applicationKey)
-			.child('status');
+		const ref = firebase.database().ref('applications').child(applicationKey);
 		const callback = ref.on('value', snap => {
 			if (
 				snap.exists() &&
 				this.applications &&
 				this.applications[applicationKey]
 			) {
-				this.applications[applicationKey].status = snap.val();
+				this.applications[applicationKey].status = snap.val().status;
+				this.applications[applicationKey].bold = snap.val().bold; //make sure right
 				this.setState({
 					applications: this.applications
 				});
@@ -130,6 +127,18 @@ export default class MyApplications extends React.Component {
 			});
 	};
 
+	_unbold = async application => {
+		//update local copy
+		application.bold = false;
+
+		firebase
+			.database()
+			.ref('applications')
+			.child(application.key)
+			.child('bold')
+			.set(false);
+	};
+
 	_showModal = item =>
 		this.setState({ selectedApp: item, isModalVisible: true });
 
@@ -146,6 +155,7 @@ export default class MyApplications extends React.Component {
 					<ViewSingleApplication
 						hide={this._hideModal}
 						app={this.state.selectedApp}
+						unbold={this._unbold}
 					/>
 				</Modal>
 				{Object.values(this.state.applications).length > 0
@@ -164,13 +174,20 @@ export default class MyApplications extends React.Component {
 									}}
 								>
 									<EventIcon item={item.postData} />
-
 									<View style={styles.appInfo}>
-										<Text style={styles.title}>
+										<Text
+											style={
+												item.bold === true ? styles.boldTitle : styles.title
+											}
+										>
 											{item.postData.title}
 										</Text>
 
-										<ApplicationStatus status={item.status} modal={false} />
+										<ApplicationStatus
+											status={item.status}
+											modal={false}
+											bold={item.bold}
+										/>
 
 										<Text style={styles.message}>
 											{translate('Your Reply') + ':'} {item.message}
@@ -218,5 +235,10 @@ const styles = StyleSheet.create({
 	empty: {
 		alignItems: 'center',
 		marginTop: 10
+	},
+	boldTitle: {
+		fontSize: 20,
+		width: '90%',
+		fontWeight: 'bold'
 	}
 });

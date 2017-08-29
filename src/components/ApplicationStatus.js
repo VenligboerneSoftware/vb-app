@@ -13,7 +13,7 @@ export default class ApplicationStatus extends React.Component {
 				style={this.props.modal ? styles.statusModal : styles.statusRegular}
 			>
 				<View style={{ flexDirection: 'row' }}>
-					<Text>
+					<Text style={this.props.bold ? { fontWeight: 'bold' } : null}>
 						{translate('Status') + ':'}
 					</Text>
 					<Text

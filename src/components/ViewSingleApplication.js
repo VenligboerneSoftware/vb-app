@@ -29,6 +29,12 @@ export default class ViewSingleApplication extends React.Component {
 		super(props);
 	}
 
+	async componentDidMount() {
+		if (this.props.app.bold) {
+			this.props.unbold(this.props.app);
+		}
+	}
+
 	removeListing = () => {
 		deleteApplication(this.props.app);
 		this.props.hide();

@@ -109,7 +109,8 @@ export default class ViewPost extends Component {
 			applicant: firebase.auth().currentUser.uid,
 			post: this.props.post.key,
 			message: this.application,
-			status: 'Waiting For Response'
+			status: 'Waiting For Response',
+			bold: false
 		});
 		this.setState({ alreadySubmitted: true });
 
