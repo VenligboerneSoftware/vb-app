@@ -7,7 +7,6 @@ import {
 	View,
 	Alert
 } from 'react-native';
-import Modal from './Modal.js';
 import React, { Component } from 'react';
 import firebase from 'firebase';
 import { FontAwesome, Entypo } from '@expo/vector-icons';
@@ -15,7 +14,6 @@ import { FontAwesome, Entypo } from '@expo/vector-icons';
 import { translate } from '../utils/internationalization';
 import Colors from '../styles/Colors';
 import ExitBar from './ExitBar';
-import NewNotification from './NewNotification';
 import SharedStyles from '../styles/SharedStyles';
 
 export default class ManageNotifications extends Component {
@@ -67,7 +65,7 @@ export default class ManageNotifications extends Component {
 
 	render() {
 		return (
-			<View style={styles.container}>
+			<View style={[SharedStyles.modalContent, styles.container]}>
 				<ExitBar title={'Manage Notifications'} />
 				<FlatList
 					style={{ width: '100%' }}
@@ -142,8 +140,6 @@ export default class ManageNotifications extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-		width: '100%',
-		height: '100%',
 		justifyContent: 'flex-start',
 		alignItems: 'center',
 		backgroundColor: 'white'

@@ -161,7 +161,7 @@ export default class NewNotification extends React.Component {
 
 	render() {
 		return (
-			<View style={styles.container}>
+			<View style={[SharedStyles.modalContent, styles.container]}>
 				<TouchableOpacity
 					onPress={this._backToManageNotifications}
 					style={SharedStyles.back}
@@ -261,8 +261,6 @@ export default class NewNotification extends React.Component {
 
 const styles = StyleSheet.create({
 	container: {
-		width: '100%',
-		height: '100%',
 		backgroundColor: Colors.white
 	},
 	section: {
