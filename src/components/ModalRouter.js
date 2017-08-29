@@ -26,7 +26,6 @@ export default class ModalRouter extends React.Component {
 		global.setCurrentModal = (path, params) => {
 			this.setState({ path: path, params: params });
 			console.log('set Current Modal to ', path);
-			console.log('With Params', params);
 		};
 	}
 
@@ -35,7 +34,14 @@ export default class ModalRouter extends React.Component {
 			<Modal
 				open={this.state.path !== null}
 				containerStyle={{ flex: 1 }}
-				modalStyle={{ margin: 20, padding: 0 }}
+				modalStyle={{
+					marginTop: 20,
+					marginBottom: 15,
+					marginHorizontal: 15,
+					padding: 1.5,
+					borderRadius: 5,
+					backgroundColor: '#FFF'
+				}}
 				closeOnTouchOutside={false}
 			>
 				<Switch location={{ pathname: this.state.path }}>

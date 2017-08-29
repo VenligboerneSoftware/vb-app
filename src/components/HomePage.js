@@ -88,21 +88,16 @@ export default class HomePage extends React.Component {
 			}
 		} else {
 			//iOS specific code
-			console.log(notification);
 			if (notification.data.type === 'applicationSent') {
-				console.log('app sent notifcation');
 				global.setDropDown(
 					'You have a reply to your post!',
 					notification.data.postTitle
 				);
 			} else if (notification.data.type === 'applicantAccepted') {
-				console.log('app accepted notification');
 				global.setDropDown(
 					'Your reply has been accepted!',
 					notification.data.postTitle
 				);
-			} else {
-				console.log('none');
 			}
 		}
 	};
@@ -121,7 +116,6 @@ export default class HomePage extends React.Component {
 				title ? title : '',
 				message ? message : ''
 			);
-			console.log('Alert FIRED');
 		};
 	}
 

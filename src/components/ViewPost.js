@@ -249,7 +249,6 @@ export default class ViewPost extends Component {
 	};
 
 	_hideModal = () => {
-		console.log('CLOSING');
 		this.props.exit();
 		global.setCurrentModal(null);
 	};
