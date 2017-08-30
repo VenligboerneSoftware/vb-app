@@ -27,7 +27,7 @@ export function getSortedUpcomingDates(dates) {
 
 //returns a string formatted like DD/MM/YYYY
 export function formatDate(timestamp) {
-	return Moment.unix(timestamp / 1000).format('DD/MM/YYYY');
+	return Moment(timestamp).utc().format('DD/MM/YYYY');
 }
 
 //returns a sorted string of dates separated by a comma
@@ -57,13 +57,13 @@ export function checkFilters(dates, start, end) {
 }
 
 //Firebase Util code that converts all datetimes to arrays of datetimes.
-export function datetimeToDates() {
-	firebase.database().ref('posts').once('value', snap => {
-		snap.forEach(post => {
-			if (post.hasChild('datetime')) {
-				post.ref.child('dates').set([post.val().datetime]);
-				post.ref.child('datetime').remove();
-			}
-		});
-	});
-}
+// export function datetimeToDates() {
+// 	firebase.database().ref('posts').once('value', snap => {
+// 		snap.forEach(post => {
+// 			if (post.hasChild('datetime')) {
+// 				post.ref.child('dates').set([post.val().datetime]);
+// 				post.ref.child('datetime').remove();
+// 			}
+// 		});
+// 	});
+// }
