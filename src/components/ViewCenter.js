@@ -6,7 +6,6 @@ import getDirections from 'react-native-google-maps-directions';
 import { FontAwesome } from '@expo/vector-icons';
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
 
-import CenterCalendar from './CenterCalendar';
 import Colors from '../styles/Colors';
 import SharedStyles from '../styles/SharedStyles';
 

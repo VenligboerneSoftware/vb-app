@@ -23,7 +23,6 @@ export default class ManageNotifications extends Component {
 		super(props);
 		this.state = {
 			subscriptions: {},
-			newNotificationVisible: false,
 			subscriptionsLoaded: false
 		};
 	}

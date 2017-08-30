@@ -20,7 +20,6 @@ export default class ExitBar extends Component {
 
 		this.state = {
 			isLastSlide: false,
-			finishedLoading: false
 		};
 	}
 

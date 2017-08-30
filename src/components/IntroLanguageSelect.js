@@ -6,7 +6,6 @@ import {
 	TouchableOpacity,
 	View
 } from 'react-native';
-import Expo from 'expo';
 import React from 'react';
 
 import {
@@ -20,7 +19,7 @@ export default class IntroLanguageSelect extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			testLanguages: getAvailableLanguages(),
+			languages: getAvailableLanguages(),
 			currentLanguageIndex: 0
 		};
 	}
@@ -45,16 +44,16 @@ export default class IntroLanguageSelect extends React.Component {
 						{/* Rotates around available languages */
 						translate(
 							'Choose a Language',
-							this.state.testLanguages[
+							this.state.languages[
 								this.state.currentLanguageIndex %
-									this.state.testLanguages.length
+									this.state.languages.length
 							].English
 						)}
 					</Text>
 				</View>
 
 				<FlatList
-					data={this.state.testLanguages}
+					data={this.state.languages}
 					keyExtractor={item => item.English}
 					renderItem={({ item }) =>
 						<TouchableOpacity

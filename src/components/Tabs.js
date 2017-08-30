@@ -34,8 +34,6 @@ export default class HomePage extends React.Component {
 			from: this.state.selectedTab,
 			to: tab
 		});
-		// Clear the badges for this tab
-		this.props.setBadgeCount(tab, 0);
 		this.setState({ selectedTab: tab });
 	};
 
@@ -102,7 +100,6 @@ export default class HomePage extends React.Component {
 						renderIcon={() => <FontAwesome name={tab.icon} size={30} />}
 						renderSelectedIcon={() => <FontAwesome name={tab.icon} size={30} />}
 						onPress={this._setTab.bind(this, tab.key)}
-						badgeText={this.props.badgeCounts[tab.key]}
 					>
 						{tab.component}
 					</TabNavigator.Item>

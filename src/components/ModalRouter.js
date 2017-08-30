@@ -9,8 +9,6 @@ import NewNotification from './NewNotification.js';
 import PostOrCenterModal from './PostOrCenterModal';
 import SingleNewsArticle from './SingleNewsArticle';
 import ViewApplications from './ViewApplications';
-import ViewCenter from './ViewCenter';
-import ViewPost from './ViewPost';
 import ViewSingleApplication from './ViewSingleApplication';
 
 export default class ModalRouter extends React.Component {
@@ -19,12 +17,12 @@ export default class ModalRouter extends React.Component {
 
 		this.state = {
 			path: null,
-			params: null
+			props: null
 		};
 	}
 
 	componentDidMount() {
-		global.setCurrentModal = (path, params) => {
+		global.setCurrentModal = (path, props) => {
 			// TODO log the props as well so we can see what post/application/article/
 			// whatever was viewed
 			const message = path
@@ -32,7 +30,7 @@ export default class ModalRouter extends React.Component {
 				: `Hiding Modal ${this.state.path}`;
 			console.log(message);
 			Expo.Amplitude.logEvent(message);
-			this.setState({ path: path, params: params });
+			this.setState({ path: path, props: props });
 		};
 	}
 
@@ -58,23 +56,23 @@ export default class ModalRouter extends React.Component {
 					<Route path="/NewNotification" component={NewNotification} />
 					<Route
 						path="/SingleNewsArticle"
-						render={() => <SingleNewsArticle {...this.state.params} />}
+						render={() => <SingleNewsArticle {...this.state.props} />}
 					/>
 					<Route
 						path="/PostOrCenterModal"
-						render={() => <PostOrCenterModal {...this.state.params} />}
+						render={() => <PostOrCenterModal {...this.state.props} />}
 					/>
 					<Route
 						path="/ViewApplications"
-						render={() => <ViewApplications {...this.state.params} />}
+						render={() => <ViewApplications {...this.state.props} />}
 					/>
 					<Route
 						path="/ViewSingleApplication"
-						render={() => <ViewSingleApplication {...this.state.params} />}
+						render={() => <ViewSingleApplication {...this.state.props} />}
 					/>
 					<Route
 						path="/FlagContent"
-						render={() => <FlagContent {...this.state.params} />}
+						render={() => <FlagContent {...this.state.props} />}
 					/>
 				</Switch>
 			</Modal>

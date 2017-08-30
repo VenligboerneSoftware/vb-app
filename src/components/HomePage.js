@@ -12,10 +12,6 @@ export default class HomePage extends React.Component {
 		super();
 		this.state = {
 			selectedTab: 'Map',
-			badgeCounts: {
-				Me: 0,
-				Map: 0
-			},
 			loaded: false
 		};
 
@@ -123,12 +119,7 @@ export default class HomePage extends React.Component {
 	render() {
 		return (
 			<View style={{ flex: 1 }}>
-				<Tabs
-					badgeCounts={this.state.badgeCounts}
-					setBadgeCount={(tab, count) => {
-						this.state.badgeCounts[tab] = count;
-					}}
-				/>
+				<Tabs />
 				<ModalRouter />
 				<DropdownAlert
 					ref={ref => (this.dropdown = ref)}
