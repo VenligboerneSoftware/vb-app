@@ -40,7 +40,7 @@ export default class Menu extends React.Component {
 		return authenticate(token).catch(error => {
 			console.error('Facebook authentication error', error);
 			AsyncStorage.removeItem('token');
-			Alert.alert('Your Facebook session has expired!', 'Please log in again!');
+			Alert.alert('Your Facebook login failed!', 'Please log in again!');
 			AsyncStorage.getItem('eula').then(agreedToEula => {
 				history.push('/FacebookAuth', {
 					onDone: this._afterLogin,
