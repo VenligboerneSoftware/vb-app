@@ -1,16 +1,16 @@
+import { Route, Switch } from 'react-router-native';
+import Expo from 'expo';
+import Modal from 'react-native-simple-modal';
 import React from 'react';
 
-import Modal from 'react-native-simple-modal';
-import { Route, Switch } from 'react-router-native';
-
+import FlagContent from './FlagContent';
 import ManageNotifications from './ManageNotifications';
 import NewNotification from './NewNotification.js';
+import SingleNewsArticle from './SingleNewsArticle';
+import ViewApplications from './ViewApplications';
 import ViewCenter from './ViewCenter';
 import ViewPost from './ViewPost';
-import SingleNewsArticle from './SingleNewsArticle';
 import ViewSingleApplication from './ViewSingleApplication';
-import ViewApplications from './ViewApplications';
-import FlagContent from './FlagContent';
 
 export default class ModalRouter extends React.Component {
 	constructor(props) {
@@ -24,8 +24,14 @@ export default class ModalRouter extends React.Component {
 
 	componentDidMount() {
 		global.setCurrentModal = (path, params) => {
+			// TODO log the props as well so we can see what post/application/article/
+			// whatever was viewed
+			const message = path
+				? `Showing Modal ${path}`
+				: `Hiding Modal ${this.state.path}`;
+			console.log(message);
+			Expo.Amplitude.logEvent(message);
 			this.setState({ path: path, params: params });
-			console.log('set Current Modal to ', path);
 		};
 	}
 
