@@ -166,31 +166,24 @@ const styles = StyleSheet.create({
 		borderColor: Colors.grey.medium
 	},
 	acceptRejectButton: {
-		backgroundColor: '#EBEDEC',
-		height: 60,
-		width: '30%',
-		flex: 1,
+		backgroundColor: Colors.grey.light,
+		height: 50,
+		width: '45%',
 		borderRadius: 10,
+		borderColor: Colors.grey.medium,
 		borderWidth: 1,
-		borderColor: '#D9D9D9',
 		justifyContent: 'center',
 		marginRight: 5,
 		marginLeft: 5
 	},
 	acceptText: {
 		color: 'green',
-		fontWeight: '600',
-		marginTop: 5,
 		alignSelf: 'center',
-		marginBottom: 10,
 		fontSize: 18
 	},
 	rejectText: {
 		color: 'red',
-		fontWeight: '600',
-		marginTop: 5,
 		alignSelf: 'center',
-		marginBottom: 10,
 		fontSize: 18
 	}
 });
