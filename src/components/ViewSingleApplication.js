@@ -91,7 +91,7 @@ export default class ViewSingleApplication extends React.Component {
 	_remindOwner = () => {
 		Alert.alert(
 			translate('Remind Post Owner'),
-			translate('Do you want to remind the post owner about your application?'),
+			translate('Do you want to remind the post owner about your reply?'),
 			[
 				{ text: translate('No') },
 				{ text: translate('Yes'), onPress: this._sendReminder }
