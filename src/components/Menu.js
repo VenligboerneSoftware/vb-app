@@ -170,7 +170,7 @@ export default class Menu extends React.Component {
 							justifyContent: 'space-around'
 						}}
 					>
-						<Text style={styles.menuText}>LTR</Text>
+						<Text style={styles.layoutText}>Left To Right</Text>
 						<Switch
 							value={this.state.isRTL}
 							onValueChange={value => {
@@ -186,7 +186,7 @@ export default class Menu extends React.Component {
 								}
 							}}
 						/>
-						<Text style={styles.menuText}>RTL</Text>
+						<Text style={styles.layoutText}>Right To Left</Text>
 					</View>
 					<View style={SharedStyles.divider} />
 				</View>
@@ -219,5 +219,12 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		right: 0,
 		width: '40%'
+	},
+	layoutText: {
+		fontSize: 16,
+		textAlign: 'center',
+		margin: 10,
+		color: '#444',
+		flex: 1
 	}
 });
