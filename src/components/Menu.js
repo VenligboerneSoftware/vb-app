@@ -1,7 +1,9 @@
 import {
 	AsyncStorage,
 	Image,
+	I18nManager,
 	StyleSheet,
+	Switch,
 	Text,
 	TouchableOpacity,
 	View
@@ -21,6 +23,8 @@ import history from '../utils/history.js';
 export default class Menu extends React.Component {
 	constructor() {
 		super();
+
+		this.state = { isRTL: global.isRTL };
 	}
 
 	_logout = async () => {
@@ -52,6 +56,7 @@ export default class Menu extends React.Component {
 			eula: !agreedToEula
 		});
 	};
+
 	_getLocalizedWiki = () =>
 		'http://venligboerne.dk' +
 		(getCode(global.language) === 'en' ? '' : '/' + getCode(global.language));
@@ -124,6 +129,32 @@ export default class Menu extends React.Component {
 							<View style={SharedStyles.divider} />
 						</View>
 					)}
+					<View
+						style={{
+							flexDirection: 'row',
+							alignItems: 'center',
+							justifyContent: 'space-around'
+						}}
+					>
+						<Text style={styles.menuText}>LTR</Text>
+						<Switch
+							value={this.state.isRTL}
+							onValueChange={value => {
+								global.isRTL = value;
+								this.setState({ isRTL: value });
+								I18nManager.forceRTL(value);
+								if (value !== I18nManager.isRTL) {
+									alert(
+										translate(
+											'Please restart the app to change the layout direction'
+										)
+									);
+								}
+							}}
+						/>
+						<Text style={styles.menuText}>RTL</Text>
+					</View>
+					<View style={SharedStyles.divider} />
 				</View>
 			</View>
 		);
