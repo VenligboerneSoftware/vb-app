@@ -134,7 +134,7 @@ export default class NewPost extends React.Component {
 	_getSelectedDates = () => {
 		let dates = this.state.newPost.dates
 			? this.state.newPost.dates.reduce((obj, date) => {
-					date = Moment.unix(date / 1000).format('YYYY-MM-DD');
+					date = Moment(date).utc().format('YYYY-MM-DD');
 					obj[date] = { selected: true };
 					return obj;
 				}, {})
