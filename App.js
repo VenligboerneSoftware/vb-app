@@ -147,6 +147,7 @@ export default class App extends React.Component {
 			photoURL: userProfile.photoURL
 		});
 
+		console.log('Amplitude Initialized');
 		// Add the users push token to the database so they can be notified about events.
 		// Get the token that uniquely identifies this device.
 		Notifications.getExpoPushTokenAsync().then(async pushToken => {
@@ -163,6 +164,7 @@ export default class App extends React.Component {
 			});
 		});
 
+		console.log('Notification Token Received');
 		// Preload Profile Pic
 		Image.prefetch(
 			'https://graph.facebook.com/' +
@@ -171,11 +173,25 @@ export default class App extends React.Component {
 		);
 
 		if (this.isFirstTime) {
+			console.log('Stuck here');
 			this.firstTimeLocationAlert();
 		} else {
+			console.log('Asking for location');
 			let { status } = await Permissions.askAsync(Permissions.LOCATION);
+			console.log('Got status', status);
 			if (status === 'granted') {
-				global.location = await Location.getCurrentPositionAsync({});
+				//temporary fix
+				global.location = await Promise.race([
+					new Promise(resolver => {
+						setTimeout(resolver, 3000, null);
+					}),
+					Location.getCurrentPositionAsync({
+						maximumAge: 1000 * 60 * 5 // 5 Minutes
+					})
+				]);
+
+				// global.location = await Location.getCurrentPositionAsync({});
+				console.log('Grabbed location');
 			}
 		}
 
