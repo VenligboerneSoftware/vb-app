@@ -1,5 +1,6 @@
 import {
 	AsyncStorage,
+	Image,
 	I18nManager,
 	StyleSheet,
 	Switch,
@@ -7,13 +8,14 @@ import {
 	TouchableOpacity,
 	View
 } from 'react-native';
-import { WebBrowser } from 'expo';
+import Expo, { WebBrowser } from 'expo';
 import React from 'react';
 import firebase from 'firebase';
 
 import { FontAwesome } from '@expo/vector-icons';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
 
+import { attemptLoginWithStoredToken } from '../utils/fbLogin';
 import { getCode } from '../utils/languages';
 import { translate } from '../utils/internationalization';
 import history from '../utils/history.js';
@@ -36,7 +38,28 @@ export default class Menu extends React.Component {
 			.child('pushToken')
 			.remove();
 		history.push('/FacebookAuth', {
-			onDone: history.push.bind(this, '/HomePage', {}),
+			//TODO: fix login and switch to me tab loading old data
+			onDone: async token => {
+				attemptLoginWithStoredToken(token);
+
+				let userProfile = firebase.auth().currentUser;
+				// Initialize Amplitude with user data
+				Expo.Amplitude.setUserId(userProfile.uid);
+				Expo.Amplitude.setUserProperties({
+					displayName: userProfile.displayName,
+					email: userProfile.email,
+					photoURL: userProfile.photoURL
+				});
+
+				// Preload Profile Pic
+				Image.prefetch(
+					'https://graph.facebook.com/' +
+						firebase.auth().currentUser.providerData[0].uid +
+						'/picture?height=400'
+				);
+
+				history.push('/HomePage', {});
+			},
 			eula: !agreedToEula
 		});
 	};
