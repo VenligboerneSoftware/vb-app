@@ -69,7 +69,7 @@ export default class ManageNotifications extends Component {
 	render() {
 		return (
 			<View style={[SharedStyles.modalContent, styles.container]}>
-				<ExitBar title={'Manage Notifications'} />
+				<ExitBar title={translate('Manage Notifications')} />
 				{this.state.subscriptionsLoaded
 					? Object.getOwnPropertyNames(this.state.subscriptions).length === 0
 						? <View style={{ flex: 1, justifyContent: 'center' }}>
