@@ -1,7 +1,8 @@
 import {
+	Alert,
 	AsyncStorage,
-	Image,
 	I18nManager,
+	Image,
 	StyleSheet,
 	Switch,
 	Text,
@@ -15,7 +16,7 @@ import firebase from 'firebase';
 import { FontAwesome } from '@expo/vector-icons';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
 
-import { attemptLoginWithStoredToken } from '../utils/fbLogin';
+import { authenticate } from '../utils/fbLogin';
 import { getCode } from '../utils/languages';
 import { translate } from '../utils/internationalization';
 import history from '../utils/history.js';
@@ -27,31 +28,57 @@ export default class Menu extends React.Component {
 		this.state = { isRTL: global.isRTL };
 	}
 
+	// Function: attemptLoginWithStoredToken
+	//------------------------------------------------
+	// Tries to log into the user's account using a token
+	// stored in local storage if available. Otherwise,
+	// if token is invalid, deletes the user's token from
+	// the database and redirects to a regular login.
+	attemptLoginWithStoredToken(token) {
+		// TODO Make sure all invalid token handling covered
+		global.token = token;
+		return authenticate(token).catch(error => {
+			console.error('Facebook authentication error', error);
+			AsyncStorage.removeItem('token');
+			Alert.alert('Your Facebook session has expired!', 'Please log in again!');
+			AsyncStorage.getItem('eula').then(agreedToEula => {
+				history.push('/FacebookAuth', {
+					onDone: this._afterLogin,
+					eula: !agreedToEula
+				});
+			});
+		});
+	}
+
+	_afterLogin = token => {
+		this.attemptLoginWithStoredToken(token);
+
+		let userProfile = firebase.auth().currentUser;
+		// Initialize Amplitude with user data
+		Expo.Amplitude.setUserId(userProfile.uid);
+		Expo.Amplitude.setUserProperties({
+			displayName: userProfile.displayName,
+			email: userProfile.email,
+			photoURL: userProfile.photoURL
+		});
+
+		// Preload Profile Pic
+		Image.prefetch(
+			'https://graph.facebook.com/' +
+				firebase.auth().currentUser.providerData[0].uid +
+				'/picture?height=400'
+		);
+
+		history.push('/HomePage', {});
+	};
+
 	_logout = async () => {
 		await AsyncStorage.removeItem('token');
 		const agreedToEula = await AsyncStorage.getItem('eula');
 		history.push('/FacebookAuth', {
 			//TODO: fix login and switch to me tab loading old data
 			onDone: async token => {
-				attemptLoginWithStoredToken(token);
-
-				let userProfile = firebase.auth().currentUser;
-				// Initialize Amplitude with user data
-				Expo.Amplitude.setUserId(userProfile.uid);
-				Expo.Amplitude.setUserProperties({
-					displayName: userProfile.displayName,
-					email: userProfile.email,
-					photoURL: userProfile.photoURL
-				});
-
-				// Preload Profile Pic
-				Image.prefetch(
-					'https://graph.facebook.com/' +
-						firebase.auth().currentUser.providerData[0].uid +
-						'/picture?height=400'
-				);
-
-				history.push('/HomePage', {});
+				this._afterLogin(token);
 			},
 			eula: !agreedToEula
 		});
