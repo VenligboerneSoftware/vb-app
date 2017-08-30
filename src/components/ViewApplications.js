@@ -82,9 +82,15 @@ export default class ViewApplications extends React.Component {
 			.child('bold')
 			.set(true);
 
+		const postTitle = (await firebase
+			.database()
+			.ref('posts')
+			.child(application.post)
+			.child('title')
+			.once('value')).val();
+
 		// keep local data updated
 		application.status = status;
-
 		if (status === 'Accepted') {
 			firebase
 				.database()
@@ -94,11 +100,11 @@ export default class ViewApplications extends React.Component {
 					pushNotify(
 						snap.val(),
 						'Your reply to an event has been accepted!',
-						'title: ' + application.post.title,
+						'Title: ' + postTitle,
 						{
 							type: 'applicantAccepted',
 							post: application.post,
-							postTitle: application.post.title,
+							postTitle: postTitle,
 							uid: firebase.auth().currentUser.uid
 						}
 					);
