@@ -11,7 +11,7 @@ export default class PostListItem extends React.PureComponent {
 	render() {
 		return (
 			<TouchableOpacity
-				onPress={this.props.showModal.bind(this, this.props.item)}
+				onPress={this.props.showPostModal.bind(this, this.props.item)}
 				style={styles.rowStyles}
 			>
 				<EventIcon item={this.props.item} />
@@ -23,7 +23,7 @@ export default class PostListItem extends React.PureComponent {
 				{this.props.item.owner === firebase.auth().currentUser.uid
 					? <TouchableOpacity
 							style={styles.applicationCounter}
-							onPress={this.props.showApplications.bind(this, this.props.item)}
+							onPress={this.props.showApplicationsModal.bind(this, this.props.item)}
 						>
 							<ApplicationCount applications={this.props.item.applications} />
 						</TouchableOpacity>

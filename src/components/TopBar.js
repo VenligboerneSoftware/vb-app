@@ -27,13 +27,13 @@ export default class TopBar extends React.Component {
 		this.state = {
 			languageModalVisible: false,
 			searchModalVisible: false,
-			isOpen: false
+			menuModalVisible: false
 		};
 	}
 
-	_showMenu = () => this.setState({ isOpen: true });
+	_showMenu = () => this.setState({ menuModalVisible: true });
 
-	_hideMenu = () => this.setState({ isOpen: false });
+	_hideMenu = () => this.setState({ menuModalVisible: false });
 
 	// function: returnTopBar
 	// ----------------------------------------
@@ -198,7 +198,7 @@ export default class TopBar extends React.Component {
 		return (
 			<View>
 				<Modal
-					isVisible={this.state.isOpen}
+					isVisible={this.state.menuModalVisible}
 					animationIn={I18nManager.isRTL ? 'slideInRight' : 'slideInLeft'}
 					animationOut={I18nManager.isRTL ? 'slideOutRight' : 'slideOutLeft'}
 					backdropOpacity={0.5}

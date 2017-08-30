@@ -199,12 +199,11 @@ export default class ViewApplications extends React.Component {
 			? <OwnerViewApplicant
 					application={this.state.applicant}
 					back={this._hideApplicant}
-					exit={this.props.exit}
 					post={this.props.post}
 					appStatusChange={this.changeApplicantStatus}
 				/>
 			: <View style={[SharedStyles.modalContent, styles.container]}>
-					<ExitBar exit={this.props.exit} title={translate('View Responses')} />
+					<ExitBar title={translate('View Responses')} />
 					<Text style={styles.title}>
 						{this.props.post.title}
 					</Text>

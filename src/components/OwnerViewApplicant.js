@@ -69,7 +69,7 @@ export default class OwnerViewApplicant extends React.Component {
 					/>
 				</TouchableOpacity>
 
-				<ExitBar exit={this.props.exit} />
+				<ExitBar />
 
 				<ScrollView keyboardShouldPersistTaps={'handled'}>
 					<View style={styles.container}>
@@ -129,7 +129,6 @@ export default class OwnerViewApplicant extends React.Component {
 						<FlagButton
 							applicationID={this.props.application.key}
 							flaggedUser={this.props.application.applicant}
-							exit={this.props.exit}
 						/>
 					</View>
 				</ScrollView>

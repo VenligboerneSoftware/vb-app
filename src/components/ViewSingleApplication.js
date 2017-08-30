@@ -1,6 +1,5 @@
 import {
 	Alert,
-	I18nManager,
 	ScrollView,
 	StyleSheet,
 	Text,
@@ -49,7 +48,6 @@ export default class ViewSingleApplication extends React.Component {
 
 	removeListing = () => {
 		deleteApplication(this.props.app);
-		this.props.exit();
 		global.setCurrentModal(null);
 	};
 
@@ -103,7 +101,7 @@ export default class ViewSingleApplication extends React.Component {
 	render() {
 		return (
 			<View style={[SharedStyles.modalContent, { backgroundColor: 'white' }]}>
-				<ExitBar exit={this.props.exit} title={translate('View Reply')} />
+				<ExitBar title={translate('View Reply')} />
 				<ScrollView keyboardShouldPersistTaps={'handled'}>
 					<View style={styles.container}>
 						<TitleAndIcon post={this.props.app.postData} />

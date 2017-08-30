@@ -1,12 +1,11 @@
 import { Linking, Platform, View } from 'react-native';
 import { Permissions, Notifications } from 'expo';
+import DropdownAlert from 'react-native-dropdownalert';
 import React from 'react';
 import firebase from 'firebase';
 
-import PostOrCenterModal from './PostOrCenterModal';
-import Tabs from './Tabs.js';
-import DropdownAlert from 'react-native-dropdownalert';
 import ModalRouter from './ModalRouter';
+import Tabs from './Tabs.js';
 
 export default class HomePage extends React.Component {
 	constructor() {
@@ -48,7 +47,9 @@ export default class HomePage extends React.Component {
 						let post = postSnap.val();
 						post.key = postSnap.key;
 						post.applications = post.applications || {};
-						this.setState({ linkedPost: post, showPost: true });
+						global.setCurrentModal('/PostOrCenterModal', {
+							post: post
+						});
 					}
 				});
 		} else {
@@ -88,7 +89,6 @@ export default class HomePage extends React.Component {
 			}
 		} else {
 			//iOS specific code
-			console.log(notification);
 			if (notification.data.type === 'applicationSent') {
 				global.setDropDown(
 					'You have a reply to your post!',
@@ -123,11 +123,6 @@ export default class HomePage extends React.Component {
 	render() {
 		return (
 			<View style={{ flex: 1 }}>
-				<PostOrCenterModal
-					isVisible={this.state.showPost}
-					post={this.state.linkedPost}
-					exit={() => this.setState({ showPost: false })}
-				/>
 				<Tabs
 					badgeCounts={this.state.badgeCounts}
 					setBadgeCount={(tab, count) => {

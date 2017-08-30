@@ -171,7 +171,7 @@ export default class NewNotification extends React.Component {
 						size={42}
 					/>
 				</TouchableOpacity>
-				<ExitBar title={'Create New Notification'} exit={this.props.exit} />
+				<ExitBar title={'Create New Notification'} />
 
 				{/* Icon Selection */}
 				<View style={[styles.section, { flex: 4 }]}>

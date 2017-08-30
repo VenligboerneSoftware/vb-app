@@ -3,15 +3,12 @@ import React from 'react';
 
 import MapView from 'react-native-maps';
 
-import PostOrCenterModal from './PostOrCenterModal';
-
 export default class MapViewPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			mapRegion: props.mapRegion,
-			listData: props.listData,
-			isPostModalVisible: false
+			listData: props.listData
 		};
 	}
 
@@ -29,14 +26,8 @@ export default class MapViewPage extends React.Component {
 	}
 
 	_showModal = post =>
-		this.setState({
-			isPostModalVisible: true,
-			selectedPost: post
-		});
-
-	_hideModal = () =>
-		this.setState({
-			isPostModalVisible: false
+		global.setCurrentModal('/PostOrCenterModal', {
+			post: post
 		});
 
 	// If checkOutsideRegion, includes a region twice the size of the map in each direction.
@@ -68,11 +59,6 @@ export default class MapViewPage extends React.Component {
 		);
 		return (
 			<View style={styles.container}>
-				<PostOrCenterModal
-					isVisible={this.state.isPostModalVisible}
-					post={this.state.selectedPost}
-					exit={this._hideModal}
-				/>
 				{postsInMapRegion.length === 0 ? this.props.message : null}
 				<MapView
 					style={styles.map}
@@ -101,7 +87,7 @@ export default class MapViewPage extends React.Component {
 					pitchEnabled={false}
 				>
 					{// Render post and center icons
-					postsNearMap.map(marker =>
+					postsNearMap.map(marker => (
 						<MapView.Marker
 							key={marker.key}
 							coordinate={marker}
@@ -114,7 +100,7 @@ export default class MapViewPage extends React.Component {
 								zIndex: marker.latitude
 							}}
 						/>
-					)}
+					))}
 				</MapView>
 			</View>
 		);

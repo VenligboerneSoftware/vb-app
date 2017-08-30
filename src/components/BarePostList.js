@@ -26,9 +26,7 @@ export default class BarePostList extends React.PureComponent {
 		return (
 			<FlatList
 				data={
-					this.props.sortCenter
-						? this._sort(this.props.listData)
-						: this.props.listData
+					this.props.sortCenter ? this._sort(this.props.listData) : this.props.listData
 				}
 				keyboardShouldPersistTaps={'handled'}
 				style={{ flex: 1, width: Dimensions.get('window').width }}
@@ -36,10 +34,11 @@ export default class BarePostList extends React.PureComponent {
 				renderItem={({ item }) =>
 					<PostListItem
 						item={item}
-						showModal={this.props.showModal}
-						showApplications={this.props.showApplications}
+						showPostModal={this.props.showPostModal}
+						showApplicationsModal={this.props.showApplicationsModal}
 						distanceCenter={this.props.distanceCenter}
-					/>}
+					/>
+				}
 				ListFooterComponent={this.props.message}
 			/>
 		);

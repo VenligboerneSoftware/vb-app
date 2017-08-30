@@ -13,7 +13,6 @@ import SharedStyles from '../styles/SharedStyles';
 export default class ViewCenter extends Component {
 	constructor() {
 		super();
-		this.state = { isCalendar: false };
 	}
 
 	render() {
@@ -21,7 +20,6 @@ export default class ViewCenter extends Component {
 			<View style={[SharedStyles.modalContent, styles.container]}>
 				<TouchableOpacity
 					onPress={() => {
-						this.props.exit();
 						global.setCurrentModal(null);
 					}}
 					style={SharedStyles.exit}

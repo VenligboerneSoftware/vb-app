@@ -8,7 +8,6 @@ import {
 	ActivityIndicator,
 	RefreshControl
 } from 'react-native';
-import Modal from 'react-native-modal';
 import React from 'react';
 import SpecialCharacter from 'he';
 import firebase from 'firebase';
@@ -18,7 +17,6 @@ import Colors from 'venligboerneapp/src/styles/Colors.js';
 import Moment from 'moment';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles';
 import TopBar from './TopBar.js';
-import SingleNewsArticle from './SingleNewsArticle.js';
 
 export default class News extends React.Component {
 	constructor() {
@@ -26,7 +24,6 @@ export default class News extends React.Component {
 		this.state = {
 			articles: [],
 			articlesLoaded: false,
-			selectedArticle: null,
 			refreshing: false
 		};
 		this.getArticles();
@@ -93,10 +90,11 @@ export default class News extends React.Component {
 		});
 	};
 
-	_selectArticle = item => this.setState({ selectedArticle: item });
-	_deselectArticle = () => {
-		this.setState({ selectedArticle: null });
-	};
+	_selectArticle = item => {
+		global.setCurrentModal('/SingleNewsArticle', {
+			selectedArticle: item,
+		})
+	}
 
 	//Renders the list of news articles
 	_renderArticles = () =>
@@ -158,12 +156,6 @@ export default class News extends React.Component {
 		return (
 			<View style={styles.container}>
 				<TopBar title={translate('VenligboNews')} />
-				{this.state.selectedArticle
-					? global.setCurrentModal('/SingleNewsArticle', {
-							selectedArticle: this.state.selectedArticle,
-							exit: this._deselectArticle
-						})
-					: null}
 				{this.state.articlesLoaded ? this._renderArticles() : this._loading()}
 			</View>
 		);

@@ -5,7 +5,6 @@ import {
 	TouchableOpacity,
 	View
 } from 'react-native';
-import Modal from './Modal.js';
 import React from 'react';
 import firebase from 'firebase';
 
@@ -19,10 +18,6 @@ import SharedStyles from '../styles/SharedStyles';
 export default class FlagContent extends React.Component {
 	constructor(props) {
 		super(props);
-
-		this.state = {
-			isModalVisible: false
-		};
 	}
 
 	_submitReport = () => {
@@ -38,7 +33,6 @@ export default class FlagContent extends React.Component {
 			report
 		);
 		firebase.database().ref('flags').child(this.props.flaggedUser).push(report);
-		this.props.exit();
 		global.setCurrentModal(null);
 	};
 
@@ -48,7 +42,6 @@ export default class FlagContent extends React.Component {
 				<View style={[SharedStyles.modalContent, styles.container]}>
 					<ExitBar
 						title={translate('Report As Inappropriate')}
-						exit={this.props.exit}
 					/>
 					<View style={{ flexDirection: 'row', width: '100%' }}>
 						<FontAwesome

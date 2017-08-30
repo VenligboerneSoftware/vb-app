@@ -1,75 +1,28 @@
 import { View } from 'react-native';
-import Modal from './Modal.js';
 import React from 'react';
 
-import PostOrCenterModal from './PostOrCenterModal';
-import ViewApplications from './ViewApplications';
 import BarePostList from './BarePostList';
 
 export default class PostList extends React.PureComponent {
-	constructor() {
-		super();
-		this.state = {
-			isPostModalVisible: false,
-			isApplicationsModalVisible: false
-		};
-	}
-
-	_showModal = item =>
-		this.setState({
-			selectedPost: item,
-			isPostModalVisible: true
+	_showPostModal = post =>
+		global.setCurrentModal('/PostOrCenterModal', {
+			post: post
 		});
 
-	_hideModal = () =>
-		this.setState({
-			isPostModalVisible: false
-		});
-
-	_showApplications = post =>
-		this.setState({
-			isApplicationsModalVisible: true,
-			selectedPost: post
-		});
-
-	_hideApplications = () =>
-		this.setState({
-			isApplicationsModalVisible: false
+	_showApplicationsModal = post =>
+		global.setCurrentModal('/ViewApplications', {
+			post: post
 		});
 
 	render() {
-		if (this.state.isApplicationsModalVisible) {
-			global.setCurrentModal('/ViewApplications', {
-				exit: this._hideApplications,
-				post: this.state.selectedPost
-			});
-		}
 		return (
 			<View style={{ flex: 1 }}>
-				<PostOrCenterModal
-					isVisible={this.state.isPostModalVisible}
-					post={this.state.selectedPost}
-					exit={this._hideModal}
-				/>
-
-				{/* Modal to go straight to viewApplications */}
-				{/* <Modal
-					isVisible={this.state.isApplicationsModalVisible}
-					animationIn={'zoomIn'}
-					animationOut={'zoomOut'}
-				>
-					<ViewApplications
-						hide={this._hideApplications}
-						post={this.state.selectedPost}
-					/>
-				</Modal> */}
-
 				<BarePostList
 					listData={this.props.listData}
 					sortCenter={this.props.sortCenter}
 					distanceCenter={this.props.distanceCenter}
-					showModal={this._showModal}
-					showApplications={this._showApplications}
+					showPostModal={this._showPostModal}
+					showApplicationsModal={this._showApplicationsModal}
 					message={this.props.message}
 				/>
 			</View>

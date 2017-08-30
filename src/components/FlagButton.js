@@ -18,7 +18,6 @@ export default class FlagButton extends React.Component {
 						flaggedUser: this.props.flaggedUser,
 						postID: this.props.postID,
 						applicationID: this.props.applicationID,
-						exit: this.props.exit
 					})}
 			>
 				<FontAwesome

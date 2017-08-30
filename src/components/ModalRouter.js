@@ -6,6 +6,7 @@ import React from 'react';
 import FlagContent from './FlagContent';
 import ManageNotifications from './ManageNotifications';
 import NewNotification from './NewNotification.js';
+import PostOrCenterModal from './PostOrCenterModal';
 import SingleNewsArticle from './SingleNewsArticle';
 import ViewApplications from './ViewApplications';
 import ViewCenter from './ViewCenter';
@@ -60,12 +61,8 @@ export default class ModalRouter extends React.Component {
 						render={() => <SingleNewsArticle {...this.state.params} />}
 					/>
 					<Route
-						path="/ViewCenter"
-						render={() => <ViewCenter {...this.state.params} />}
-					/>
-					<Route
-						path="/ViewPost"
-						render={() => <ViewPost {...this.state.params} />}
+						path="/PostOrCenterModal"
+						render={() => <PostOrCenterModal {...this.state.params} />}
 					/>
 					<Route
 						path="/ViewApplications"

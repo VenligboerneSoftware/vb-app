@@ -250,7 +250,6 @@ export default class ViewPost extends Component {
 	};
 
 	_hideModal = () => {
-		this.props.exit();
 		global.setCurrentModal(null);
 	};
 
@@ -281,7 +280,7 @@ export default class ViewPost extends Component {
 
 	render() {
 		return this.isOwner && this.state.applyClicked
-			? <ViewApplications exit={this.props.exit} post={this.props.post} />
+			? <ViewApplications post={this.props.post} />
 			: <View style={SharedStyles.modalContent}>
 					<KeyboardAwareView style={{ backgroundColor: 'white' }}>
 						{/* Share icon */}
@@ -291,7 +290,7 @@ export default class ViewPost extends Component {
 							title={this.props.post.title}
 						/>
 
-						<ExitBar exit={this.props.exit} />
+						<ExitBar />
 
 						<ScrollView
 							ref={scrollView => {
@@ -363,7 +362,6 @@ export default class ViewPost extends Component {
 									? <FlagButton
 											flaggedUser={this.props.post.owner}
 											postID={this.props.post.key}
-											exit={this._hideModal}
 										/>
 									: null}
 							</View>

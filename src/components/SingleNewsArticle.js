@@ -16,7 +16,7 @@ export default class SingleNewsArticle extends React.Component {
 	render() {
 		return (
 			<View style={[SharedStyles.modalContent, styles.articleModalContainer]}>
-				<ExitBar exit={this.props.exit} />
+				<ExitBar />
 				<ScrollView keyboardShouldPersistTaps={'handled'}>
 					{/* Author and Date */}
 					<Text style={styles.selectedArticleHeader}>

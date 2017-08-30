@@ -20,8 +20,6 @@ export default class MyApplications extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			isModalVisible: false,
-			selectedApp: null,
 			applications: {},
 			applicationsLoaded: false
 		};
@@ -42,7 +40,10 @@ export default class MyApplications extends React.Component {
 		application.key = applicationKey;
 
 		// Listen for application status changes
-		const ref = firebase.database().ref('applications').child(applicationKey);
+		const ref = firebase
+			.database()
+			.ref('applications')
+			.child(applicationKey);
 		const callback = ref.on('value', snap => {
 			if (
 				snap.exists() &&
@@ -131,65 +132,58 @@ export default class MyApplications extends React.Component {
 	};
 
 	_showPostModal = item =>
-		this.setState({ selectedApp: item, isModalVisible: true });
-
-	_hideModal = () => this.setState({ isModalVisible: false });
+		global.setCurrentModal('/ViewSingleApplication', {
+			app: item
+		});
 
 	render() {
-		if (this.state.isModalVisible) {
-			global.setCurrentModal('/ViewSingleApplication', {
-				app: this.state.selectedApp,
-				exit: this._hideModal
-			});
-		}
 		return (
 			<View style={styles.container}>
-				{this.state.applicationsLoaded
-					? Object.values(this.state.applications).length > 0
-						? <FlatList
-								data={Object.values(this.state.applications).sort(this._sort)}
-								ItemSeparatorComponent={() =>
-									<View style={SharedStyles.divider} />}
-								renderItem={({ item }) =>
-									<TouchableOpacity
-										style={styles.appRow}
-										key={item.key}
-										onPress={() => {
-											this._showPostModal(item);
-										}}
+				{this.state.applicationsLoaded ? Object.values(this.state.applications)
+					.length > 0 ? (
+					<FlatList
+						data={Object.values(this.state.applications).sort(this._sort)}
+						ItemSeparatorComponent={() => <View style={SharedStyles.divider} />}
+						renderItem={({ item }) => (
+							<TouchableOpacity
+								style={styles.appRow}
+								key={item.key}
+								onPress={() => {
+									this._showPostModal(item);
+								}}
+							>
+								<EventIcon item={item.postData} />
+								<View style={styles.appInfo}>
+									<Text
+										style={item.bold === true ? styles.boldTitle : styles.title}
 									>
-										<EventIcon item={item.postData} />
-										<View style={styles.appInfo}>
-											<Text
-												style={
-													item.bold === true ? styles.boldTitle : styles.title
-												}
-											>
-												{item.postData.title}
-											</Text>
+										{item.postData.title}
+									</Text>
 
-											<ApplicationStatus
-												status={item.status}
-												modal={false}
-												bold={item.bold}
-											/>
+									<ApplicationStatus
+										status={item.status}
+										modal={false}
+										bold={item.bold}
+									/>
 
-											<Text style={styles.message}>
-												{translate('Your Reply') + ':'} {item.message}
-											</Text>
-										</View>
-									</TouchableOpacity>}
-							/>
-						: <View style={styles.empty}>
-								<Text>
-									{translate('You have not replied to any posts.')}
-								</Text>
-							</View>
-					: <ActivityIndicator
-							animating={true}
-							size={'large'}
-							style={{ marginTop: 10 }}
-						/>}
+									<Text style={styles.message}>
+										{translate('Your Reply') + ':'} {item.message}
+									</Text>
+								</View>
+							</TouchableOpacity>
+						)}
+					/>
+				) : (
+					<View style={styles.empty}>
+						<Text>{translate('You have not replied to any posts.')}</Text>
+					</View>
+				) : (
+					<ActivityIndicator
+						animating={true}
+						size={'large'}
+						style={{ marginTop: 10 }}
+					/>
+				)}
 			</View>
 		);
 	}
