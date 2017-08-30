@@ -38,7 +38,7 @@ export default class ModalRouter extends React.Component {
 				animationTension={0}
 				modalStyle={{
 					marginTop: 25,
-					marginBottom: 10,
+					marginBottom: 15,
 					marginHorizontal: 15,
 					padding: 1.5,
 					borderRadius: 5,
