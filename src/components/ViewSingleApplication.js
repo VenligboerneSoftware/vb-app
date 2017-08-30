@@ -91,7 +91,7 @@ export default class ViewSingleApplication extends React.Component {
 	_remindOwner = () => {
 		Alert.alert(
 			translate('Remind Post Owner'),
-			translate('Do you want to remind the post owner about your application?'),
+			translate('Do you want to remind the post owner about your reply?'),
 			[
 				{ text: translate('No') },
 				{ text: translate('Yes'), onPress: this._sendReminder }
@@ -140,7 +140,11 @@ export default class ViewSingleApplication extends React.Component {
 								}
 								onPress={this._deleteApp}
 							>
-								<FontAwesome name={'trash-o'} size={40} />
+								<FontAwesome
+									name={'trash-o'}
+									size={40}
+									style={{ marginLeft: 8 }}
+								/>
 								<Text style={styles.buttonText}>
 									{translate('Delete Reply')}
 								</Text>
@@ -154,7 +158,7 @@ export default class ViewSingleApplication extends React.Component {
 										<MaterialCommunityIcons
 											name={'alarm'}
 											size={40}
-											style={{ marginTop: 6 }}
+											style={{ marginTop: 6, marginLeft: 8 }}
 										/>
 										<Text style={styles.buttonText}>
 											{translate('Remind')}
@@ -212,7 +216,10 @@ const styles = StyleSheet.create({
 	buttonText: {
 		fontSize: 18,
 		paddingLeft: 5,
-		backgroundColor: 'transparent'
+		paddingRight: 5,
+		backgroundColor: 'transparent',
+		flex: 1,
+		textAlign: 'center'
 	},
 	onlyBottomButton: {
 		width: 200,
