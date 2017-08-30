@@ -13,8 +13,16 @@
 // https://facebook.github.io/react-native/docs/network.html
 export default function pushNotify(tokens, messageSubject, postTitle, data) {
 	// Allow user to pass a single token
-	if (tokens.constructor !== Array) {
+	if (!tokens || tokens.constructor !== Array) {
 		tokens = [tokens];
+	}
+
+	// Filter out missing tokens, for logged out users
+	tokens = tokens.filter(token => token !== null);
+
+	// If there are no tokens, skip the request
+	if (tokens.length === 0) {
+		return;
 	}
 
 	fetch('https://exp.host/--/api/v2/push/send', {

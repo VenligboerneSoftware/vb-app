@@ -75,6 +75,13 @@ export default class Menu extends React.Component {
 	_logout = async () => {
 		await AsyncStorage.removeItem('token');
 		const agreedToEula = await AsyncStorage.getItem('eula');
+		// Remove their pushToken
+		firebase
+			.database()
+			.ref('users')
+			.child(firebase.auth().currentUser.uid)
+			.child('pushToken')
+			.remove();
 		history.push('/FacebookAuth', {
 			//TODO: fix login and switch to me tab loading old data
 			onDone: async token => {
