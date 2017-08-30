@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { WebBrowser } from 'expo';
 import React from 'react';
+import firebase from 'firebase';
 
 import { FontAwesome } from '@expo/vector-icons';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
@@ -27,6 +28,13 @@ export default class Menu extends React.Component {
 	_logout = async () => {
 		await AsyncStorage.removeItem('token');
 		const agreedToEula = await AsyncStorage.getItem('eula');
+		// Remove their pushToken
+		firebase
+			.database()
+			.ref('users')
+			.child(firebase.auth().currentUser.uid)
+			.child('pushToken')
+			.remove();
 		history.push('/FacebookAuth', {
 			onDone: history.push.bind(this, '/HomePage', {}),
 			eula: !agreedToEula
