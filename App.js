@@ -49,6 +49,7 @@ export default class App extends React.Component {
 		Text.defaultProps.allowFontScaling = false;
 
 		I18nManager.allowRTL(true);
+		global.isRTL = I18nManager.isRTL;
 
 		history.push('/StartupPage');
 	}
