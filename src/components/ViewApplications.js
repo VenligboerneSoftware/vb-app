@@ -167,10 +167,7 @@ export default class ViewApplications extends React.Component {
 	_sort = (obj1, obj2) => {
 		if (obj1.status === obj2.status) {
 			return 0;
-		} else if (
-			obj1.status === 'Waiting For Response' ||
-			obj2.status === 'Rejected'
-		) {
+		} else if (obj1.status === 'Accepted' || obj2.status === 'Rejected') {
 			return -1;
 		} else {
 			return 1;
