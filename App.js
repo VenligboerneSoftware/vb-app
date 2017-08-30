@@ -185,9 +185,7 @@ export default class App extends React.Component {
 					new Promise(resolver => {
 						setTimeout(resolver, 3000, null);
 					}),
-					Location.getCurrentPositionAsync({
-						maximumAge: 1000 * 60 * 5 // 5 Minutes
-					})
+					Location.getCurrentPositionAsync({})
 				]);
 
 				// global.location = await Location.getCurrentPositionAsync({});
