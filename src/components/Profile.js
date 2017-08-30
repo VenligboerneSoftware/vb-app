@@ -85,7 +85,11 @@ export default class Profile extends React.Component {
 								: null
 						}
 					/>
-				: <ActivityIndicator animating={true} size={'large'} />,
+				: <ActivityIndicator
+						animating={true}
+						size={'large'}
+						style={{ marginTop: 10 }}
+					/>,
 			'2': <MyApplications />
 		};
 		return scenes[route.route.key];

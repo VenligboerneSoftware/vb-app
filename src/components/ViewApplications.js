@@ -145,6 +145,7 @@ export default class ViewApplications extends React.Component {
 						}
 						size={40}
 						color={Colors.grey.medium}
+						style={{ backgroundColor: 'transparent' }}
 					/>
 				</View>
 			</TouchableOpacity>

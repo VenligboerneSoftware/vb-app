@@ -1,11 +1,11 @@
 import {
+	ActivityIndicator,
 	FlatList,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
 	View
 } from 'react-native';
-import Modal from './Modal.js';
 import React from 'react';
 import firebase from 'firebase';
 
@@ -15,7 +15,6 @@ import ApplicationStatus from './ApplicationStatus';
 import Colors from '../styles/Colors';
 import EventIcon from './EventIcon';
 import SharedStyles from '../styles/SharedStyles';
-import ViewSingleApplication from './ViewSingleApplication';
 
 export default class MyApplications extends React.Component {
 	constructor() {
@@ -23,7 +22,8 @@ export default class MyApplications extends React.Component {
 		this.state = {
 			isModalVisible: false,
 			selectedApp: null,
-			applications: {}
+			applications: {},
+			applicationsLoaded: false
 		};
 		this._loadApplications();
 	}
@@ -122,7 +122,10 @@ export default class MyApplications extends React.Component {
 					});
 					// Once it is loaded, sort it and set the state
 					this.applications = applicationKeys;
-					this.setState({ applications: this.applications });
+					this.setState({
+						applications: this.applications,
+						applicationsLoaded: true
+					});
 				});
 			});
 	};
@@ -141,46 +144,52 @@ export default class MyApplications extends React.Component {
 		}
 		return (
 			<View style={styles.container}>
-				{Object.values(this.state.applications).length > 0
-					? <FlatList
-							data={Object.values(this.state.applications).sort(this._sort)}
-							ItemSeparatorComponent={() =>
-								<View style={SharedStyles.divider} />}
-							renderItem={({ item }) =>
-								<TouchableOpacity
-									style={styles.appRow}
-									key={item.key}
-									onPress={() => {
-										this._showPostModal(item);
-									}}
-								>
-									<EventIcon item={item.postData} />
-									<View style={styles.appInfo}>
-										<Text
-											style={
-												item.bold === true ? styles.boldTitle : styles.title
-											}
-										>
-											{item.postData.title}
-										</Text>
+				{this.state.applicationsLoaded
+					? Object.values(this.state.applications).length > 0
+						? <FlatList
+								data={Object.values(this.state.applications).sort(this._sort)}
+								ItemSeparatorComponent={() =>
+									<View style={SharedStyles.divider} />}
+								renderItem={({ item }) =>
+									<TouchableOpacity
+										style={styles.appRow}
+										key={item.key}
+										onPress={() => {
+											this._showPostModal(item);
+										}}
+									>
+										<EventIcon item={item.postData} />
+										<View style={styles.appInfo}>
+											<Text
+												style={
+													item.bold === true ? styles.boldTitle : styles.title
+												}
+											>
+												{item.postData.title}
+											</Text>
 
-										<ApplicationStatus
-											status={item.status}
-											modal={false}
-											bold={item.bold}
-										/>
+											<ApplicationStatus
+												status={item.status}
+												modal={false}
+												bold={item.bold}
+											/>
 
-										<Text style={styles.message}>
-											{translate('Your Reply') + ':'} {item.message}
-										</Text>
-									</View>
-								</TouchableOpacity>}
-						/>
-					: <View style={styles.empty}>
-							<Text>
-								{translate('You have not replied to any posts.')}
-							</Text>
-						</View>}
+											<Text style={styles.message}>
+												{translate('Your Reply') + ':'} {item.message}
+											</Text>
+										</View>
+									</TouchableOpacity>}
+							/>
+						: <View style={styles.empty}>
+								<Text>
+									{translate('You have not replied to any posts.')}
+								</Text>
+							</View>
+					: <ActivityIndicator
+							animating={true}
+							size={'large'}
+							style={{ marginTop: 10 }}
+						/>}
 			</View>
 		);
 	}
