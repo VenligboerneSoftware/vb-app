@@ -1,5 +1,4 @@
 import Moment from 'moment';
-import * as firebase from 'firebase';
 
 //returns the datetime of the next coming date in the dates array
 export function getNextDate(dates) {
@@ -27,7 +26,9 @@ export function getSortedUpcomingDates(dates) {
 
 //returns a string formatted like DD/MM/YYYY
 export function formatDate(timestamp) {
-	return Moment(timestamp).utc().format('DD/MM/YYYY');
+	return Moment(timestamp)
+		.utc()
+		.format('DD/MM/YYYY');
 }
 
 //returns a sorted string of dates separated by a comma

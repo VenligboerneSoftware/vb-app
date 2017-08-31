@@ -171,9 +171,11 @@ export default class ViewPost extends Component {
 		return (
 			<TextInput
 				style={
-					!this.state.alreadySubmitted
-						? [styles.placeholderText, styles.textInput]
-						: styles.textInputSubmitted
+					!this.state.alreadySubmitted ? (
+						[styles.placeholderText, styles.textInput]
+					) : (
+						styles.textInputSubmitted
+					)
 				}
 				autoFocus={true}
 				onChangeText={this._applicationChange}
@@ -207,9 +209,7 @@ export default class ViewPost extends Component {
 					style={styles.applyButton}
 					onPress={this._viewApplication}
 				>
-					<Text style={styles.applyText}>
-						{translate('View My Application')}
-					</Text>
+					<Text style={styles.applyText}>{translate('View My Reply')}</Text>
 				</TouchableOpacity>
 			);
 		} else {
@@ -220,11 +220,11 @@ export default class ViewPost extends Component {
 					onPress={this._applyPressed}
 				>
 					<Text style={styles.applyText}>
-						{this.isOwner
-							? translate('View Responses') + ` (${numApplications})`
-							: translate(
-									this.state.applyClicked ? 'Submit Reply' : 'Reply Now!'
-								)}
+						{this.isOwner ? (
+							translate('View Responses') + ` (${numApplications})`
+						) : (
+							translate(this.state.applyClicked ? 'Submit Reply' : 'Reply Now!')
+						)}
 					</Text>
 				</TouchableOpacity>
 			);
@@ -274,108 +274,118 @@ export default class ViewPost extends Component {
 		});
 
 		// TODO make this atomic with an update
-		firebase.database().ref('posts').child(this.props.post.key).remove();
+		firebase
+			.database()
+			.ref('posts')
+			.child(this.props.post.key)
+			.remove();
 
 		// remove image
 		//TODO: Check to see if image exists before deleting
-		firebase.database().ref('images').child(this.props.post.key).remove();
+		firebase
+			.database()
+			.ref('images')
+			.child(this.props.post.key)
+			.remove();
 
 		this._hideModal();
 	};
 
 	render() {
-		return this.isOwner && this.state.applyClicked
-			? <ViewApplications post={this.props.post} />
-			: <View style={SharedStyles.modalContent}>
-					<KeyboardAwareView style={{ backgroundColor: 'white' }}>
-						{/* Share icon */}
-						<ShareButton
-							deepLink={'post/' + this.props.post.key}
-							description={this.props.post.description}
-							title={this.props.post.title}
-						/>
+		return this.isOwner && this.state.applyClicked ? (
+			<ViewApplications post={this.props.post} />
+		) : (
+			<View style={SharedStyles.modalContent}>
+				<KeyboardAwareView style={{ backgroundColor: 'white' }}>
+					{/* Share icon */}
+					<ShareButton
+						deepLink={'post/' + this.props.post.key}
+						description={this.props.post.description}
+						title={this.props.post.title}
+					/>
 
-						<ExitBar />
+					<ExitBar />
 
-						<ScrollView
-							ref={scrollView => {
-								this.scrollView = scrollView;
-							}}
-							keyboardShouldPersistTaps={'handled'}
-						>
-							<View style={styles.container}>
-								<TitleAndIcon post={this.props.post} />
+					<ScrollView
+						ref={scrollView => {
+							this.scrollView = scrollView;
+						}}
+						keyboardShouldPersistTaps={'handled'}
+					>
+						<View style={styles.container}>
+							<TitleAndIcon post={this.props.post} />
 
-								{/* Edit and delete buttons */}
-								{this.isOwner
-									? <View style={styles.editDeleteContainer}>
-											<TouchableOpacity
-												onPress={this._editItem}
-												style={styles.editDelete}
-											>
-												<FontAwesome name={'edit'} size={35} />
-											</TouchableOpacity>
-											<TouchableOpacity
-												onPress={this._deleteItem}
-												style={styles.editDelete}
-											>
-												<FontAwesome name={'trash-o'} size={32} />
-											</TouchableOpacity>
-										</View>
-									: null}
-
-								<View style={SharedStyles.divider} />
-
-								<Time style={styles.dataRow} dates={this.props.post.dates} />
-
-								<View style={SharedStyles.divider} />
-
-								<View style={styles.dataRow}>
-									<Text style={styles.description}>
-										{translateFreeform(this.props.post.description)}
-									</Text>
+							{/* Edit and delete buttons */}
+							{this.isOwner ? (
+								<View style={styles.editDeleteContainer}>
+									<TouchableOpacity
+										onPress={this._editItem}
+										style={styles.editDelete}
+									>
+										<FontAwesome name={'edit'} size={35} />
+									</TouchableOpacity>
+									<TouchableOpacity
+										onPress={this._deleteItem}
+										style={styles.editDelete}
+									>
+										<FontAwesome name={'trash-o'} size={32} />
+									</TouchableOpacity>
 								</View>
+							) : null}
 
-								<View style={SharedStyles.divider} />
+							<View style={SharedStyles.divider} />
 
-								{/*Display selected image*/}
-								{this.state.image
-									? <View>
-											<Image
-												source={{ uri: this.state.image }}
-												style={styles.imageUpload}
-											/>
-										</View>
-									: null}
+							<Time style={styles.dataRow} dates={this.props.post.dates} />
 
-								{/*Image renders after divider so this is the only way to ensure
-							that there arent double dividers*/}
-								{this.state.image
-									? <View style={SharedStyles.divider} />
-									: null}
+							<View style={SharedStyles.divider} />
 
-								{/* Map or application text*/}
-								{this.state.applyClicked
-									? this.returnApplicationTextbox()
-									: <MapWithCircle
-											latitude={this.props.post.latitude}
-											longitude={this.props.post.longitude}
-										/>}
-
-								{/* Flag Post Button */}
-								{!this.isOwner && !this.state.applyClicked
-									? <FlagButton
-											flaggedUser={this.props.post.owner}
-											postID={this.props.post.key}
-										/>
-									: null}
+							<View style={styles.dataRow}>
+								<Text style={styles.description}>
+									{translateFreeform(this.props.post.description)}
+								</Text>
 							</View>
-						</ScrollView>
-						<View style={SharedStyles.fixedBottomButton}>
-							{this.returnApplyButton()}
+
+							<View style={SharedStyles.divider} />
+
+							{/*Display selected image*/}
+							{this.state.image ? (
+								<View>
+									<Image
+										source={{ uri: this.state.image }}
+										style={styles.imageUpload}
+									/>
+								</View>
+							) : null}
+
+							{/*Image renders after divider so this is the only way to ensure
+							that there arent double dividers*/}
+							{this.state.image ? <View style={SharedStyles.divider} /> : null}
+
+							{/* Map or application text*/}
+							{this.state.applyClicked ? (
+								this.returnApplicationTextbox()
+							) : (
+								<MapWithCircle
+									latitude={this.props.post.latitude}
+									longitude={this.props.post.longitude}
+								/>
+							)}
+
+							{/* Flag Post Button */}
+							{!this.isOwner && !this.state.applyClicked ? (
+								<FlagButton
+									flaggedUser={this.props.post.owner}
+									postID={this.props.post.key}
+								/>
+							) : null}
 						</View>
-					</KeyboardAwareView>
-				</View>;
+					</ScrollView>
+					<View style={SharedStyles.fixedBottomButton}>
+						{this.returnApplyButton()}
+					</View>
+				</KeyboardAwareView>
+			</View>
+		);
 	}
 }
 
