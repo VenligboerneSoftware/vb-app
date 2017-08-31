@@ -11,8 +11,7 @@ export default class HomePage extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			selectedTab: 'Map',
-			loaded: false
+			selectedTab: 'Map'
 		};
 
 		// TODO there must be a better pattern for this
@@ -33,24 +32,28 @@ export default class HomePage extends React.Component {
 		const parameters = url.slice(url.indexOf('+') + 1).split('/');
 		if (parameters[0] === 'post') {
 			const postID = parameters[1];
-			firebase
-				.database()
-				.ref('posts')
-				.child(postID)
-				.once('value')
-				.then(postSnap => {
-					if (postSnap.exists()) {
-						let post = postSnap.val();
-						post.key = postSnap.key;
-						post.applications = post.applications || {};
-						global.setCurrentModal('/PostOrCenterModal', {
-							post: post
-						});
-					}
-				});
+			this._goToPost(postID);
 		} else {
 			console.warn('Unrecognized deep linking URL', url);
 		}
+	};
+
+	_goToPost = postID => {
+		firebase
+			.database()
+			.ref('posts')
+			.child(postID)
+			.once('value')
+			.then(postSnap => {
+				if (postSnap.exists()) {
+					let post = postSnap.val();
+					post.key = postSnap.key;
+					post.applications = post.applications || {};
+					global.setCurrentModal('/PostOrCenterModal', {
+						post: post
+					});
+				}
+			});
 	};
 
 	async registerForPushNotificationsAsync() {
@@ -86,15 +89,37 @@ export default class HomePage extends React.Component {
 		} else {
 			//iOS specific code
 			if (notification.data.type === 'applicationSent') {
-				global.setDropDown(
+				this.redirectPage = notification.data.post;
+				this._setDropDown(
 					'You have a reply to your post!',
 					notification.data.postTitle
 				);
 			} else if (notification.data.type === 'applicantAccepted') {
-				global.setDropDown(
+				this.redirectPage = 'application';
+				this._setDropDown(
 					'Your reply has been accepted!',
 					notification.data.postTitle
 				);
+			}
+		}
+	};
+
+	_setDropDown = (title, message) => {
+		this.dropdown.alertWithType(
+			'info',
+			title ? title : '',
+			message ? message : ''
+		);
+	};
+
+	_dropdownClose = data => {
+		if (data.action === 'tap') {
+			if (this.redirectPage === 'application') {
+				global.changeTab('Me', () => {
+					global.profileIndex(1);
+				});
+			} else if (this.redirectPage) {
+				this._goToPost(this.redirectPage);
 			}
 		}
 	};
@@ -104,18 +129,6 @@ export default class HomePage extends React.Component {
 		Notifications.addListener(this._handleNotification);
 	}
 
-	componentDidMount() {
-		this.setState({ loaded: true });
-
-		global.setDropDown = (title, message) => {
-			this.dropdown.alertWithType(
-				'info',
-				title ? title : '',
-				message ? message : ''
-			);
-		};
-	}
-
 	render() {
 		return (
 			<View style={{ flex: 1 }}>
@@ -123,9 +136,7 @@ export default class HomePage extends React.Component {
 				<ModalRouter />
 				<DropdownAlert
 					ref={ref => (this.dropdown = ref)}
-					onClose={data => {
-						console.log(data);
-					}}
+					onClose={data => this._dropdownClose(data)}
 				/>
 			</View>
 		);
