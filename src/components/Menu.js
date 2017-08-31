@@ -1,5 +1,4 @@
 import {
-	Alert,
 	AsyncStorage,
 	I18nManager,
 	Image,
@@ -16,7 +15,7 @@ import firebase from 'firebase';
 import { FontAwesome } from '@expo/vector-icons';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
 
-import { authenticate } from '../utils/fbLogin';
+import { attemptLoginWithStoredToken } from '../utils/fbLogin';
 import { getCode } from '../utils/languages';
 import { translate } from '../utils/internationalization';
 import history from '../utils/history.js';
@@ -28,30 +27,8 @@ export default class Menu extends React.Component {
 		this.state = { isRTL: global.isRTL };
 	}
 
-	// Function: attemptLoginWithStoredToken
-	//------------------------------------------------
-	// Tries to log into the user's account using a token
-	// stored in local storage if available. Otherwise,
-	// if token is invalid, deletes the user's token from
-	// the database and redirects to a regular login.
-	attemptLoginWithStoredToken(token) {
-		// TODO Make sure all invalid token handling covered
-		global.token = token;
-		return authenticate(token).catch(error => {
-			console.error('Facebook authentication error', error);
-			AsyncStorage.removeItem('token');
-			Alert.alert('Your Facebook login failed!', 'Please log in again!');
-			AsyncStorage.getItem('eula').then(agreedToEula => {
-				history.push('/FacebookAuth', {
-					onDone: this._afterLogin,
-					eula: !agreedToEula
-				});
-			});
-		});
-	}
-
-	_afterLogin = token => {
-		this.attemptLoginWithStoredToken(token);
+	_afterLogin = async token => {
+		await attemptLoginWithStoredToken(token, this._afterLogin);
 
 		let userProfile = firebase.auth().currentUser;
 		// Initialize Amplitude with user data
