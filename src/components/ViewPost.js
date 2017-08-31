@@ -125,8 +125,9 @@ export default class ViewPost extends Component {
 				console.log('Push notifying', snap.val());
 				pushNotify(
 					snap.val(),
-					'New reply to your event!',
-					'Title: ' + this.props.post.title.original,
+					//TODO: make Danish
+					'New reply to your post!',
+					'Post Title: ' + this.props.post.title.original,
 					{
 						type: 'applicationSent',
 						post: this.props.post.key,
