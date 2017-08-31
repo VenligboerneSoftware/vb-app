@@ -23,6 +23,7 @@ export default class HomePage extends React.Component {
 		Linking.getInitialURL().then(this._link);
 	}
 
+	//used to open a post if app is opened from a deep link
 	_link = url => {
 		if (url.indexOf('+') === -1 || url.indexOf('+') === url.length - 1) {
 			// There is no extra data. This is just a normal startup
@@ -38,6 +39,7 @@ export default class HomePage extends React.Component {
 		}
 	};
 
+	//Given a valid postID, will open that post within the app
 	_goToPost = postID => {
 		firebase
 			.database()
@@ -71,23 +73,23 @@ export default class HomePage extends React.Component {
 	}
 
 	_handleNotification = notification => {
-		if (Platform.OS === 'android' && notification.origin === 'selected') {
+		if (notification.origin === 'selected') {
+			//'selected' means clicking notification caused app to open
 			if (notification.data.url) {
 				this._link(notification.data.url);
 			} else {
-				// TODO make all notification actions use deep linking
-				if (notification.data.type === 'applicantAccepted') {
+				if (notification.data.type === 'applicationSent') {
+					//'applicationSent' means a new reply or reminder to your post
+					this._goToPost(notification.data.post);
+				} else if (notification.data.type === 'applicantAccepted') {
+					//'applicationAccepted' means your reply to a post was accepted
 					global.changeTab('Me', () => {
 						global.profileIndex(1);
 					});
-				} else {
-					global.changeTab('Me', () => {
-						global.profileIndex(0);
-					});
 				}
 			}
-		} else {
-			//iOS specific code
+		} else if (notification.origin === 'received') {
+			//'received' means app was foregrounded when notification was received
 			if (notification.data.type === 'applicationSent') {
 				this.redirectPage = notification.data.post;
 				this._setDropDown(

@@ -71,31 +71,34 @@ export default class Menu extends React.Component {
 		'http://venligboerne.dk' +
 		(getCode(global.language) === 'en' ? '' : '/' + getCode(global.language));
 
-	_ltrAlert = () => {
+	_layoutAlert = () => {
 		Alert.alert(
-			translate('Which app layout would you like to choose?'),
-			translate(
-				'The LTR format is made for languages written from left to right, such as Danish and English. The RTL format is made for languages written from right to left, such as Arabic and Persian'
-			),
+			global.isRTL
+				? translate('Would you like to switch to LTR mode?')
+				: translate('Would you like to switch to RTL mode?'),
+			global.isRTL
+				? translate(
+						'The LTR format is made for languages written from left to right, such as Danish and English'
+					)
+				: translate(
+						'The RTL format is made for languages written from right to left, such as Arabic and Persian'
+					),
 			[
 				{
-					text: translate('LTR'),
-					onPress: () => {
-						this._ltrChange(false);
-					}
+					text: translate('No')
 				},
 				{
-					text: translate('RTL'),
+					text: translate('Yes'),
 					onPress: () => {
-						this._ltrChange(true);
+						global.isRTL ? this._setRTL(false) : this._setRTL(true);
 					}
 				}
 			],
-			{ cancelable: false }
+			{ cancelable: true }
 		);
 	};
 
-	_ltrChange = value => {
+	_setRTL = value => {
 		global.isRTL = value;
 		I18nManager.forceRTL(value);
 		if (value !== I18nManager.isRTL) {
@@ -162,7 +165,7 @@ export default class Menu extends React.Component {
 							},
 							{
 								key: 'App Layout',
-								onPress: this._ltrAlert
+								onPress: this._layoutAlert
 							},
 							{
 								key: 'Logout',
@@ -170,15 +173,14 @@ export default class Menu extends React.Component {
 							}
 						]}
 						scrollEnabled={true}
-						renderItem={({ item }) =>
+						renderItem={({ item }) => (
 							<View style={{ width: '100%' }}>
 								<TouchableOpacity onPress={item.onPress}>
-									<Text style={styles.menuText}>
-										{translate(item.key)}
-									</Text>
+									<Text style={styles.menuText}>{translate(item.key)}</Text>
 								</TouchableOpacity>
 								<View style={SharedStyles.divider} />
-							</View>}
+							</View>
+						)}
 					/>
 				</View>
 			</View>

@@ -1,4 +1,5 @@
 import {
+	ActivityIndicator,
 	Alert,
 	FlatList,
 	Image,
@@ -34,7 +35,8 @@ const initialState = {
 	datepickerVisible: false,
 	searchModalVisible: false,
 	base64: null,
-	location: null
+	location: null,
+	uploadingPost: false
 };
 
 export default class NewPost extends React.Component {
@@ -262,51 +264,55 @@ export default class NewPost extends React.Component {
 			return;
 		}
 
-		const ref = firebase.database().ref('posts');
+		if (!this.state.uploadingPost) {
+			//submit to firebase
+			this.setState({ uploadingPost: true });
+			const ref = firebase.database().ref('posts');
 
-		const newPost = {
-			...this.state.newPost,
-			index: mortonize(
-				this.state.newPost.latitude,
-				this.state.newPost.longitude
-			),
-			creationTime: Date.now(),
-			owner: firebase.auth().currentUser.uid
-		};
+			const newPost = {
+				...this.state.newPost,
+				index: mortonize(
+					this.state.newPost.latitude,
+					this.state.newPost.longitude
+				),
+				creationTime: Date.now(),
+				owner: firebase.auth().currentUser.uid
+			};
 
-		newPost.title = await bundleTranslations(newPost.title);
-		newPost.description = await bundleTranslations(newPost.description);
+			newPost.title = await bundleTranslations(newPost.title);
+			newPost.description = await bundleTranslations(newPost.description);
 
-		// If we are editing, then overwrite the old index. If we are creating
-		// a new post, push a new entry to the database.
-		let eventKey = null;
-		if (newPost.key) {
-			// if the key is present, we are editing
+			// If we are editing, then overwrite the old index. If we are creating
+			// a new post, push a new entry to the database.
+			let eventKey = null;
+			if (newPost.key) {
+				// if the key is present, we are editing
 
-			// This is fancy Babel syntax. newPost.key is put into the key constant
-			// and the other properties are put into uploadableEvent.
-			// https://stackoverflow.com/questions/34698905/clone-a-js-object-except-for-one-key
-			const { key, ...uploadableEvent } = newPost;
-			eventKey = key;
-			ref.child(eventKey).update(uploadableEvent);
-			console.log('Updating post', newPost, eventKey);
-		} else {
-			eventKey = ref.push(newPost).key;
-			this._notifySubscribers(newPost);
-		}
+				// This is fancy Babel syntax. newPost.key is put into the key constant
+				// and the other properties are put into uploadableEvent.
+				// https://stackoverflow.com/questions/34698905/clone-a-js-object-except-for-one-key
+				const { key, ...uploadableEvent } = newPost;
+				eventKey = key;
+				ref.child(eventKey).update(uploadableEvent);
+				console.log('Updating post', newPost, eventKey);
+			} else {
+				eventKey = ref.push(newPost).key;
+				this._notifySubscribers(newPost);
+			}
 
-		// Upload the image to Firebase under the same ID as the post
-		firebase.database().ref('images').child(eventKey).set(this.state.base64);
+			// Upload the image to Firebase under the same ID as the post
+			firebase.database().ref('images').child(eventKey).set(this.state.base64);
 
-		// Switch to MapViewPage and zoom in to new event
-		global.changeTab('Map', () => {
-			global.setRegion({
-				latitude: newPost.latitude,
-				longitude: newPost.longitude,
-				latitudeDelta: 0.05,
-				longitudeDelta: 0.05
+			// Switch to MapViewPage and zoom in to new event
+			global.changeTab('Map', () => {
+				global.setRegion({
+					latitude: newPost.latitude,
+					longitude: newPost.longitude,
+					latitudeDelta: 0.05,
+					longitudeDelta: 0.05
+				});
 			});
-		});
+		}
 	};
 
 	_notifySubscribers = async event => {
@@ -413,7 +419,7 @@ export default class NewPost extends React.Component {
 					}}
 				>
 					<FontAwesome name={'map-marker'} size={22} style={styles.pinIcon} />
-					<Text>
+					<Text style={{ backgroundColor: 'transparent', width: '80%' }}>
 						{this.state.newPost.formatted_address
 							? this.state.newPost.formatted_address
 							: translate('Select Event Location')}
@@ -597,9 +603,16 @@ export default class NewPost extends React.Component {
 				activeOpacity={0.4}
 				onPress={this._submitPressed}
 			>
-				<Text style={{ color: Colors.white, fontSize: 30 }}>
-					{translate('Finish')}
-				</Text>
+				{this.state.uploadingPost
+					? <ActivityIndicator
+							animating={true}
+							size={'large'}
+							style={{ marginVertical: 10 }}
+							color={'white'}
+						/>
+					: <Text style={{ color: Colors.white, fontSize: 30 }}>
+							{translate('Finish')}
+						</Text>}
 			</TouchableOpacity>
 		</View>;
 
