@@ -103,7 +103,7 @@ export default class ViewApplications extends React.Component {
 						'Title: ' + postTitle.original,
 						{
 							type: 'applicantAccepted',
-							post: application.post,
+							app: application.key,
 							postTitle: postTitle.original,
 							uid: firebase.auth().currentUser.uid
 						}
@@ -145,9 +145,11 @@ export default class ViewApplications extends React.Component {
 				<View style={styles.iconContainer}>
 					<Ionicons
 						name={
-							I18nManager.isRTL
-								? 'ios-arrow-back-outline'
-								: 'ios-arrow-forward-outline'
+							I18nManager.isRTL ? (
+								'ios-arrow-back-outline'
+							) : (
+								'ios-arrow-forward-outline'
+							)
 						}
 						size={40}
 						color={Colors.grey.medium}
@@ -178,45 +180,49 @@ export default class ViewApplications extends React.Component {
 	// ---------------------------------
 	// Returns a Flatlist containing applicants from the data source passed in
 	applicantList = listData => {
-		return this.state.applicationsLoaded
-			? listData.length === 0
-				? <Text style={{ alignSelf: 'center', marginTop: 10 }}>
-						{translate('There are no responses to display')}
-					</Text>
-				: //actually render flatlist
-					<FlatList
-						data={Object.values(listData).sort(this._sort)}
-						ItemSeparatorComponent={() => <View style={SharedStyles.divider} />}
-						renderItem={({ item }) => this.renderApplication(item)}
-					/>
-			: <View style={{ justifyContent: 'center', marginTop: 10 }}>
-					<ActivityIndicator animating={true} size={'large'} />
-				</View>;
+		return this.state.applicationsLoaded ? listData.length === 0 ? (
+			<Text style={{ alignSelf: 'center', marginTop: 10 }}>
+				{translate('There are no responses to display')}
+			</Text>
+		) : (
+			//actually render flatlist
+			<FlatList
+				data={Object.values(listData).sort(this._sort)}
+				ItemSeparatorComponent={() => <View style={SharedStyles.divider} />}
+				renderItem={({ item }) => this.renderApplication(item)}
+			/>
+		) : (
+			<View style={{ justifyContent: 'center', marginTop: 10 }}>
+				<ActivityIndicator animating={true} size={'large'} />
+			</View>
+		);
 	};
 
 	render() {
-		return this.state.applicantClicked
-			? <OwnerViewApplicant
-					application={this.state.applicant}
-					back={this._hideApplicant}
-					post={this.props.post}
-					appStatusChange={this.changeApplicantStatus}
-				/>
-			: <View style={[SharedStyles.modalContent, styles.container]}>
-					<ExitBar title={translate('View Responses')} />
-					<Text style={styles.title}>
-						{translateFreeform(this.props.post.title)}
+		return this.state.applicantClicked ? (
+			<OwnerViewApplicant
+				application={this.state.applicant}
+				back={this._hideApplicant}
+				post={this.props.post}
+				appStatusChange={this.changeApplicantStatus}
+			/>
+		) : (
+			<View style={[SharedStyles.modalContent, styles.container]}>
+				<ExitBar title={translate('View Responses')} />
+				<Text style={styles.title}>
+					{translateFreeform(this.props.post.title)}
+				</Text>
+
+				<View style={styles.applicantsTextStyle}>
+					<Text style={styles.applicantsText}>
+						{translate('RESPONDERS') /* TODO translate */}
 					</Text>
+				</View>
+				<View style={SharedStyles.divider} />
 
-					<View style={styles.applicantsTextStyle}>
-						<Text style={styles.applicantsText}>
-							{translate('RESPONDERS') /* TODO translate */}
-						</Text>
-					</View>
-					<View style={SharedStyles.divider} />
-
-					{this.applicantList(this.state.applications)}
-				</View>;
+				{this.applicantList(this.state.applications)}
+			</View>
+		);
 	}
 }
 
