@@ -13,7 +13,7 @@ import * as firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
 
-import { translate } from '../utils/internationalization';
+import { translate, translateFreeform } from '../utils/internationalization';
 import ApplicationStatus from './ApplicationStatus';
 import Colors from '../styles/Colors';
 import ExitBar from './ExitBar';
@@ -100,11 +100,11 @@ export default class ViewApplications extends React.Component {
 					pushNotify(
 						snap.val(),
 						'Your reply to an event has been accepted!',
-						'Title: ' + postTitle,
+						'Title: ' + postTitle.original,
 						{
 							type: 'applicantAccepted',
 							post: application.post,
-							postTitle: postTitle,
+							postTitle: postTitle.original,
 							uid: firebase.auth().currentUser.uid
 						}
 					);
@@ -205,7 +205,7 @@ export default class ViewApplications extends React.Component {
 			: <View style={[SharedStyles.modalContent, styles.container]}>
 					<ExitBar title={translate('View Responses')} />
 					<Text style={styles.title}>
-						{this.props.post.title}
+						{translateFreeform(this.props.post.title)}
 					</Text>
 
 					<View style={styles.applicantsTextStyle}>

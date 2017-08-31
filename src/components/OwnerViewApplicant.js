@@ -11,7 +11,7 @@ import React from 'react';
 
 import { Ionicons } from '@expo/vector-icons';
 
-import { translate } from '../utils/internationalization';
+import { translate, translateFreeform } from '../utils/internationalization';
 import ApplicationStatus from './ApplicationStatus.js';
 import Colors from '../styles/Colors';
 import ExitBar from './ExitBar';
@@ -89,7 +89,8 @@ export default class OwnerViewApplicant extends React.Component {
 						<View style={SharedStyles.divider} />
 
 						<Text style={SharedStyles.message}>
-							{translate('Response') + ':'} {this.props.application.message}
+							{translate('Response') + ': '}
+							{translateFreeform(this.props.application.message)}
 						</Text>
 
 						<View style={SharedStyles.divider} />

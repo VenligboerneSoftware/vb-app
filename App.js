@@ -17,7 +17,7 @@ import * as firebase from 'firebase';
 import { Ionicons, FontAwesome, Entypo } from '@expo/vector-icons';
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
 
-import { authenticate } from './src/utils/fbLogin';
+import { attemptLoginWithStoredToken } from './src/utils/fbLogin';
 import { setLanguage } from './src/utils/internationalization';
 import APIKeys from './src/utils/APIKeys.js';
 import FacebookAuth from './src/components/FacebookAuth.js';
@@ -62,6 +62,7 @@ export default class App extends React.Component {
 		Expo.Amplitude.logEvent('Startup');
 
 		const language = await AsyncStorage.getItem('language');
+		global.autotranslate = Boolean(await AsyncStorage.getItem('autotranslate'));
 		await Promise.all([
 			this.assetPromises.language,
 			this.assetPromises.languageOptions
@@ -135,8 +136,11 @@ export default class App extends React.Component {
 	};
 
 	_afterLogin = async token => {
-		await this.attemptLoginWithStoredToken(token);
+		this.setState({ displayText: 'Attempting Login' });
+		await attemptLoginWithStoredToken(token, this._afterLogin);
 		console.log('Logged in');
+
+		this._loadCenters();
 
 		// Initialize Amplitude with user data
 		let userProfile = firebase.auth().currentUser;
@@ -199,29 +203,6 @@ export default class App extends React.Component {
 		}
 	};
 
-	// Function: attemptLoginWithStoredToken
-	//------------------------------------------------
-	// Tries to log into the user's account using a token
-	// stored in local storage if available. Otherwise,
-	// if token is invalid, deletes the user's token from
-	// the database and redirects to a regular login.
-	attemptLoginWithStoredToken = token => {
-		// TODO Make sure all invalid token handling covered
-		this.setState({ displayText: 'Attempting Login' });
-		global.token = token;
-		return authenticate(token).catch(error => {
-			console.error('Facebook authentication error', error);
-			AsyncStorage.removeItem('token');
-			Alert.alert('Your Facebook session has expired!', 'Please log in again!');
-			AsyncStorage.getItem('eula').then(agreedToEula => {
-				history.push('/FacebookAuth', {
-					onDone: this._afterLogin,
-					eula: !agreedToEula
-				});
-			});
-		});
-	};
-
 	_startAssetLoad = () => {
 		// Language data must be loaded before language selection page
 		this.assetPromises.language = firebase
@@ -264,6 +245,17 @@ export default class App extends React.Component {
 				this.setState({ displayText: 'Loaded Icons' });
 			});
 
+		this.assetPromises.fonts = Font.loadAsync([
+			Ionicons.font,
+			FontAwesome.font,
+			Entypo.font,
+			{
+				Georgia: require('venligboerneapp/assets/fonts/Georgia.ttf')
+			}
+		]);
+	};
+
+	_loadCenters = () => {
 		// Queries firebase and downloads all center data from the firebase server.
 		// Creates a vector of local centers to appear on initial render.
 		this.assetPromises.centers = firebase
@@ -279,15 +271,6 @@ export default class App extends React.Component {
 				}
 				console.log('Loaded centers');
 			});
-
-		this.assetPromises.fonts = Font.loadAsync([
-			Ionicons.font,
-			FontAwesome.font,
-			Entypo.font,
-			{
-				Georgia: require('venligboerneapp/assets/fonts/Georgia.ttf')
-			}
-		]);
 	};
 
 	addInternetEventListeners = () => {

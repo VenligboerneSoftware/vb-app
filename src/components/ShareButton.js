@@ -1,9 +1,12 @@
 import { StyleSheet, TouchableOpacity, Share, Text } from 'react-native';
 import Expo from 'expo';
-import { EvilIcons } from '@expo/vector-icons';
 import React from 'react';
 
-import { translate } from 'venligboerneapp/src/utils/internationalization.js';
+import { EvilIcons } from '@expo/vector-icons';
+import {
+	translate,
+	translateFreeform
+} from 'venligboerneapp/src/utils/internationalization.js';
 
 export default class ShareButton extends React.Component {
 	constructor(props) {
@@ -42,9 +45,9 @@ export default class ShareButton extends React.Component {
 			message:
 				translate('Here is a post in the Venligboerne App I wanted to share!') +
 				'\n\n' +
-				this.props.title +
+				this.props.title.original +
 				':  ' +
-				this.props.description +
+				this.props.description.original +
 				'\n\n' +
 				this.state.shareURL,
 			title: this.props.title //doesn't seem to show up anywhere...
