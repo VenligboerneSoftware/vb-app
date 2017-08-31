@@ -187,6 +187,66 @@ export default class TopBar extends React.Component {
 									}
 								}
 							}
+						},
+						{
+							formatted_address: translate('Odense'),
+							description: translate('Odense'),
+							geometry: {
+								location: {
+									lat: 55.396,
+									lng: 10.388
+								},
+								viewport: {
+									northeast: {
+										lat: 55.446,
+										lng: 10.438
+									},
+									southwest: {
+										lat: 55.346,
+										lng: 10.338
+									}
+								}
+							}
+						},
+						{
+							formatted_address: translate('Aalborg'),
+							description: translate('Aalborg'),
+							geometry: {
+								location: {
+									lat: 57.048,
+									lng: 9.919
+								},
+								viewport: {
+									northeast: {
+										lat: 57.098,
+										lng: 9.969
+									},
+									southwest: {
+										lat: 57.0,
+										lng: 9.869
+									}
+								}
+							}
+						},
+						{
+							formatted_address: translate('Randers'),
+							description: translate('Randers'),
+							geometry: {
+								location: {
+									lat: 56.461,
+									lng: 10.036
+								},
+								viewport: {
+									northeast: {
+										lat: 56.511,
+										lng: 10.086
+									},
+									southwest: {
+										lat: 56.411,
+										lng: 9.986
+									}
+								}
+							}
 						}
 					]}
 				/>

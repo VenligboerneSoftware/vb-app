@@ -413,7 +413,7 @@ export default class NewPost extends React.Component {
 					}}
 				>
 					<FontAwesome name={'map-marker'} size={22} style={styles.pinIcon} />
-					<Text>
+					<Text style={{ backgroundColor: 'transparent', width: '80%' }}>
 						{this.state.newPost.formatted_address
 							? this.state.newPost.formatted_address
 							: translate('Select Event Location')}
