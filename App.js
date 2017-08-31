@@ -17,6 +17,7 @@ import * as firebase from 'firebase';
 import { Ionicons, FontAwesome, Entypo } from '@expo/vector-icons';
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
 
+import { attemptLoginWithStoredToken } from './src/utils/fbLogin';
 import { setLanguage } from './src/utils/internationalization';
 import APIKeys from './src/utils/APIKeys.js';
 import FacebookAuth from './src/components/FacebookAuth.js';
@@ -136,7 +137,7 @@ export default class App extends React.Component {
 
 	_afterLogin = async token => {
 		this.setState({ displayText: 'Attempting Login' });
-		await this.attemptLoginWithStoredToken(token);
+		await attemptLoginWithStoredToken(token, this._afterLogin);
 		console.log('Logged in');
 
 		this._loadCenters();
@@ -200,44 +201,6 @@ export default class App extends React.Component {
 		} else {
 			history.push('/HomePage');
 		}
-	};
-
-	// Function: authenticate
-	//-----------------------------------------------------------------------
-	// Authenticates token with firebase server and returns
-	// a firebase.promise (guaranteed to be an eventual value)
-	// containing a non-null firebase user. Will throw an error
-	// if token is invalid/malformed.
-	//
-	// More on a firebase.promise:
-	// https://firebase.google.com/docs/reference/js/firebase.Promise#Promise
-	authenticate = async token => {
-		const provider = firebase.auth.FacebookAuthProvider;
-		const credential = provider.credential(token);
-		return await firebase.auth().signInWithCredential(credential);
-	};
-
-	// Function: attemptLoginWithStoredToken
-	//------------------------------------------------
-	// Tries to log into the user's account using a token
-	// stored in local storage if available. Otherwise,
-	// if token is invalid, deletes the user's token from
-	// the database and redirects to a regular login.
-	attemptLoginWithStoredToken = token => {
-		// TODO Make sure all invalid token handling covered
-		this.setState({ displayText: 'Attempting Login' });
-		global.token = token;
-		return this.authenticate(token).catch(error => {
-			console.warn('Facebook authentication error', error);
-			AsyncStorage.removeItem('token');
-			Alert.alert('Your Facebook session has expired!', 'Please log in again!');
-			AsyncStorage.getItem('eula').then(agreedToEula => {
-				history.push('/FacebookAuth', {
-					onDone: this._afterLogin,
-					eula: !agreedToEula
-				});
-			});
-		});
 	};
 
 	_startAssetLoad = () => {

@@ -4,7 +4,6 @@ import {
 	I18nManager,
 	Image,
 	StyleSheet,
-	Switch,
 	Text,
 	TouchableOpacity,
 	View
@@ -16,7 +15,7 @@ import firebase from 'firebase';
 import { FontAwesome } from '@expo/vector-icons';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
 
-import { authenticate } from '../utils/fbLogin';
+import { attemptLoginWithStoredToken } from '../utils/fbLogin';
 import { getCode } from '../utils/languages';
 import { translate } from '../utils/internationalization';
 import history from '../utils/history.js';
@@ -24,34 +23,10 @@ import history from '../utils/history.js';
 export default class Menu extends React.Component {
 	constructor() {
 		super();
-
-		this.state = { isRTL: global.isRTL };
 	}
 
-	// Function: attemptLoginWithStoredToken
-	//------------------------------------------------
-	// Tries to log into the user's account using a token
-	// stored in local storage if available. Otherwise,
-	// if token is invalid, deletes the user's token from
-	// the database and redirects to a regular login.
-	attemptLoginWithStoredToken(token) {
-		// TODO Make sure all invalid token handling covered
-		global.token = token;
-		return authenticate(token).catch(error => {
-			console.error('Facebook authentication error', error);
-			AsyncStorage.removeItem('token');
-			Alert.alert('Your Facebook login failed!', 'Please log in again!');
-			AsyncStorage.getItem('eula').then(agreedToEula => {
-				history.push('/FacebookAuth', {
-					onDone: this._afterLogin,
-					eula: !agreedToEula
-				});
-			});
-		});
-	}
-
-	_afterLogin = token => {
-		this.attemptLoginWithStoredToken(token);
+	_afterLogin = async token => {
+		await attemptLoginWithStoredToken(token, this._afterLogin);
 
 		let userProfile = firebase.auth().currentUser;
 		// Initialize Amplitude with user data
@@ -94,6 +69,40 @@ export default class Menu extends React.Component {
 	_getLocalizedWiki = () =>
 		'http://venligboerne.dk' +
 		(getCode(global.language) === 'en' ? '' : '/' + getCode(global.language));
+
+	_ltrAlert = () => {
+		Alert.alert(
+			translate('Which app layout would you like to choose?'),
+			translate(
+				'The LTR format is made for languages written from left to right, such as Danish and English. The RTL format is made for languages written from right to left, such as Arabic and Persian'
+			),
+			[
+				{
+					text: translate('LTR'),
+					onPress: () => {
+						this._ltrChange(false);
+					}
+				},
+				{
+					text: translate('RTL'),
+					onPress: () => {
+						this._ltrChange(true);
+					}
+				}
+			],
+			{ cancelable: false }
+		);
+	};
+
+	_ltrChange = value => {
+		global.isRTL = value;
+		I18nManager.forceRTL(value);
+		if (value !== I18nManager.isRTL) {
+			alert(
+				translate('Please quit and restart the app to see the layout changes')
+			);
+		}
+	};
 
 	render() {
 		return (
@@ -150,6 +159,10 @@ export default class Menu extends React.Component {
 								)
 						},
 						{
+							title: 'App Layout',
+							onPress: this._ltrAlert
+						},
+						{
 							title: 'Logout',
 							onPress: this._logout
 						}
@@ -163,32 +176,6 @@ export default class Menu extends React.Component {
 							<View style={SharedStyles.divider} />
 						</View>
 					)}
-					<View
-						style={{
-							flexDirection: 'row',
-							alignItems: 'center',
-							justifyContent: 'space-around'
-						}}
-					>
-						<Text style={styles.layoutText}>Left To Right</Text>
-						<Switch
-							value={this.state.isRTL}
-							onValueChange={value => {
-								global.isRTL = value;
-								this.setState({ isRTL: value });
-								I18nManager.forceRTL(value);
-								if (value !== I18nManager.isRTL) {
-									alert(
-										translate(
-											'Please restart the app to change the layout direction'
-										)
-									);
-								}
-							}}
-						/>
-						<Text style={styles.layoutText}>Right To Left</Text>
-					</View>
-					<View style={SharedStyles.divider} />
 				</View>
 			</View>
 		);
@@ -219,12 +206,5 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		right: 0,
 		width: '40%'
-	},
-	layoutText: {
-		fontSize: 16,
-		textAlign: 'center',
-		margin: 10,
-		color: '#444',
-		flex: 1
 	}
 });
