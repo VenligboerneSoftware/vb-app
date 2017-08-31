@@ -1,12 +1,13 @@
 import {
 	Alert,
+	AppState,
 	AsyncStorage,
 	I18nManager,
 	Image,
 	NetInfo,
+	StatusBar,
 	Text,
-	View,
-	StatusBar
+	View
 } from 'react-native';
 import { Route, Router, Switch } from 'react-router-native';
 import Expo, { Font, Location, Notifications, Permissions } from 'expo';
@@ -278,11 +279,17 @@ export default class App extends React.Component {
 			'change',
 			this._handleConnectivityChange
 		);
+
+		AppState.addEventListener('change', state => {
+			console.log('App state', state);
+			NetInfo.isConnected.fetch().then(this._handleConnectivityChange);
+		});
 	};
 
 	_handleConnectivityChange = isConnected => {
+		console.log('connectivity change', isConnected);
 		this.setState({
-			internetAlertVisible: isConnected ? false : true
+			internetAlertVisible: !isConnected
 		});
 	};
 
