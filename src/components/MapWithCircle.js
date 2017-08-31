@@ -14,6 +14,7 @@ export default class MapWithCircle extends React.Component {
 		return (
 			<MapView
 				style={styles.map}
+				provider={'google'}
 				region={{
 					latitude: this.props.latitude,
 					longitude: this.props.longitude,

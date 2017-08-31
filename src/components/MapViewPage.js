@@ -63,6 +63,7 @@ export default class MapViewPage extends React.Component {
 				<MapView
 					style={styles.map}
 					region={this.state.mapRegion}
+					provider={'google'}
 					onRegionChange={mapRegion => {
 						this.state.mapRegion = mapRegion;
 
@@ -87,7 +88,7 @@ export default class MapViewPage extends React.Component {
 					pitchEnabled={false}
 				>
 					{// Render post and center icons
-					postsNearMap.map(marker => (
+					postsNearMap.map(marker =>
 						<MapView.Marker
 							key={marker.key}
 							coordinate={marker}
@@ -100,7 +101,7 @@ export default class MapViewPage extends React.Component {
 								zIndex: marker.latitude
 							}}
 						/>
-					))}
+					)}
 				</MapView>
 			</View>
 		);
