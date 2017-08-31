@@ -18,6 +18,6 @@ export default class Modal extends React.Component {
 	};
 
 	render() {
-		return <RNModal {...this.props} />;
+		return <RNModal hideOnBack={false} {...this.props} />;
 	}
 }

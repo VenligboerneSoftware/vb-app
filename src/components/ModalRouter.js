@@ -50,6 +50,7 @@ export default class ModalRouter extends React.Component {
 					backgroundColor: '#FFF'
 				}}
 				closeOnTouchOutside={false}
+				disableOnBackPress={true}
 			>
 				<Switch location={{ pathname: this.state.path }}>
 					<Route path="/ManageNotifications" component={ManageNotifications} />
