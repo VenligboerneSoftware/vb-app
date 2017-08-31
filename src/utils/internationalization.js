@@ -208,6 +208,7 @@ export function setLanguage(language) {
 	});
 	Expo.Amplitude.setUserProperties({ language: language });
 
+	const oldLanguage = global.language;
 	global.language = language;
 	AsyncStorage.setItem('language', global.language);
 
@@ -217,8 +218,14 @@ export function setLanguage(language) {
 	if (shouldBeRTL !== I18nManager.isRTL) {
 		// Wait a bit to display the alert. Showing an alert in the middle of a RTL
 		// switch crashes on iOS.
+		const pleaseRestartMessage =
+			'Please restart the app to change the layout direction';
 		setTimeout(() => {
-			alert(translate('Please restart the app to change the layout direction'));
+			alert(
+				translate(pleaseRestartMessage, oldLanguage) +
+					'\n' +
+					translate(pleaseRestartMessage, global.language)
+			);
 		}, 1000);
 	}
 }
