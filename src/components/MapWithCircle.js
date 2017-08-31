@@ -24,6 +24,7 @@ export default class MapWithCircle extends React.Component {
 				scrollEnabled={false}
 				zoomEnabled={false}
 				rotateEnabled={false}
+				pitchEnabled={false}
 			>
 				<MapView.Circle
 					//key forces iOS refresh
