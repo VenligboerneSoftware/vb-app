@@ -5,6 +5,7 @@ import firebase from 'firebase';
 
 import { createApplication } from './ApplicationManager.js';
 import mortonize from './mortonize';
+import { bundleTranslations } from './internationalization';
 
 // WARNING This destroys the contents of the database. Do not use it lightly.
 // Repopulate the database with randomly generated users, posts, and applications.
@@ -143,5 +144,35 @@ export function refreshIndices() {
 					firebase.database().ref().update(updatePacket);
 				}
 			});
+	});
+}
+
+async function bundleRef(ref) {
+	const text = (await ref.once('value')).val();
+	// if (typeof text === 'string') {
+	// 	const bundle = await bundleTranslations(text);
+	// 	console.log('Bundling', ref, text, bundle);
+	// 	ref.set(bundle);
+	// }
+
+	if (typeof text !== 'string') {
+		const unbundle = text.original;
+		console.log('Bundling', ref, text, unbundle);
+		ref.set(unbundle);
+	}
+}
+
+export function bundleAllTranslations() {
+	firebase.database().ref('applications').once('value').then(apps => {
+		apps.forEach(app => {
+			bundleRef(app.ref.child('message'));
+		});
+	});
+
+	firebase.database().ref('posts').once('value').then(posts => {
+		posts.forEach(post => {
+			bundleRef(post.ref.child('title'));
+			bundleRef(post.ref.child('description'));
+		});
 	});
 }
