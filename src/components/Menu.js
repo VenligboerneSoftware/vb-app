@@ -85,16 +85,16 @@ export default class Menu extends React.Component {
 					),
 			[
 				{
+					text: translate('No')
+				},
+				{
 					text: translate('Yes'),
 					onPress: () => {
 						global.isRTL ? this._setRTL(false) : this._setRTL(true);
 					}
-				},
-				{
-					text: translate('No')
 				}
 			],
-			{ cancelable: false }
+			{ cancelable: true }
 		);
 	};
 
