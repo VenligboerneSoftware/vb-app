@@ -24,7 +24,6 @@ import FlagButton from './FlagButton';
 
 export default class OwnerViewApplicant extends React.Component {
 	acceptApplicant = () => {
-		//TODO: translate
 		Alert.alert(
 			translate('Are you sure you want to accept?'),
 			translate('This person will be able to view your Facebook Profile'),
