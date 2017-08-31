@@ -22,6 +22,10 @@ import { translate } from 'venligboerneapp/src/utils/internationalization.js';
 import Colors from 'venligboerneapp/src/styles/Colors.js';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
 
+import {
+	bundleTranslations,
+	translateFreeform
+} from '../utils/internationalization';
 import ExitBar from './ExitBar.js';
 import MapWithCircle from './MapWithCircle.js';
 import ShareButton from './ShareButton.js';
@@ -104,11 +108,11 @@ export default class ViewPost extends Component {
 	// ---------------------------------------------------------
 	// Sets the user application to Applied for the event that they
 	// were currently viewing
-	submit = () => {
+	submit = async () => {
 		createApplication({
 			applicant: firebase.auth().currentUser.uid,
 			post: this.props.post.key,
-			message: this.application,
+			message: await bundleTranslations(this.application),
 			status: 'Waiting For Response',
 			bold: false
 		});
@@ -122,7 +126,7 @@ export default class ViewPost extends Component {
 				pushNotify(
 					snap.val(),
 					'New reply to your event!',
-					'title: ' + this.props.post.title,
+					'title: ' + this.props.post.title.original,
 					{
 						type: 'applicationSent',
 						post: this.props.post.key,
@@ -327,7 +331,7 @@ export default class ViewPost extends Component {
 
 								<View style={styles.dataRow}>
 									<Text style={styles.description}>
-										{this.props.post.description}
+										{translateFreeform(this.props.post.description)}
 									</Text>
 								</View>
 
