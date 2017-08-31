@@ -12,7 +12,6 @@ import {
 import { KeyboardAwareView } from 'react-native-keyboard-aware-view';
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
-import { goToApp } from '../utils/loadpostorapp.js';
 
 import { FontAwesome } from '@expo/vector-icons';
 import {
@@ -110,7 +109,7 @@ export default class ViewPost extends Component {
 	// Sets the user application to Applied for the event that they
 	// were currently viewing
 	submit = async () => {
-		const appID = createApplication({
+		createApplication({
 			applicant: firebase.auth().currentUser.uid,
 			post: this.props.post.key,
 			message: await bundleTranslations(this.application),
@@ -136,7 +135,6 @@ export default class ViewPost extends Component {
 					}
 				);
 			});
-		return appID;
 	};
 
 	// function: applyPressed
@@ -154,13 +152,11 @@ export default class ViewPost extends Component {
 					{ cancelable: false }
 				);
 			} else {
-				const appID = this.submit();
+				this.submit();
 				this._hideModal();
 				global.changeTab('Me', () => {
 					global.profileIndex(1);
 				});
-				console.log(appID);
-				goToApp(appID);
 			}
 		} else {
 			this.setState({ applyClicked: true });
@@ -192,7 +188,7 @@ export default class ViewPost extends Component {
 		);
 	};
 
-	// Sends the user to their application
+	// Sends the user to the my applications tab
 	_viewApplication = () => {
 		// TODO open the specific application
 		this._hideModal();
