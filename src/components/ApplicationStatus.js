@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { I18nManager, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 
 import { translate } from '../utils/internationalization';
@@ -12,22 +12,40 @@ export default class ApplicationStatus extends React.Component {
 			<View
 				style={this.props.modal ? styles.statusModal : styles.statusRegular}
 			>
-				<View style={{ flexDirection: 'row' }}>
-					<Text style={this.props.bold ? { fontWeight: 'bold' } : null}>
-						{translate('Status') + ':'}
-					</Text>
-					<Text
-						style={{
-							color: {
-								'Waiting For Response': 'orange',
-								Accepted: 'green',
-								Rejected: 'red'
-							}[this.props.status]
-						}}
-					>
-						{' ' + translate(this.props.status)}
-					</Text>
-				</View>
+				{!I18nManager.isRTL &&
+				(global.language === 'Arabic' || global.language === 'Farsi')
+					? <View style={{ flexDirection: 'row' }}>
+							<Text
+								style={{
+									color: {
+										'Waiting For Response': 'orange',
+										Accepted: 'green',
+										Rejected: 'red'
+									}[this.props.status]
+								}}
+							>
+								{' ' + translate(this.props.status)}
+							</Text>
+							<Text>
+								{translate('Status') + ':'}
+							</Text>
+						</View>
+					: <View style={{ flexDirection: 'row' }}>
+							<Text>
+								{translate('Status') + ':'}
+							</Text>
+							<Text
+								style={{
+									color: {
+										'Waiting For Response': 'orange',
+										Accepted: 'green',
+										Rejected: 'red'
+									}[this.props.status]
+								}}
+							>
+								{' ' + translate(this.props.status)}
+							</Text>
+						</View>}
 			</View>
 		);
 	}
