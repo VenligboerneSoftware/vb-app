@@ -122,7 +122,7 @@ export default class ViewPost extends Component {
 				pushNotify(
 					snap.val(),
 					'New reply to your event!',
-					'title: ' + this.props.post.title,
+					'Title: ' + this.props.post.title,
 					{
 						type: 'applicationSent',
 						post: this.props.post.key,
