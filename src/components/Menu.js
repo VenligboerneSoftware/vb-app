@@ -1,6 +1,7 @@
 import {
 	Alert,
 	AsyncStorage,
+	FlatList,
 	I18nManager,
 	Image,
 	StyleSheet,
@@ -119,63 +120,66 @@ export default class Menu extends React.Component {
 						<FontAwesome name={'times'} size={45} />
 					</TouchableOpacity>
 
-					{[
-						{
-							title: 'About Venligboerne',
-							onPress: () =>
-								WebBrowser.openBrowserAsync(this._getLocalizedWiki())
-						},
-						{
-							title: 'Manage Notifications',
-							onPress: () => {
-								this.props.hide();
-								global.setCurrentModal('/ManageNotifications');
-							}
-						},
-						{
-							title: 'Tutorial',
-							onPress: () => history.push('/Tutorial')
-						},
+					<FlatList
+						data={[
+							{
+								key: 'About Venligboerne',
+								onPress: () =>
+									WebBrowser.openBrowserAsync(this._getLocalizedWiki())
+							},
+							{
+								key: 'Manage Notifications',
+								onPress: () => {
+									this.props.hide();
+									global.setCurrentModal('/ManageNotifications');
+								}
+							},
+							{
+								key: 'Tutorial',
+								onPress: () => history.push('/Tutorial')
+							},
 
-						{
-							title: 'Photos',
-							onPress: () =>
-								WebBrowser.openBrowserAsync(
-									this._getLocalizedWiki() + '/instagram'
-								)
-						},
-						{
-							title: 'FAQ About Denmark',
-							onPress: () =>
-								WebBrowser.openBrowserAsync(
-									this._getLocalizedWiki() + '/knowledge-base/'
-								)
-						},
-						{
-							title: 'Give Feedback',
-							onPress: () =>
-								WebBrowser.openBrowserAsync(
-									this._getLocalizedWiki() + '/feedback'
-								)
-						},
-						{
-							title: 'App Layout',
-							onPress: this._ltrAlert
-						},
-						{
-							title: 'Logout',
-							onPress: this._logout
-						}
-					].map(button =>
-						<View key={button.title} style={{ width: '100%' }}>
-							<TouchableOpacity onPress={button.onPress}>
-								<Text style={styles.menuText}>
-									{translate(button.title)}
-								</Text>
-							</TouchableOpacity>
-							<View style={SharedStyles.divider} />
-						</View>
-					)}
+							{
+								key: 'Photos',
+								onPress: () =>
+									WebBrowser.openBrowserAsync(
+										this._getLocalizedWiki() + '/instagram'
+									)
+							},
+							{
+								key: 'FAQ About Denmark',
+								onPress: () =>
+									WebBrowser.openBrowserAsync(
+										this._getLocalizedWiki() + '/knowledge-base/'
+									)
+							},
+							{
+								key: 'Give Feedback',
+								onPress: () =>
+									WebBrowser.openBrowserAsync(
+										this._getLocalizedWiki() + '/feedback'
+									)
+							},
+							{
+								key: 'App Layout',
+								onPress: this._ltrAlert
+							},
+							{
+								key: 'Logout',
+								onPress: this._logout
+							}
+						]}
+						scrollEnabled={true}
+						renderItem={({ item }) =>
+							<View style={{ width: '100%' }}>
+								<TouchableOpacity onPress={item.onPress}>
+									<Text style={styles.menuText}>
+										{translate(item.key)}
+									</Text>
+								</TouchableOpacity>
+								<View style={SharedStyles.divider} />
+							</View>}
+					/>
 				</View>
 			</View>
 		);

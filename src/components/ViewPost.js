@@ -130,7 +130,7 @@ export default class ViewPost extends Component {
 					{
 						type: 'applicationSent',
 						post: this.props.post.key,
-						postTitle: this.props.post.title,
+						postTitle: this.props.post.title.original,
 						uid: firebase.auth().currentUser.uid
 					}
 				);

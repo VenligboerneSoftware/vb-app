@@ -81,10 +81,11 @@ export default class ViewSingleApplication extends React.Component {
 					{
 						type: 'applicationSent',
 						post: this.props.app.post,
-						postTitle: this.props.app.postData.title
+						postTitle: this.props.app.postData.title.original
 					}
 				);
 			});
+		Alert.alert(translate('Reminder sent'));
 	};
 
 	_remindOwner = () => {
