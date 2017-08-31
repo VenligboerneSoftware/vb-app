@@ -19,7 +19,7 @@ export default class ExitBar extends Component {
 		super(props);
 
 		this.state = {
-			isLastSlide: false,
+			isLastSlide: false
 		};
 	}
 
@@ -55,7 +55,7 @@ export default class ExitBar extends Component {
 						</View>
 					}
 				>
-					{slides.map(slide =>
+					{slides.map(slide => (
 						<View key={slide.num} style={styles.container}>
 							<Text style={{ position: 'absolute', top: '49%', fontSize: 25 }}>
 								{translate('Loading... Please Wait')}
@@ -65,22 +65,20 @@ export default class ExitBar extends Component {
 								resizeMode={'contain'}
 								source={slide.image}
 							/>
-							{slide.textBig !== ''
-								? <View style={styles.textContainerTop}>
-										<Text style={styles.textBig}>
-											{translate(slide.textBig)}
-										</Text>
-									</View>
-								: null}
-							{slide.textSmall !== ''
-								? <View style={styles.textContainerBottom}>
-										<Text style={styles.textSmall}>
-											{translate(slide.textSmall)}
-										</Text>
-									</View>
-								: null}
+							{slide.textBig !== '' ? (
+								<View style={styles.textContainerTop}>
+									<Text style={styles.textBig}>{translate(slide.textBig)}</Text>
+								</View>
+							) : null}
+							{slide.textSmall !== '' ? (
+								<View style={styles.textContainerBottom}>
+									<Text style={styles.textSmall}>
+										{translate(slide.textSmall)}
+									</Text>
+								</View>
+							) : null}
 						</View>
-					)}
+					))}
 				</Swiper>
 				<TouchableOpacity
 					style={this.state.isLastSlide ? styles.doneButton : styles.skipButton}
@@ -88,27 +86,30 @@ export default class ExitBar extends Component {
 				>
 					<Text
 						style={
-							this.state.isLastSlide
-								? styles.doneButtonText
-								: styles.skipButtonText
+							this.state.isLastSlide ? (
+								styles.doneButtonText
+							) : (
+								styles.skipButtonText
+							)
 						}
 					>
-						{this.state.isLastSlide
-							? translate('go to app!')
-							: translate('skip tutorial')}
+						{this.state.isLastSlide ? (
+							translate('go to app!')
+						) : (
+							translate('skip tutorial')
+						)}
 					</Text>
 				</TouchableOpacity>
 			</View>
 		);
 	}
 }
-const numSlides = 19;
+const numSlides = 20;
 
 const styles = StyleSheet.create({
 	wrapper: {},
 	container: {
 		flex: 1,
-		// backgroundColor: Colors.grey.light,
 		width: '100%',
 		height: '100%',
 		backgroundColor: 'transparent',
@@ -277,27 +278,34 @@ const slides = [
 	{
 		num: 15,
 		image: require('../../assets/images/tutorial/15.png'),
+		textBig: 'This is the Auto Translate button',
+		textSmall:
+			'When enabled, every post will be automatically translated by Google Translate'
+	},
+	{
+		num: 16,
+		image: require('../../assets/images/tutorial/16.png'),
 		textBig: 'This is the Menu button',
 		textSmall:
 			'Here, you will find more features, including this tutorial if you want to rewatch it.'
 	},
 	{
-		num: 16,
-		image: require('../../assets/images/tutorial/16.png'),
+		num: 17,
+		image: require('../../assets/images/tutorial/17.png'),
 		textBig: '',
 		textSmall: "Let's click on the Manage Notifications button in the menu"
 	},
 	{
-		num: 17,
-		image: require('../../assets/images/tutorial/17.png'),
+		num: 18,
+		image: require('../../assets/images/tutorial/18.png'),
 		textBig: '',
 		textSmall:
 			'Here, you can create notifications.  This will send you alerts when new posts are available matching your category, and within the range that you selected.'
 	},
 	{
-		num: 18,
+		num: 19,
 		image: require('../../assets/images/tutorial/0.png'),
-		textBig: '',
+		textBig: 'Get started!',
 		textSmall: ''
 	}
 ];
