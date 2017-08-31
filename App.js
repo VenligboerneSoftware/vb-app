@@ -28,7 +28,7 @@ import history from './src/utils/history';
 
 // The warnings are caused by an issue in Firebase. Hopefully a future firebase
 // update will fix them.
-console.ignoredYellowBox = ['Setting a timer'];
+console.ignoredYellowBox = ['Setting a timer', 'Warning:'];
 
 export default class App extends React.Component {
 	constructor() {
@@ -49,7 +49,6 @@ export default class App extends React.Component {
 		Text.defaultProps.allowFontScaling = false;
 
 		I18nManager.allowRTL(true);
-		global.isRTL = I18nManager.isRTL;
 
 		history.push('/StartupPage');
 	}
@@ -137,7 +136,7 @@ export default class App extends React.Component {
 
 	_afterLogin = async token => {
 		this.setState({ displayText: 'Attempting Login' });
-		this.attemptLoginWithStoredToken(token);
+		await this.attemptLoginWithStoredToken(token);
 		console.log('Logged in');
 
 		this._loadCenters();
