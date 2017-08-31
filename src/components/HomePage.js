@@ -1,11 +1,11 @@
-import { Linking, Platform, View } from 'react-native';
+import { Linking, View } from 'react-native';
 import { Permissions, Notifications } from 'expo';
 import DropdownAlert from 'react-native-dropdownalert';
 import React from 'react';
-import firebase from 'firebase';
 
 import ModalRouter from './ModalRouter';
 import Tabs from './Tabs.js';
+import { goToPost, goToApp } from '../utils/loadpostorapp.js';
 
 export default class HomePage extends React.Component {
 	constructor() {
@@ -33,29 +33,10 @@ export default class HomePage extends React.Component {
 		const parameters = url.slice(url.indexOf('+') + 1).split('/');
 		if (parameters[0] === 'post') {
 			const postID = parameters[1];
-			this._goToPost(postID);
+			this.goToPost(postID);
 		} else {
 			console.warn('Unrecognized deep linking URL', url);
 		}
-	};
-
-	//Given a valid postID, will open that post within the app
-	_goToPost = postID => {
-		firebase
-			.database()
-			.ref('posts')
-			.child(postID)
-			.once('value')
-			.then(postSnap => {
-				if (postSnap.exists()) {
-					let post = postSnap.val();
-					post.key = postSnap.key;
-					post.applications = post.applications || {};
-					global.setCurrentModal('/PostOrCenterModal', {
-						post: post
-					});
-				}
-			});
 	};
 
 	async registerForPushNotificationsAsync() {
@@ -73,6 +54,8 @@ export default class HomePage extends React.Component {
 	}
 
 	_handleNotification = notification => {
+		global.setCurrentModal(null);
+		console.log(notification);
 		if (notification.origin === 'selected') {
 			//'selected' means clicking notification caused app to open
 			if (notification.data.url) {
@@ -80,24 +63,22 @@ export default class HomePage extends React.Component {
 			} else {
 				if (notification.data.type === 'applicationSent') {
 					//'applicationSent' means a new reply or reminder to your post
-					this._goToPost(notification.data.post);
+					goToPost(notification.data.post);
 				} else if (notification.data.type === 'applicantAccepted') {
 					//'applicationAccepted' means your reply to a post was accepted
-					global.changeTab('Me', () => {
-						global.profileIndex(1);
-					});
+					goToApp(notification.data.app);
 				}
 			}
 		} else if (notification.origin === 'received') {
 			//'received' means app was foregrounded when notification was received
 			if (notification.data.type === 'applicationSent') {
-				this.redirectPage = notification.data.post;
+				this.redirectPage = { post: notification.data.post };
 				this._setDropDown(
 					'You have a reply to your post!',
 					notification.data.postTitle
 				);
 			} else if (notification.data.type === 'applicantAccepted') {
-				this.redirectPage = 'application';
+				this.redirectPage = { application: notification.data.app };
 				this._setDropDown(
 					'Your reply has been accepted!',
 					notification.data.postTitle
@@ -116,12 +97,11 @@ export default class HomePage extends React.Component {
 
 	_dropdownClose = data => {
 		if (data.action === 'tap') {
-			if (this.redirectPage === 'application') {
-				global.changeTab('Me', () => {
-					global.profileIndex(1);
-				});
-			} else if (this.redirectPage) {
-				this._goToPost(this.redirectPage);
+			console.log(this.redirectPage);
+			if (this.redirectPage.application) {
+				goToApp(this.redirectPage.application);
+			} else if (this.redirectPage.post) {
+				goToPost(this.redirectPage.post);
 			}
 		}
 	};
