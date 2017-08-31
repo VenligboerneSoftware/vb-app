@@ -167,7 +167,7 @@ export default class ViewPosts extends React.Component {
 									this._checkDate(post, this.state.filter)
 							)}
 							sortCenter={this.state.mapRegion}
-							distanceCenter={this.state.mapRegion}
+							distanceCenter={global.location ? global.location.coords : this.state.mapRegion}
 							message={
 								<ClearFilter
 									onPress={this._clearFilter}
