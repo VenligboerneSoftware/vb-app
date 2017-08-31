@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { ImagePicker } from 'expo';
-import Modal from './Modal.js';
 import React from 'react';
 import * as firebase from 'firebase';
 
@@ -21,8 +20,10 @@ import Colors from 'venligboerneapp/src/styles/Colors.js';
 import Moment from 'moment';
 import SharedStyles from 'venligboerneapp/src/styles/SharedStyles.js';
 
+import { bundleTranslations } from '../utils/internationalization';
 import { formatDate } from '../utils/dates';
 import MapWithCircle from './MapWithCircle.js';
+import Modal from './Modal.js';
 import SearchLocation from './SearchLocation.js';
 import TopBar from './TopBar.js';
 import mortonize from '../utils/mortonize';
@@ -53,6 +54,8 @@ export default class NewPost extends React.Component {
 		});
 
 		global.editPost = post => {
+			post.title = post.title.original;
+			post.description = post.description.original;
 			this.setState({
 				newPost: post
 			});
@@ -271,6 +274,9 @@ export default class NewPost extends React.Component {
 			owner: firebase.auth().currentUser.uid
 		};
 
+		newPost.title = await bundleTranslations(newPost.title);
+		newPost.description = await bundleTranslations(newPost.description);
+
 		// If we are editing, then overwrite the old index. If we are creating
 		// a new post, push a new entry to the database.
 		let eventKey = null;
@@ -317,9 +323,15 @@ export default class NewPost extends React.Component {
 			);
 			const parsedResponse = await response.json();
 			console.log('subscribers to notify', parsedResponse);
-			pushNotify(parsedResponse, event.title, 'New post in your area!', {
-				url: '+post/' + event.key
-			});
+			// TODO translate depending on receivers language
+			pushNotify(
+				parsedResponse,
+				event.title.original,
+				'New post in your area!',
+				{
+					url: '+post/' + event.key
+				}
+			);
 		} catch (error) {
 			console.warn('Error while getting relevant subscribers', error);
 		}

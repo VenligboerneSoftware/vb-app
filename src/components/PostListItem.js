@@ -3,11 +3,20 @@ import React from 'react';
 import firebase from 'firebase';
 
 import { formatDate, getNextDate } from '../utils/dates';
-import { translate } from '../utils/internationalization';
-import getDistance from '../utils/getDistance';
+import { translate, translateFreeform } from '../utils/internationalization';
 import EventIcon from './EventIcon';
+import getDistance from '../utils/getDistance';
 
 export default class PostListItem extends React.PureComponent {
+	componentWillMount() {
+		this.listenerID = Math.floor(Math.random() * 100000000000);
+		global.onLanguageChange[this.listenerID] = this.forceUpdate.bind(this);
+	}
+
+	componentWillUnmount() {
+		delete global.onLanguageChange[this.listenerID];
+	}
+
 	render() {
 		return (
 			<TouchableOpacity
@@ -17,7 +26,7 @@ export default class PostListItem extends React.PureComponent {
 				<EventIcon item={this.props.item} />
 
 				<Text style={styles.rowText}>
-					{this.props.item.title}
+					{translateFreeform(this.props.item.title)}
 				</Text>
 
 				{this.props.item.owner === firebase.auth().currentUser.uid

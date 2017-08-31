@@ -62,6 +62,7 @@ export default class App extends React.Component {
 		Expo.Amplitude.logEvent('Startup');
 
 		const language = await AsyncStorage.getItem('language');
+		global.autotranslate = Boolean(await AsyncStorage.getItem('autotranslate'));
 		await Promise.all([
 			this.assetPromises.language,
 			this.assetPromises.languageOptions
@@ -138,6 +139,8 @@ export default class App extends React.Component {
 		this.setState({ displayText: 'Attempting Login' });
 		await attemptLoginWithStoredToken(token, this._afterLogin);
 		console.log('Logged in');
+
+		this._loadCenters();
 
 		// Initialize Amplitude with user data
 		let userProfile = firebase.auth().currentUser;
@@ -242,6 +245,17 @@ export default class App extends React.Component {
 				this.setState({ displayText: 'Loaded Icons' });
 			});
 
+		this.assetPromises.fonts = Font.loadAsync([
+			Ionicons.font,
+			FontAwesome.font,
+			Entypo.font,
+			{
+				Georgia: require('venligboerneapp/assets/fonts/Georgia.ttf')
+			}
+		]);
+	};
+
+	_loadCenters = () => {
 		// Queries firebase and downloads all center data from the firebase server.
 		// Creates a vector of local centers to appear on initial render.
 		this.assetPromises.centers = firebase
@@ -257,15 +271,6 @@ export default class App extends React.Component {
 				}
 				console.log('Loaded centers');
 			});
-
-		this.assetPromises.fonts = Font.loadAsync([
-			Ionicons.font,
-			FontAwesome.font,
-			Entypo.font,
-			{
-				Georgia: require('venligboerneapp/assets/fonts/Georgia.ttf')
-			}
-		]);
 	};
 
 	addInternetEventListeners = () => {

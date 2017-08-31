@@ -12,7 +12,7 @@ import firebase from 'firebase';
 import { MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 
 import { deleteApplication } from '../utils/ApplicationManager';
-import { translate } from '../utils/internationalization';
+import { translate, translateFreeform } from '../utils/internationalization';
 import ApplicationStatus from './ApplicationStatus';
 import Colors from '../styles/Colors';
 import ExitBar from './ExitBar';
@@ -77,7 +77,7 @@ export default class ViewSingleApplication extends React.Component {
 				pushNotify(
 					token.val(),
 					'Please review reply to your post',
-					this.props.app.postData.title,
+					this.props.app.postData.title.original,
 					{
 						type: 'applicationSent',
 						postTitle: this.props.app.postData.title
@@ -112,13 +112,14 @@ export default class ViewSingleApplication extends React.Component {
 
 						<Text style={styles.description}>
 							{translate('Event Description') + ':'}{' '}
-							{this.props.app.postData.description}
+							{translateFreeform(this.props.app.postData.description)}
 						</Text>
 
 						<View style={SharedStyles.divider} />
 
 						<Text style={SharedStyles.message}>
-							{translate('Your Reply') + ':'} {this.props.app.message}
+							{translate('Your Reply') + ': '}
+							{translateFreeform(this.props.app.message)}
 						</Text>
 						<View style={SharedStyles.divider} />
 						<Time dates={this.props.app.postData.dates} />
