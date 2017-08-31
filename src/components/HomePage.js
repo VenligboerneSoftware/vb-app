@@ -33,7 +33,7 @@ export default class HomePage extends React.Component {
 		const parameters = url.slice(url.indexOf('+') + 1).split('/');
 		if (parameters[0] === 'post') {
 			const postID = parameters[1];
-			this.goToPost(postID);
+			goToPost(postID);
 		} else {
 			console.warn('Unrecognized deep linking URL', url);
 		}
