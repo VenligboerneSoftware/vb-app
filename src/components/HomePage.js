@@ -73,7 +73,6 @@ export default class HomePage extends React.Component {
 	}
 
 	_handleNotification = notification => {
-		console.log(notification);
 		if (notification.origin === 'selected') {
 			//'selected' means clicking notification caused app to open
 			if (notification.data.url) {
