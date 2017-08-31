@@ -3,10 +3,7 @@ import Expo from 'expo';
 import React from 'react';
 
 import { EvilIcons } from '@expo/vector-icons';
-import {
-	translate,
-	translateFreeform
-} from 'venligboerneapp/src/utils/internationalization.js';
+import { translate } from 'venligboerneapp/src/utils/internationalization.js';
 
 export default class ShareButton extends React.Component {
 	constructor(props) {
@@ -50,7 +47,7 @@ export default class ShareButton extends React.Component {
 				this.props.description.original +
 				'\n\n' +
 				this.state.shareURL,
-			title: this.props.title //doesn't seem to show up anywhere...
+			title: this.props.title.original //doesn't seem to show up anywhere...
 		});
 	};
 
