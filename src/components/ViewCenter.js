@@ -85,7 +85,10 @@ export default class ViewCenter extends Component {
 									'Saturday',
 									'Sunday'
 								].map(day =>
-									<Text key={day}>
+									<Text
+										key={day}
+										style={{ backgroundColor: 'transparent', width: '40%' }}
+									>
 										{translate(day)}: {this.props.center.hours[day]}
 									</Text>
 								)}
