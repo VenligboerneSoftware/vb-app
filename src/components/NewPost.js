@@ -297,7 +297,7 @@ export default class NewPost extends React.Component {
 				console.log('Updating post', newPost, eventKey);
 			} else {
 				eventKey = ref.push(newPost).key;
-				this._notifySubscribers(newPost);
+				this._notifySubscribers(newPost, eventKey);
 			}
 
 			// Upload the image to Firebase under the same ID as the post
@@ -315,7 +315,7 @@ export default class NewPost extends React.Component {
 		}
 	};
 
-	_notifySubscribers = async event => {
+	_notifySubscribers = async (event, eventKey) => {
 		try {
 			const response = await fetch(
 				'https://us-central1-test-b5dbd.cloudfunctions.net/getSubscribers',
@@ -335,7 +335,7 @@ export default class NewPost extends React.Component {
 				event.title.original,
 				'New post in your area!',
 				{
-					url: '+post/' + event.key
+					url: '+post/' + eventKey
 				}
 			);
 		} catch (error) {
