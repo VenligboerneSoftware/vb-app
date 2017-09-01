@@ -306,8 +306,11 @@ export default class NewPost extends React.Component {
 				ref.child(eventKey).update(uploadableEvent);
 				console.log('Updating post', newPost, eventKey);
 			} else {
-				eventKey = ref.push(newPost).key;
-				this._notifySubscribers(newPost, eventKey);
+				const pushRef = ref.push(newPost);
+				eventKey = pushRef.key;
+				pushRef.then(() => {
+					this._notifySubscribers(newPost, eventKey);
+				});
 			}
 
 			// Upload the image to Firebase under the same ID as the post
