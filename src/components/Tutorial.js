@@ -280,7 +280,7 @@ const slides = [
 		image: require('../../assets/images/tutorial/15.png'),
 		textBig: 'This is the Auto Translate button',
 		textSmall:
-			'When enabled, every post will be automatically translated by Google Translate'
+			'When enabled, every post will be automatically translated by Google Translate.  Translations may not be entirely accurate.'
 	},
 	{
 		num: 16,
