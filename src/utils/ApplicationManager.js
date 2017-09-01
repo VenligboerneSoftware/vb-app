@@ -4,14 +4,14 @@ export function createApplication(application) {
 	// Don't actually push the data, just figure out what the unique ID is going
 	// to be
 	const applicationKey = firebase.database().ref('applications').push().key;
-	updateApplication(application, applicationKey, true);
+	return updateApplication(application, applicationKey, true);
 }
 
 export function deleteApplication(application) {
 	// TODO decide how we want to handle -- can people reapply or do
 	// we just change status to denied and then does that create a permissions
 	// issue?
-	updateApplication(application, application.key, null);
+	return updateApplication(application, application.key, null);
 }
 
 /**
@@ -42,5 +42,5 @@ function updateApplication(application, key, value) {
 	// Update the application's ID from the post it is being submitted on
 	updatePacket['posts/' + application.post + '/applications/' + key] = value;
 
-	firebase.database().ref().update(updatePacket);
+	return firebase.database().ref().update(updatePacket);
 }
