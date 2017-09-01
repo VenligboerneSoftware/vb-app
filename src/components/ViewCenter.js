@@ -75,7 +75,7 @@ export default class ViewCenter extends Component {
 				{this.props.center.hours
 					? <View style={styles.dataRow}>
 							<FontAwesome style={styles.icon} name="clock-o" size={40} />
-							<View>
+							<View style={{ flex: 1 }}>
 								{[
 									'Monday',
 									'Tuesday',
@@ -85,10 +85,7 @@ export default class ViewCenter extends Component {
 									'Saturday',
 									'Sunday'
 								].map(day =>
-									<Text
-										key={day}
-										style={{ backgroundColor: 'transparent', width: '40%' }}
-									>
+									<Text key={day} style={{ backgroundColor: 'transparent' }}>
 										{translate(day)}: {this.props.center.hours[day]}
 									</Text>
 								)}
