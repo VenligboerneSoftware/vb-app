@@ -56,9 +56,13 @@ export default class NewPost extends React.Component {
 		});
 
 		global.editPost = post => {
+			// duplicate to avoid modifying parameter
+			post = JSON.parse(JSON.stringify(post));
+
 			post.title = post.title.original;
 			post.description = post.description.original;
 			this.setState({
+				...initialState,
 				newPost: post
 			});
 			firebase
