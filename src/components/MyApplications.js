@@ -72,8 +72,7 @@ export default class MyApplications extends React.Component {
 		// Default to an empty object if there are no applications
 		application.postData.applications = application.postData.applications || {};
 
-		// If the application was accepted, fetch the owner's info so we can display
-		// the contact button
+		// Fetch the owner's info so we can display the contact button
 		application.owner = (await firebase
 			.database()
 			.ref('users')
