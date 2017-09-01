@@ -11,7 +11,7 @@ import {
 	View
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { ImagePicker } from 'expo';
+import Expo, { ImagePicker } from 'expo';
 import React from 'react';
 import * as firebase from 'firebase';
 
@@ -312,6 +312,10 @@ export default class NewPost extends React.Component {
 					longitudeDelta: 0.05
 				});
 			});
+
+			Expo.Amplitude.logEvent(
+				`Post Created in Category ${this.state.newPost.icon}`
+			);
 		}
 	};
 
