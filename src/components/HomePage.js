@@ -55,17 +55,19 @@ export default class HomePage extends React.Component {
 	}
 
 	_handleNotification = notification => {
-		global.setCurrentModal(null);
 		if (notification.origin === 'selected') {
 			//'selected' means clicking notification caused app to open
 			if (notification.data.url) {
+				global.setCurrentModal(null);
 				this._link(notification.data.url);
 			} else {
 				if (notification.data.type === 'applicationSent') {
 					//'applicationSent' means a new reply or reminder to your post
+					global.setCurrentModal(null);
 					goToPost(notification.data.post);
 				} else if (notification.data.type === 'applicantAccepted') {
 					//'applicationAccepted' means your reply to a post was accepted
+					global.setCurrentModal(null);
 					goToApp(notification.data.app);
 				}
 			}
@@ -120,7 +122,7 @@ export default class HomePage extends React.Component {
 
 	_dropdownClose = data => {
 		if (data.action === 'tap') {
-			console.log(this.redirectPage);
+			global.setCurrentModal(null);
 			if (this.redirectPage.application) {
 				goToApp(this.redirectPage.application);
 			} else if (this.redirectPage.post) {
