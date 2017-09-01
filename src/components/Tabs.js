@@ -35,6 +35,9 @@ export default class HomePage extends React.Component {
 			to: tab
 		});
 		this.setState({ selectedTab: tab });
+		if (this.newPost) {
+			this.newPost.clearState();
+		}
 	};
 
 	render() {
@@ -63,7 +66,7 @@ export default class HomePage extends React.Component {
 						key: 'New Post',
 						selected: ['New Post'],
 						icon: 'plus-square-o',
-						component: <NewPost />
+						component: <NewPost ref={newPost => (this.newPost = newPost)} />
 					},
 					{
 						key: 'News',

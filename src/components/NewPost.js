@@ -69,8 +69,8 @@ export default class NewPost extends React.Component {
 		};
 	}
 
-	componentWillReceiveProps(props) {
-		// Clear all the data every time we leave and come back
+	clearState() {
+		console.log('clearing state');
 		this.setState(initialState);
 	}
 
