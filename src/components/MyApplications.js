@@ -74,13 +74,11 @@ export default class MyApplications extends React.Component {
 
 		// If the application was accepted, fetch the owner's info so we can display
 		// the contact button
-		if (application.status === 'Accepted') {
-			application.owner = (await firebase
-				.database()
-				.ref('users')
-				.child(application.postData.owner)
-				.once('value')).val();
-		}
+		application.owner = (await firebase
+			.database()
+			.ref('users')
+			.child(application.postData.owner)
+			.once('value')).val();
 		return application;
 	};
 
