@@ -1,4 +1,4 @@
-import { Linking, View } from 'react-native';
+import { Linking, View, Platform } from 'react-native';
 import { Permissions, Notifications } from 'expo';
 import DropdownAlert from 'react-native-dropdownalert';
 import React from 'react';
@@ -144,6 +144,7 @@ export default class HomePage extends React.Component {
 				<DropdownAlert
 					ref={ref => (this.dropdown = ref)}
 					onClose={data => this._dropdownClose(data)}
+					endDelta={Platform.OS === 'ios' ? 0 : 22}
 				/>
 			</View>
 		);
