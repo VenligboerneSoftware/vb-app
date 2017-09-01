@@ -76,8 +76,8 @@ export default class ViewSingleApplication extends React.Component {
 				console.log('Push notifying', token.val(), this.props.app);
 				pushNotify(
 					token.val(),
-					'Please review reply to your post',
-					this.props.app.postData.title.original,
+					'You have a reply to your post!',
+					'Post Title: ' + this.props.app.postData.title.original,
 					{
 						type: 'applicationSent',
 						post: this.props.app.post,
@@ -135,11 +135,9 @@ export default class ViewSingleApplication extends React.Component {
 						<View style={styles.buttonBar}>
 							<TouchableOpacity
 								style={
-									this.props.app.status === 'Waiting For Response' ? (
-										styles.bottomButton
-									) : (
-										styles.onlyBottomButton
-									)
+									this.props.app.status === 'Waiting For Response'
+										? styles.bottomButton
+										: styles.onlyBottomButton
 								}
 								onPress={this._deleteApp}
 							>
@@ -153,31 +151,33 @@ export default class ViewSingleApplication extends React.Component {
 								</Text>
 							</TouchableOpacity>
 
-							{this.props.app.status === 'Waiting For Response' ? (
-								<TouchableOpacity
-									style={styles.bottomButton}
-									onPress={this._remindOwner}
-								>
-									<MaterialCommunityIcons
-										name={'alarm'}
-										size={40}
-										style={{ marginTop: 6, marginLeft: 8 }}
-									/>
-									<Text style={styles.buttonText}>{translate('Remind')}</Text>
-								</TouchableOpacity>
-							) : null}
+							{this.props.app.status === 'Waiting For Response'
+								? <TouchableOpacity
+										style={styles.bottomButton}
+										onPress={this._remindOwner}
+									>
+										<MaterialCommunityIcons
+											name={'alarm'}
+											size={40}
+											style={{ marginTop: 6, marginLeft: 8 }}
+										/>
+										<Text style={styles.buttonText}>
+											{translate('Remind')}
+										</Text>
+									</TouchableOpacity>
+								: null}
 						</View>
 					</View>
 				</ScrollView>
 
 				{/* Bottom bar that appears if application has been
 					accepted to the event by owner */}
-				{this.props.app.status === 'Accepted' ? (
-					<FacebookContactButton
-						owner={this.props.app.owner}
-						description={'Contact Event Owner'}
-					/>
-				) : null}
+				{this.props.app.status === 'Accepted'
+					? <FacebookContactButton
+							owner={this.props.app.owner}
+							description={'Contact Event Owner'}
+						/>
+					: null}
 			</View>
 		);
 	}

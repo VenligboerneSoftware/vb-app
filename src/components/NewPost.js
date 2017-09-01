@@ -11,7 +11,7 @@ import {
 	View
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { ImagePicker } from 'expo';
+import Expo, { ImagePicker } from 'expo';
 import React from 'react';
 import * as firebase from 'firebase';
 
@@ -69,8 +69,8 @@ export default class NewPost extends React.Component {
 		};
 	}
 
-	componentWillReceiveProps(props) {
-		// Clear all the data every time we leave and come back
+	clearState() {
+		console.log('clearing state');
 		this.setState(initialState);
 	}
 
@@ -297,7 +297,7 @@ export default class NewPost extends React.Component {
 				console.log('Updating post', newPost, eventKey);
 			} else {
 				eventKey = ref.push(newPost).key;
-				this._notifySubscribers(newPost);
+				this._notifySubscribers(newPost, eventKey);
 			}
 
 			// Upload the image to Firebase under the same ID as the post
@@ -312,10 +312,14 @@ export default class NewPost extends React.Component {
 					longitudeDelta: 0.05
 				});
 			});
+
+			Expo.Amplitude.logEvent(
+				`Post Created in Category ${this.state.newPost.icon}`
+			);
 		}
 	};
 
-	_notifySubscribers = async event => {
+	_notifySubscribers = async (event, eventKey) => {
 		try {
 			const response = await fetch(
 				'https://us-central1-test-b5dbd.cloudfunctions.net/getSubscribers',
@@ -335,7 +339,7 @@ export default class NewPost extends React.Component {
 				event.title.original,
 				'New post in your area!',
 				{
-					url: '+post/' + event.key
+					url: '+post/' + eventKey
 				}
 			);
 		} catch (error) {
