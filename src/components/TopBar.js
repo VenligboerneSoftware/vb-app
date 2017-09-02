@@ -125,6 +125,7 @@ export default class TopBar extends React.Component {
 				style={SharedStyles.fullscreen}
 			>
 				<SearchLocation
+					getCurrentLocationAddress={false}
 					onPress={(data, details) => {
 						if (this.props.onSelectLocation) {
 							// Give a default viewport. Mostly for 'Current location'
