@@ -2,6 +2,7 @@ import {
 	Alert,
 	Image,
 	Keyboard,
+	KeyboardAvoidingView,
 	ScrollView,
 	StyleSheet,
 	Text,
@@ -9,7 +10,6 @@ import {
 	TouchableOpacity,
 	View
 } from 'react-native';
-import { KeyboardAwareView } from 'react-native-keyboard-aware-view';
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
 
@@ -286,7 +286,11 @@ export default class ViewPost extends Component {
 		return this.isOwner && this.state.applyClicked
 			? <ViewApplications post={this.props.post} />
 			: <View style={SharedStyles.modalContent}>
-					<KeyboardAwareView style={{ backgroundColor: 'white' }}>
+					<KeyboardAvoidingView
+						contentContainerStyle={{ backgroundColor: 'white', height: '100%' }}
+						behavior="position"
+						keyboardVerticalOffset={20}
+					>
 						{/* Share icon */}
 						<ShareButton
 							deepLink={'post/' + this.props.post.key}
@@ -373,7 +377,7 @@ export default class ViewPost extends Component {
 						<View style={SharedStyles.fixedBottomButton}>
 							{this.returnApplyButton()}
 						</View>
-					</KeyboardAwareView>
+					</KeyboardAvoidingView>
 				</View>;
 	}
 }
