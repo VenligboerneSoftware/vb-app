@@ -3,6 +3,7 @@ import { Permissions, Notifications } from 'expo';
 import DropdownAlert from 'react-native-dropdownalert';
 import React from 'react';
 
+import { translate } from 'venligboerneapp/src/utils/internationalization';
 import ModalRouter from './ModalRouter';
 import Tabs from './Tabs.js';
 import { goToPost, goToApp } from '../utils/loadpostorapp.js';
@@ -111,7 +112,7 @@ export default class HomePage extends React.Component {
 	_setDropDown = (title, message) => {
 		this.dropdown.alertWithType(
 			'info',
-			title ? title : '',
+			title ? translate(title) : '',
 			message ? message : ''
 		);
 	};
