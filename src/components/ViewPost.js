@@ -2,6 +2,7 @@ import {
 	Alert,
 	Image,
 	Keyboard,
+	KeyboardAvoidingView,
 	ScrollView,
 	StyleSheet,
 	Text,
@@ -9,7 +10,6 @@ import {
 	TouchableOpacity,
 	View
 } from 'react-native';
-import { KeyboardAwareView } from 'react-native-keyboard-aware-view';
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
 
@@ -26,14 +26,15 @@ import {
 	bundleTranslations,
 	translateFreeform
 } from '../utils/internationalization';
+import { goToApp } from '../utils/loadpostorapp.js';
 import ExitBar from './ExitBar.js';
+import FlagButton from './FlagButton';
 import MapWithCircle from './MapWithCircle.js';
 import ShareButton from './ShareButton.js';
 import Time from './Time';
 import TitleAndIcon from './TitleAndIcon';
 import ViewApplications from './ViewApplications.js';
 import pushNotify from '../utils/pushNotify';
-import FlagButton from './FlagButton';
 
 export default class ViewPost extends Component {
 	constructor(props) {
@@ -68,7 +69,7 @@ export default class ViewPost extends Component {
 				.once('value', snapshot => {
 					// If there is an application by this user to this post, mark it
 					if (snapshot.val() === firebase.auth().currentUser.uid) {
-						this.setState({ alreadySubmitted: true });
+						this.setState({ myApplicationKey: applicationKey });
 					}
 				});
 		});
@@ -109,7 +110,7 @@ export default class ViewPost extends Component {
 	// Sets the user application to Applied for the event that they
 	// were currently viewing
 	submit = async () => {
-		await createApplication({
+		const { applicationKey } = await createApplication({
 			applicant: firebase.auth().currentUser.uid,
 			post: this.props.post.key,
 			message: await bundleTranslations(this.application),
@@ -117,7 +118,7 @@ export default class ViewPost extends Component {
 			bold: false
 		});
 
-		this.setState({ alreadySubmitted: true });
+		this.setState({ myApplicationKey: applicationKey });
 
 		firebase
 			.database()
@@ -144,7 +145,7 @@ export default class ViewPost extends Component {
 	// Either submits a user's application and updates firebase
 	// accordingly or sets applyClicked to true if the user clicked
 	// the 'Apply Now!' button
-	_applyPressed = () => {
+	_applyPressed = async () => {
 		if (this.state.applyClicked) {
 			if (this.application === '') {
 				Alert.alert(
@@ -154,11 +155,9 @@ export default class ViewPost extends Component {
 					{ cancelable: false }
 				);
 			} else {
-				this.submit();
+				await this.submit();
 				this._hideModal();
-				global.changeTab('Me', () => {
-					global.profileIndex(1);
-				});
+				goToApp(this.state.myApplicationKey);
 			}
 		} else {
 			this.setState({ applyClicked: true });
@@ -173,13 +172,13 @@ export default class ViewPost extends Component {
 		return (
 			<TextInput
 				style={
-					!this.state.alreadySubmitted
+					!this.state.myApplicationKey
 						? [styles.placeholderText, styles.textInput]
 						: styles.textInputSubmitted
 				}
 				autoFocus={true}
 				onChangeText={this._applicationChange}
-				editable={!this.state.alreadySubmitted}
+				editable={!this.state.myApplicationKey}
 				multiline={true}
 				blurOnSubmit={true}
 				returnKeyType="done"
@@ -192,9 +191,7 @@ export default class ViewPost extends Component {
 	_viewApplication = () => {
 		// TODO open the specific application
 		this._hideModal();
-		global.changeTab('Me', () => {
-			global.profileIndex(1);
-		});
+		goToApp(this.state.myApplicationKey);
 	};
 
 	// function: returnApplyButton
@@ -203,7 +200,7 @@ export default class ViewPost extends Component {
 	// an application if they are not the event owner or to view the
 	// available applications if they own the event
 	returnApplyButton = () => {
-		if (this.state.alreadySubmitted) {
+		if (this.state.myApplicationKey) {
 			return (
 				<TouchableOpacity
 					style={styles.applyButton}
@@ -289,7 +286,11 @@ export default class ViewPost extends Component {
 		return this.isOwner && this.state.applyClicked
 			? <ViewApplications post={this.props.post} />
 			: <View style={SharedStyles.modalContent}>
-					<KeyboardAwareView style={{ backgroundColor: 'white' }}>
+					<KeyboardAvoidingView
+						contentContainerStyle={{ backgroundColor: 'white', height: '100%' }}
+						behavior="position"
+						keyboardVerticalOffset={20}
+					>
 						{/* Share icon */}
 						<ShareButton
 							deepLink={'post/' + this.props.post.key}
@@ -376,7 +377,7 @@ export default class ViewPost extends Component {
 						<View style={SharedStyles.fixedBottomButton}>
 							{this.returnApplyButton()}
 						</View>
-					</KeyboardAwareView>
+					</KeyboardAvoidingView>
 				</View>;
 	}
 }

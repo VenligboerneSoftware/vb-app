@@ -213,6 +213,7 @@ export default class NewNotification extends React.Component {
 							style={SharedStyles.fullscreen}
 						>
 							<SearchLocation
+								getCurrentLocationAddress={true}
 								onPress={this._onSearchLocation}
 								hide={() => {
 									this.setState({ searchModalVisible: false });
