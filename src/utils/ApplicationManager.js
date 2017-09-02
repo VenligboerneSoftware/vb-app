@@ -4,7 +4,10 @@ export function createApplication(application) {
 	// Don't actually push the data, just figure out what the unique ID is going
 	// to be
 	const applicationKey = firebase.database().ref('applications').push().key;
-	return updateApplication(application, applicationKey, true);
+	return {
+		applicationKey: applicationKey,
+		promise: updateApplication(application, applicationKey, true)
+	};
 }
 
 export function deleteApplication(application) {
