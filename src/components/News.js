@@ -32,7 +32,10 @@ export default class News extends React.Component {
 	// TODO this freezes UI and prevents user from leaving
 	// Pulls the Article Information From Wordpress
 	getArticles = async () => {
-		let urls = await firebase.database().ref('newsUrls').once('value');
+		let urls = await firebase
+			.database()
+			.ref('newsUrls')
+			.once('value');
 		urls = urls.val();
 
 		let allArticles = await Promise.all(
@@ -92,12 +95,12 @@ export default class News extends React.Component {
 
 	_selectArticle = item => {
 		global.setCurrentModal('/SingleNewsArticle', {
-			selectedArticle: item,
-		})
-	}
+			selectedArticle: item
+		});
+	};
 
 	//Renders the list of news articles
-	_renderArticles = () =>
+	_renderArticles = () => (
 		<FlatList
 			data={this.state.articles}
 			ItemSeparatorComponent={() => <View style={SharedStyles.divider} />}
@@ -107,7 +110,7 @@ export default class News extends React.Component {
 					onRefresh={this._onRefresh.bind(this)}
 				/>
 			}
-			renderItem={({ item }) =>
+			renderItem={({ item }) => (
 				<TouchableOpacity
 					onPress={() => this._selectArticle(item)}
 					style={styles.articleContainer}
@@ -118,33 +121,36 @@ export default class News extends React.Component {
 							{item.date.format('MM·DD·YY')}
 						</Text>
 						{/* Title */}
-						<Text style={styles.articleTitle}>
-							{item.title}
-						</Text>
+						<Text style={styles.articleTitle}>{item.title}</Text>
 					</View>
 					<View style={{ flexDirection: 'column' }}>
 						{/* Image */}
-						{item.thumbnail
-							? <Image
-									style={styles.articleImage}
-									source={{ uri: item.thumbnail.url }}
-									resizeMode={'cover'}
-								/>
-							: <View style={styles.articleImage} />}
+						{item.thumbnail ? (
+							<Image
+								style={styles.articleImage}
+								source={{ uri: item.thumbnail.url }}
+								resizeMode={'cover'}
+							/>
+						) : (
+							<View style={styles.articleImage} />
+						)}
 						{/* Author */}
 						<Text style={styles.articleAuthor}>
 							{item.author.toUpperCase()}
 						</Text>
 					</View>
-				</TouchableOpacity>}
-		/>;
+				</TouchableOpacity>
+			)}
+		/>
+	);
 
 	// Renders animated loading icon when downloading articles
-	_loading = () =>
+	_loading = () => (
 		<View>
 			<View style={{ height: '50%' }} />
 			<ActivityIndicator animating={true} size={'large'} />
-		</View>;
+		</View>
+	);
 
 	_onRefresh() {
 		this.setState({ refreshing: true });
@@ -188,7 +194,7 @@ const styles = StyleSheet.create({
 		color: Colors.grey.dark
 	},
 	articleImage: {
-		flex: 0.4,
+		flex: 2,
 		height: 80,
 		marginTop: 10
 	},
@@ -199,7 +205,7 @@ const styles = StyleSheet.create({
 	},
 	articleTitledatecontainer: {
 		flexDirection: 'column',
-		flex: 0.6,
+		flex: 3,
 		marginRight: 20
 	}
 });
