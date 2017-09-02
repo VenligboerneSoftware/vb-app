@@ -35,6 +35,14 @@ export function goToApp(appID) {
 					.ref('posts')
 					.child(app.post)
 					.once('value')).val();
+
+				// Fetch the owner's info so we can display the contact button
+				app.owner = (await firebase
+					.database()
+					.ref('users')
+					.child(app.postData.owner)
+					.once('value')).val();
+
 				global.setCurrentModal('/ViewSingleApplication', {
 					app: app
 				});

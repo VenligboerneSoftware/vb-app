@@ -100,7 +100,7 @@ export default class ViewApplications extends React.Component {
 					pushNotify(
 						snap.val(),
 						'Your reply to an event has been accepted!',
-						'Title: ' + postTitle.original,
+						'Post Title: ' + postTitle.original,
 						{
 							type: 'applicantAccepted',
 							app: application.key,
