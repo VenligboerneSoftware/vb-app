@@ -15,15 +15,13 @@ export default class ExitBar extends Component {
 	render() {
 		return (
 			<View style={styles.topBar}>
-				{this.props.title
-					? <Text style={styles.title}>
-							{this.props.title}
-						</Text>
-					: null}
+				{this.props.title ? (
+					<Text style={styles.title}>{this.props.title}</Text>
+				) : null}
 				<TouchableOpacity
 					onPress={() => {
 						this.props.exit ? this.props.exit() : null;
-						global.setCurrentModal(null);
+						!this.props.disableExit ? global.setCurrentModal(null) : null;
 					}}
 					style={styles.exit}
 				>

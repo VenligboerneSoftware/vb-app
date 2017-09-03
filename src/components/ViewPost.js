@@ -41,7 +41,8 @@ export default class ViewPost extends Component {
 		super(props);
 		this.isOwner = this.props.post.owner === firebase.auth().currentUser.uid;
 		this.state = {
-			applyClicked: false
+			applyClicked: false,
+			disableExit: false
 		};
 		this.application = '';
 	}
@@ -190,6 +191,7 @@ export default class ViewPost extends Component {
 
 	// Sends the user to the my applications tab
 	_viewApplication = () => {
+		this.setState({ disableExit: true });
 		goToApp(this.state.myApplicationKey);
 	};
 
@@ -304,7 +306,7 @@ export default class ViewPost extends Component {
 						title={this.props.post.title}
 					/>
 
-					<ExitBar />
+					<ExitBar disableExit={this.state.disableExit} />
 
 					<ScrollView
 						ref={scrollView => {
