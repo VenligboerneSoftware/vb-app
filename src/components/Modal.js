@@ -7,13 +7,9 @@ export default class Modal extends React.Component {
 		if (!this.props.isVisible && props.isVisible) {
 			// TODO log the props as well so we can see what post/application/article/
 			// whatever was viewed
-			Expo.Amplitude.logEvent(
-				`Showing Modal ${props.children.type.displayName}`
-			);
+			Expo.Amplitude.logEvent('Opened Menu');
 		} else if (this.props.isVisible && !props.isVisible) {
-			Expo.Amplitude.logEvent(
-				`Showing Modal ${props.children.type.displayName}`
-			);
+			Expo.Amplitude.logEvent('Closed Menu');
 		}
 	};
 
