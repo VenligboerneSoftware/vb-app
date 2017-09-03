@@ -382,6 +382,8 @@ export default class ViewPost extends Component {
 								{this.state.applyClicked
 									? this.returnApplicationTextbox()
 									: <MapWithCircle
+											exactLocation={this.props.post.exactLocation}
+											icon={this.props.post.icon}
 											latitude={this.props.post.latitude}
 											longitude={this.props.post.longitude}
 										/>}

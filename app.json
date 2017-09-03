@@ -1,34 +1,34 @@
 {
-  "expo": {
-    "name": "Venligboerne",
-    "description": "An app for Denmark's friendly neighbors",
-    "slug": "venligboerne-app",
-    "privacy": "public",
-    "sdkVersion": "19.0.0",
-    "version": "1.0.12",
-    "scheme": "venligboerne-app",
-    "orientation": "portrait",
-    "primaryColor": "#f3f3f3",
-    "icon": "./assets/images/logo_icon_background.png",
-    "loading": {
-      "backgroundImage": "./assets/images/home_background.png",
-      "icon": "./assets/images/logo_icon.png",
-      "hideExponentText": true
-    },
-    "packagerOpts": {
-      "assetExts": ["ttf", "mp4"]
-    },
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.venligboerne.app",
-    },
-    "android": {
-      "package": "com.venligboerne.app",
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyCPEmcNRamzXQvq1Fm1cTyEf_YH6_U68ew"
-        }
-      }
-    }
-  }
+	"expo": {
+		"name": "Venligboerne",
+		"description": "An app for Denmark's friendly neighbors",
+		"slug": "venligboerne-app",
+		"privacy": "public",
+		"sdkVersion": "19.0.0",
+		"version": "1.0.16",
+		"scheme": "venligboerne-app",
+		"orientation": "portrait",
+		"primaryColor": "#f3f3f3",
+		"icon": "./assets/images/logo_icon_background.png",
+		"loading": {
+			"backgroundImage": "./assets/images/home_background.png",
+			"icon": "./assets/images/logo_icon.png",
+			"hideExponentText": true
+		},
+		"packagerOpts": {
+			"assetExts": ["ttf", "mp4"]
+		},
+		"ios": {
+			"supportsTablet": true,
+			"bundleIdentifier": "com.venligboerne.app"
+		},
+		"android": {
+			"package": "com.venligboerne.app",
+			"config": {
+				"googleMaps": {
+					"apiKey": "AIzaSyCPEmcNRamzXQvq1Fm1cTyEf_YH6_U68ew"
+				}
+			}
+		}
+	}
 }

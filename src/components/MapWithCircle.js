@@ -26,17 +26,29 @@ export default class MapWithCircle extends React.Component {
 				rotateEnabled={false}
 				pitchEnabled={false}
 			>
-				<MapView.Circle
-					//key forces iOS refresh
-					key={(this.props.latitude + this.props.longitude).toString()}
-					center={{
-						latitude: this.props.latitude,
-						longitude: this.props.longitude
-					}}
-					radius={1500}
-					fillColor={'rgba(72,209,204, 0.4)'}
-					strokeColor={'transparent'}
-				/>
+				{this.props.exactLocation ? (
+					<MapView.Marker
+						coordinate={{
+							latitude: this.props.latitude,
+							longitude: this.props.longitude
+						}}
+						image={{
+							uri: global.db.categories[this.props.icon].pinURL
+						}}
+					/>
+				) : (
+					<MapView.Circle
+						//key forces iOS refresh
+						key={(this.props.latitude + this.props.longitude).toString()}
+						center={{
+							latitude: this.props.latitude,
+							longitude: this.props.longitude
+						}}
+						radius={1500}
+						fillColor={'rgba(72,209,204, 0.4)'}
+						strokeColor={'transparent'}
+					/>
+				)}
 			</MapView>
 		);
 	}
