@@ -1,4 +1,5 @@
 import {
+	Alert,
 	StyleSheet,
 	Text,
 	TextInput,
@@ -20,6 +21,20 @@ export default class FlagContent extends React.Component {
 		super(props);
 	}
 
+	_submitAlert = () => {
+		Alert.alert(
+			translate('Are you sure you want to flag this content?'),
+			translate('This will be reviewed by moderators'),
+			[
+				{ text: translate('No') },
+				{
+					text: translate('Yes'),
+					onPress: this._submitReport
+				}
+			],
+			{ cancelable: false }
+		);
+	};
 	_submitReport = () => {
 		const report = {
 			flaggingUser: firebase.auth().currentUser.uid,
@@ -40,9 +55,7 @@ export default class FlagContent extends React.Component {
 		return (
 			<View>
 				<View style={[SharedStyles.modalContent, styles.container]}>
-					<ExitBar
-						title={translate('Report As Inappropriate')}
-					/>
+					<ExitBar title={translate('Report As Inappropriate')} />
 					<View style={{ flexDirection: 'row', width: '100%' }}>
 						<FontAwesome
 							name={'exclamation-circle'}
@@ -65,7 +78,7 @@ export default class FlagContent extends React.Component {
 					/>
 					<TouchableOpacity
 						style={SharedStyles.button}
-						onPress={this._submitReport}
+						onPress={this._submitAlert}
 					>
 						<Text style={{ fontSize: 14, textAlign: 'center' }}>
 							{translate('Submit Report')}
