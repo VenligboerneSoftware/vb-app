@@ -36,7 +36,8 @@ const initialState = {
 	searchModalVisible: false,
 	base64: null,
 	location: null,
-	uploadingPost: false
+	uploadingPost: false,
+	exactLocation: null
 };
 
 export default class NewPost extends React.Component {
@@ -63,17 +64,16 @@ export default class NewPost extends React.Component {
 			post.description = post.description.original;
 			this.setState({
 				...initialState,
-				newPost: post
+				newPost: post,
+				exactLocation: post.exactLocation
 			});
-			firebase
-				.database()
-				.ref('images')
-				.child(post.key)
-				.once('value', snap => {
-					if (snap.exists()) {
-						this.setState({ base64: snap.val() });
-					}
-				});
+			firebase.database().ref('images').child(post.key).once('value', snap => {
+				if (snap.exists()) {
+					this.setState({ base64: snap.val() });
+				}
+			});
+
+			//TODO: set state of exactLocation
 		};
 	}
 
@@ -147,9 +147,7 @@ export default class NewPost extends React.Component {
 	_getSelectedDates = () => {
 		let dates = this.state.newPost.dates
 			? this.state.newPost.dates.reduce((obj, date) => {
-					date = Moment(date)
-						.utc()
-						.format('YYYY-MM-DD');
+					date = Moment(date).utc().format('YYYY-MM-DD');
 					obj[date] = { selected: true };
 					return obj;
 				}, {})
@@ -183,20 +181,56 @@ export default class NewPost extends React.Component {
 	// ---------------------------------------------------------------------------
 	// Triggered when the user selects a location from the address picker.
 	_onSearchLocation = (data, details) => {
-		this.setState({
-			searchModalVisible: false,
-			newPost: {
-				...this.state.newPost,
-				...this._addNoise(
-					details.geometry.location.lat,
-					details.geometry.location.lng,
-					1000
-				),
-				// Current location has an undefined formatted_address, so set it
-				// to the description 'Current location' (firebase doesn't like undefined)
-				formatted_address: details.formatted_address || details.description
-			}
-		});
+		Alert.alert(
+			// translate('Are you sure you want to accept?'),
+			// translate('This person will be able to view your Facebook Profile'),
+			translate('Hide exact location?'),
+			translate(
+				'This post will appear somewhere within 1 kilometer of the location you select, to protect your privacy.'
+			),
+			[
+				{
+					text: translate('No'),
+					onPress: () => {
+						this.setState({
+							searchModalVisible: false,
+							exactLocation: true,
+							newPost: {
+								...this.state.newPost,
+								latitude: details.geometry.location.lat,
+								longitude: details.geometry.location.lng,
+								// Current location has an undefined formatted_address, so set it
+								// to the description 'Current location' (firebase doesn't like undefined)
+								formatted_address:
+									details.formatted_address || details.description
+							}
+						});
+					}
+				},
+				{
+					text: translate('Yes'),
+					onPress: () => {
+						this.setState({
+							searchModalVisible: false,
+							exactLocation: false,
+							newPost: {
+								...this.state.newPost,
+								...this._addNoise(
+									details.geometry.location.lat,
+									details.geometry.location.lng,
+									1000
+								),
+								// Current location has an undefined formatted_address, so set it
+								// to the description 'Current location' (firebase doesn't like undefined)
+								formatted_address:
+									details.formatted_address || details.description
+							}
+						});
+					}
+				}
+			],
+			{ cancelable: false }
+		);
 	};
 
 	_pickPhoto = async pickMethod => {
@@ -273,6 +307,10 @@ export default class NewPost extends React.Component {
 			Alert.alert(translate('Please select a location'));
 			return;
 		}
+		if (this.state.exactLocation === null) {
+			Alert.alert('Please reselect a location');
+			return;
+		}
 
 		if (!this.state.uploadingPost) {
 			//submit to firebase
@@ -286,7 +324,8 @@ export default class NewPost extends React.Component {
 					this.state.newPost.longitude
 				),
 				creationTime: Date.now(),
-				owner: firebase.auth().currentUser.uid
+				owner: firebase.auth().currentUser.uid,
+				exactLocation: this.state.exactLocation
 			};
 
 			newPost.title = await bundleTranslations(newPost.title);
@@ -314,11 +353,7 @@ export default class NewPost extends React.Component {
 			}
 
 			// Upload the image to Firebase under the same ID as the post
-			firebase
-				.database()
-				.ref('images')
-				.child(eventKey)
-				.set(this.state.base64);
+			firebase.database().ref('images').child(eventKey).set(this.state.base64);
 
 			// Switch to MapViewPage and zoom in to new event
 			global.changeTab('Map', () => {
@@ -379,7 +414,7 @@ export default class NewPost extends React.Component {
 		});
 	};
 
-	renderRemaining = () => (
+	renderRemaining = () =>
 		<View
 			onLayout={event => {
 				this.onLayout.resolve(event.nativeEvent.layout.y);
@@ -441,11 +476,9 @@ export default class NewPost extends React.Component {
 				>
 					<FontAwesome name={'map-marker'} size={22} style={styles.pinIcon} />
 					<Text style={{ backgroundColor: 'transparent', width: '80%' }}>
-						{this.state.newPost.formatted_address ? (
-							this.state.newPost.formatted_address
-						) : (
-							translate('Select Event Location')
-						)}
+						{this.state.newPost.formatted_address
+							? this.state.newPost.formatted_address
+							: translate('Select Event Location')}
 					</Text>
 
 					<Modal
@@ -478,12 +511,12 @@ export default class NewPost extends React.Component {
 			</Text>
 
 			{/*Display selected location*/}
-			{this.state.newPost.latitude && this.state.newPost.longitude ? (
-				<MapWithCircle
-					latitude={this.state.newPost.latitude}
-					longitude={this.state.newPost.longitude}
-				/>
-			) : null}
+			{this.state.newPost.latitude && this.state.newPost.longitude
+				? <MapWithCircle
+						latitude={this.state.newPost.latitude}
+						longitude={this.state.newPost.longitude}
+					/>
+				: null}
 
 			{/* Date Picker */}
 			<View style={styles.horizontalLayout}>
@@ -496,76 +529,72 @@ export default class NewPost extends React.Component {
 						})}
 				>
 					<FontAwesome name={'calendar'} size={22} style={styles.pinIcon} />
-					{this.state.newPost.dates && this.state.newPost.dates.length !== 0 ? (
-						<View>
-							<Text>
-								{this.state.newPost.dates.map(date => {
-									return formatDate(date) + ' ';
-								})}
-							</Text>
-						</View>
-					) : (
-						<Text>
-							{this.state.datepickerVisible ? (
-								translate('Choose Date Below')
-							) : (
-								translate('Optional Date')
-							)}
-						</Text>
-					)}
+					{this.state.newPost.dates && this.state.newPost.dates.length !== 0
+						? <View>
+								<Text>
+									{this.state.newPost.dates.map(date => {
+										return formatDate(date) + ' ';
+									})}
+								</Text>
+							</View>
+						: <Text>
+								{this.state.datepickerVisible
+									? translate('Choose Date Below')
+									: translate('Optional Date')}
+							</Text>}
 				</TouchableOpacity>
 				{/* cancel button */}
-				{this.state.newPost.dates && this.state.newPost.dates.length !== 0 ? (
-					<TouchableOpacity
-						style={{ paddingTop: 10, paddingRight: 15 }}
-						onPress={this._cancelDate}
-					>
-						<FontAwesome name="times" size={30} />
-					</TouchableOpacity>
-				) : null}
+				{this.state.newPost.dates && this.state.newPost.dates.length !== 0
+					? <TouchableOpacity
+							style={{ paddingTop: 10, paddingRight: 15 }}
+							onPress={this._cancelDate}
+						>
+							<FontAwesome name="times" size={30} />
+						</TouchableOpacity>
+					: null}
 			</View>
 			{/* Date Picker */}
-			{this.state.datepickerVisible ? (
-				<View>
-					<Calendar
-						minDate={Moment.now()}
-						onDayPress={this._onDateSelected}
-						monthFormat={'MMM yyyy'}
-						hideArrows={false}
-						hideExtraDays={true}
-						disableMonthChange={false}
-						firstDay={1} //Monday comes first
-						markedDates={this._getSelectedDates()}
-						theme={{
-							calendarBackground: '#ffffff',
-							textSectionTitleColor: '#b6c1cd',
-							selectedDayBackgroundColor: '#00adf5',
-							selectedDayTextColor: '#ffffff',
-							todayTextColor: '#00adf5',
-							dayTextColor: '#2d4150',
-							textDisabledColor: '#d9e1e8',
-							textMonthFontSize: 16
-						}}
-					/>
+			{this.state.datepickerVisible
+				? <View>
+						<Calendar
+							minDate={Moment.now()}
+							onDayPress={this._onDateSelected}
+							monthFormat={'MMM yyyy'}
+							hideArrows={false}
+							hideExtraDays={true}
+							disableMonthChange={false}
+							firstDay={1} //Monday comes first
+							markedDates={this._getSelectedDates()}
+							theme={{
+								calendarBackground: '#ffffff',
+								textSectionTitleColor: '#b6c1cd',
+								selectedDayBackgroundColor: '#00adf5',
+								selectedDayTextColor: '#ffffff',
+								todayTextColor: '#00adf5',
+								dayTextColor: '#2d4150',
+								textDisabledColor: '#d9e1e8',
+								textMonthFontSize: 16
+							}}
+						/>
 
-					<TouchableOpacity
-						style={{
-							backgroundColor: Colors.grey.medium,
-							paddingVertical: 10
-						}}
-						onPress={() => this._calendarDonePressed()}
-					>
-						<Text style={{ fontSize: 16, color: 'black', alignSelf: 'center' }}>
-							{!this.state.newPost.dates ||
-							this.state.newPost.dates.length <= 1 ? (
-								translate('Select Date')
-							) : (
-								translate('Select Dates')
-							)}
-						</Text>
-					</TouchableOpacity>
-				</View>
-			) : null}
+						<TouchableOpacity
+							style={{
+								backgroundColor: Colors.grey.medium,
+								paddingVertical: 10
+							}}
+							onPress={() => this._calendarDonePressed()}
+						>
+							<Text
+								style={{ fontSize: 16, color: 'black', alignSelf: 'center' }}
+							>
+								{!this.state.newPost.dates ||
+								this.state.newPost.dates.length <= 1
+									? translate('Select Date')
+									: translate('Select Dates')}
+							</Text>
+						</TouchableOpacity>
+					</View>
+				: null}
 
 			{/* Photo Selection */}
 			<View style={styles.cameraContainer}>
@@ -575,7 +604,9 @@ export default class NewPost extends React.Component {
 					onPress={this._pickPhoto.bind(this, ImagePicker.launchCameraAsync)}
 				>
 					<FontAwesome name={'camera'} size={44} />
-					<Text style={{ fontSize: 15 }}>{translate('Take a Picture')}</Text>
+					<Text style={{ fontSize: 15 }}>
+						{translate('Take a Picture')}
+					</Text>
 				</TouchableOpacity>
 
 				<TouchableOpacity
@@ -587,36 +618,40 @@ export default class NewPost extends React.Component {
 					)}
 				>
 					<FontAwesome name={'photo'} size={44} />
-					<Text style={{ fontSize: 15 }}>{translate('Select a Picture')}</Text>
+					<Text style={{ fontSize: 15 }}>
+						{translate('Select a Picture')}
+					</Text>
 				</TouchableOpacity>
 			</View>
 
 			{/*Display selected image*/}
-			{this.state.base64 ? (
-				<View style={styles.horizontalLayout}>
-					<Image
-						source={{ uri: this.state.base64 }}
-						style={{
-							width: '40%',
-							height: 150,
-							resizeMode: 'contain',
-							alignSelf: 'center'
-						}}
-					/>
-					{/* Cancel button */}
-					<TouchableOpacity
-						style={{
-							backgroundColor: '#F95F62',
-							padding: 15,
-							borderRadius: 10,
-							marginLeft: 25
-						}}
-						onPress={this._cancelPhoto}
-					>
-						<Text style={{ color: 'white' }}>{translate('Remove Photo')}</Text>
-					</TouchableOpacity>
-				</View>
-			) : null}
+			{this.state.base64
+				? <View style={styles.horizontalLayout}>
+						<Image
+							source={{ uri: this.state.base64 }}
+							style={{
+								width: '40%',
+								height: 150,
+								resizeMode: 'contain',
+								alignSelf: 'center'
+							}}
+						/>
+						{/* Cancel button */}
+						<TouchableOpacity
+							style={{
+								backgroundColor: '#F95F62',
+								padding: 15,
+								borderRadius: 10,
+								marginLeft: 25
+							}}
+							onPress={this._cancelPhoto}
+						>
+							<Text style={{ color: 'white' }}>
+								{translate('Remove Photo')}
+							</Text>
+						</TouchableOpacity>
+					</View>
+				: null}
 
 			{/* Submit Button */}
 			<TouchableOpacity
@@ -624,21 +659,18 @@ export default class NewPost extends React.Component {
 				activeOpacity={0.4}
 				onPress={this._submitPressed}
 			>
-				{this.state.uploadingPost ? (
-					<ActivityIndicator
-						animating={true}
-						size={'large'}
-						style={{ marginVertical: 10 }}
-						color={'white'}
-					/>
-				) : (
-					<Text style={{ color: Colors.white, fontSize: 30 }}>
-						{translate('Finish')}
-					</Text>
-				)}
+				{this.state.uploadingPost
+					? <ActivityIndicator
+							animating={true}
+							size={'large'}
+							style={{ marginVertical: 10 }}
+							color={'white'}
+						/>
+					: <Text style={{ color: Colors.white, fontSize: 30 }}>
+							{translate('Finish')}
+						</Text>}
 			</TouchableOpacity>
-		</View>
-	);
+		</View>;
 
 	render() {
 		return (
