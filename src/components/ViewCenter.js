@@ -3,7 +3,7 @@ import { WebBrowser } from 'expo';
 import React, { Component } from 'react';
 import getDirections from 'react-native-google-maps-directions';
 
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { translate } from 'venligboerneapp/src/utils/internationalization.js';
 
 import Colors from '../styles/Colors';
@@ -49,19 +49,16 @@ export default class ViewCenter extends Component {
 						}
 					}}
 				>
-					<FontAwesome style={styles.icon} name="facebook-square" size={40} />
-					<Text style={styles.label}>
+					<FontAwesome
+						style={styles.icon}
+						name="facebook-square"
+						size={40}
+						color={'#3b5998'}
+					/>
+					<Text style={[styles.label, { textDecorationLine: 'underline' }]}>
 						{this.props.center.title}
 					</Text>
 				</TouchableOpacity>
-
-				{/* Address */}
-				<View style={styles.dataRow}>
-					<FontAwesome style={styles.icon} name="home" size={40} />
-					<Text style={styles.label}>
-						{this.props.center.address}
-					</Text>
-				</View>
 
 				{/* Phone number */}
 				<View style={styles.dataRow}>
@@ -74,7 +71,11 @@ export default class ViewCenter extends Component {
 				{/* Hours */}
 				{this.props.center.hours
 					? <View style={styles.dataRow}>
-							<FontAwesome style={styles.icon} name="clock-o" size={40} />
+							<Ionicons
+								style={styles.icon}
+								name="ios-information-circle-outline"
+								size={40}
+							/>
 							<View style={{ flex: 1 }}>
 								{[
 									'Monday',
