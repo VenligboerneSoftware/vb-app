@@ -92,43 +92,47 @@ export default class FacebookAuth extends React.Component {
 					style={styles.logo}
 				/>
 
-				{this.eula ? (
-					<View style={{ flexDirection: 'row', paddingBottom: 40 }}>
-						<View style={{ flex: 1 }}>
-							<TouchableOpacity
-								style={
-									this.state.eulaClicked ? styles.checkbox : styles.agreeButton
-								}
-								onPress={() =>
-									this.setState({ eulaClicked: !this.state.eulaClicked })}
-							>
-								{this.state.eulaClicked ? (
-									<FontAwesome
-										name={'check'}
-										size={30}
-										style={{ paddingLeft: 5 }}
-									/>
-								) : (
-									<Text style={{ fontSize: 16 }}>{translate('I Agree')}</Text>
-								)}
-							</TouchableOpacity>
-						</View>
-						<View style={styles.textContainer}>
-							<Text>{translate('I agree to the')}</Text>
-							<TouchableOpacity
-								onPress={() => {
-									WebBrowser.openBrowserAsync(
-										'http://venligboerne-app.herokuapp.com/eula'
-									);
-								}}
-							>
-								<Text style={{ textDecorationLine: 'underline' }}>
-									End User Licencing Agreement
+				{this.eula
+					? <View style={{ flexDirection: 'row', paddingBottom: 40 }}>
+							<View style={{ flex: 1 }}>
+								<TouchableOpacity
+									style={
+										this.state.eulaClicked
+											? styles.checkbox
+											: styles.agreeButton
+									}
+									onPress={() =>
+										this.setState({ eulaClicked: !this.state.eulaClicked })}
+								>
+									{this.state.eulaClicked
+										? <FontAwesome
+												name={'check'}
+												size={30}
+												style={{ paddingLeft: 5 }}
+											/>
+										: <Text style={{ fontSize: 16 }}>
+												{translate('I Agree')}
+											</Text>}
+								</TouchableOpacity>
+							</View>
+							<View style={styles.textContainer}>
+								<Text>
+									{translate('I agree to the')}
 								</Text>
-							</TouchableOpacity>
+								<TouchableOpacity
+									onPress={() => {
+										WebBrowser.openBrowserAsync(
+											'http://venligboerne-app.herokuapp.com/eula'
+										);
+									}}
+								>
+									<Text style={{ textDecorationLine: 'underline' }}>
+										End User Licencing Agreement
+									</Text>
+								</TouchableOpacity>
+							</View>
 						</View>
-					</View>
-				) : null}
+					: null}
 
 				<TouchableOpacity onPress={this.login} style={styles.buttonContainer}>
 					<FontAwesome
@@ -147,7 +151,9 @@ export default class FacebookAuth extends React.Component {
 						this.setState({ isModalVisible: true });
 					}}
 				>
-					<Text style={styles.text}>{translate('Why Log In?')}</Text>
+					<Text style={styles.text}>
+						{translate('Why Log In?')}
+					</Text>
 				</TouchableOpacity>
 
 				<Modal
@@ -238,7 +244,8 @@ const styles = StyleSheet.create({
 		height: 40,
 		backgroundColor: Colors.grey.medium,
 		alignSelf: 'center',
-		justifyContent: 'center'
+		justifyContent: 'center',
+		borderRadius: 5
 	},
 	agreeButton: {
 		backgroundColor: Colors.grey.medium,
