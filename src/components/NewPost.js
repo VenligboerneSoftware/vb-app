@@ -480,6 +480,8 @@ export default class NewPost extends React.Component {
 			{/*Display selected location*/}
 			{this.state.newPost.latitude && this.state.newPost.longitude ? (
 				<MapWithCircle
+					// exactLocation={this.state.newPost.exactLocation}
+					icon={this.state.newPost.icon}
 					latitude={this.state.newPost.latitude}
 					longitude={this.state.newPost.longitude}
 				/>

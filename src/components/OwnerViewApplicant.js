@@ -94,35 +94,33 @@ export default class OwnerViewApplicant extends React.Component {
 
 						<View style={SharedStyles.divider} />
 
-						{this.props.application.status === 'Waiting For Response'
-							? <View style={styles.acceptRejectContainer}>
-									<TouchableOpacity
-										style={styles.acceptRejectButton}
-										onPress={() => {
-											this.acceptApplicant();
-										}}
-									>
-										<Text style={styles.acceptText}>
-											{translate('Accept')}
-										</Text>
-									</TouchableOpacity>
-									<TouchableOpacity
-										style={styles.acceptRejectButton}
-										onPress={() => {
-											this.rejectApplicant();
-										}}
-									>
-										<Text style={styles.rejectText}>
-											{translate('Reject')}
-										</Text>
-									</TouchableOpacity>
-								</View>
-							: null}
+						{this.props.application.status === 'Waiting For Response' ? (
+							<View style={styles.acceptRejectContainer}>
+								<TouchableOpacity
+									style={styles.acceptRejectButton}
+									onPress={() => {
+										this.acceptApplicant();
+									}}
+								>
+									<Text style={styles.acceptText}>{translate('Accept')}</Text>
+								</TouchableOpacity>
+								<TouchableOpacity
+									style={styles.acceptRejectButton}
+									onPress={() => {
+										this.rejectApplicant();
+									}}
+								>
+									<Text style={styles.rejectText}>{translate('Reject')}</Text>
+								</TouchableOpacity>
+							</View>
+						) : null}
 
 						<Time dates={this.props.post.dates} />
 						<View style={SharedStyles.divider} />
 						<MapWithCircle
 							style={{ flex: 1 }}
+							// exactLocation={this.props.post.exactLocation}
+							icon={this.props.post.icon}
 							latitude={this.props.post.latitude}
 							longitude={this.props.post.longitude}
 						/>
