@@ -156,7 +156,6 @@ export default class ViewPost extends Component {
 				);
 			} else {
 				await this.submit();
-				this._hideModal();
 				goToApp(this.state.myApplicationKey);
 			}
 		} else {
@@ -189,8 +188,6 @@ export default class ViewPost extends Component {
 
 	// Sends the user to the my applications tab
 	_viewApplication = () => {
-		// TODO open the specific application
-		this._hideModal();
 		goToApp(this.state.myApplicationKey);
 	};
 

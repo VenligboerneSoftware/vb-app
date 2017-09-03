@@ -5,8 +5,7 @@ import {
 	Text,
 	Image,
 	TouchableOpacity,
-	ActivityIndicator,
-	RefreshControl
+	ActivityIndicator
 } from 'react-native';
 import React from 'react';
 import SpecialCharacter from 'he';
@@ -23,9 +22,12 @@ export default class News extends React.Component {
 		super();
 		this.state = {
 			articles: [],
-			articlesLoaded: false,
-			refreshing: false
+			loading: true
 		};
+		this.refreshing = false;
+	}
+
+	componentDidMount() {
 		this.getArticles();
 	}
 
@@ -44,36 +46,20 @@ export default class News extends React.Component {
 					let articles = await fetch(page);
 					articles = await articles.json();
 					articles = articles.posts;
-					articles = await Promise.all(
-						articles.map(async article => {
-							//get article info for each article
-							let url =
-								'http://www.venligboerne.dk/?json=get_post&slug=' +
-								article.slug;
-							article = await fetch(url);
-							article = await article.json();
-
-							//Remove new lines, breaks, and "read more" tags
-							let content = article.post.content.replace(/\r?\n|\r/g, '');
-							content = content.replace(/<br \/>/g, '');
-							content = content.replace(
-								/<p><span id=\"more-[0-9]*\"><\/span><\/p>/g,
-								''
-							);
-
-							let newArticle = {
-								key: article.post.id,
-								content: content,
-								title: SpecialCharacter.decode(article.post.title),
-								thumbnail: article.post.thumbnail_images
-									? article.post.thumbnail_images.large
-									: null,
-								date: Moment(article.post.date),
-								author: article.post.author.name
-							};
-							return newArticle;
-						})
-					);
+					articles = articles.map(article => {
+						let newArticle = {
+							key: article.id,
+							// content: content,
+							title: SpecialCharacter.decode(article.title),
+							image: article.thumbnail_images
+								? article.thumbnail_images.large
+								: null,
+							date: Moment(article.date),
+							author: article.author.name,
+							slug: article.slug
+						};
+						return newArticle;
+					});
 					return articles;
 				} catch (e) {
 					console.warn(e);
@@ -89,11 +75,24 @@ export default class News extends React.Component {
 		});
 		this.setState({
 			articles: allArticles,
-			articlesLoaded: true
+			loading: false
 		});
 	};
 
-	_selectArticle = item => {
+	_selectArticle = async item => {
+		// get article info for each article
+		global.setCurrentModal('/SingleNewsArticle', {
+			selectedArticle: null
+		});
+		let url = 'http://www.venligboerne.dk/?json=get_post&slug=' + item.slug;
+		let article = await fetch(url);
+		article = await article.json();
+
+		//Remove new lines, breaks, and "read more" tags
+		let content = article.post.content.replace(/\r?\n|\r/g, '');
+		content = content.replace(/<br \/>/g, '');
+		content = content.replace(/<p><span id=\"more-[0-9]*\"><\/span><\/p>/g, '');
+		item.content = content;
 		global.setCurrentModal('/SingleNewsArticle', {
 			selectedArticle: item
 		});
@@ -104,12 +103,8 @@ export default class News extends React.Component {
 		<FlatList
 			data={this.state.articles}
 			ItemSeparatorComponent={() => <View style={SharedStyles.divider} />}
-			refreshControl={
-				<RefreshControl
-					refreshing={this.state.refreshing}
-					onRefresh={this._onRefresh.bind(this)}
-				/>
-			}
+			refreshing={this.refreshing}
+			onRefresh={this._onRefresh.bind(this)}
 			renderItem={({ item }) => (
 				<TouchableOpacity
 					onPress={() => this._selectArticle(item)}
@@ -125,10 +120,10 @@ export default class News extends React.Component {
 					</View>
 					<View style={{ flexDirection: 'column' }}>
 						{/* Image */}
-						{item.thumbnail ? (
+						{item.image ? (
 							<Image
 								style={styles.articleImage}
-								source={{ uri: item.thumbnail.url }}
+								source={{ uri: item.image.url }}
 								resizeMode={'cover'}
 							/>
 						) : (
@@ -153,16 +148,16 @@ export default class News extends React.Component {
 	);
 
 	_onRefresh() {
-		this.setState({ refreshing: true });
+		this.refreshing = true;
 		this.getArticles();
-		this.setState({ refreshing: false });
+		this.refreshing = false;
 	}
 
 	render() {
 		return (
 			<View style={styles.container}>
 				<TopBar title={translate('VenligboNews')} />
-				{this.state.articlesLoaded ? this._renderArticles() : this._loading()}
+				{this.state.loading ? this._loading() : this._renderArticles()}
 			</View>
 		);
 	}

@@ -1,4 +1,11 @@
-import { StyleSheet, View, Text, Image, ScrollView } from 'react-native';
+import {
+	StyleSheet,
+	View,
+	Text,
+	Image,
+	ScrollView,
+	ActivityIndicator
+} from 'react-native';
 import HTMLView from 'react-native-htmlview';
 import React from 'react';
 
@@ -17,34 +24,41 @@ export default class SingleNewsArticle extends React.Component {
 		return (
 			<View style={[SharedStyles.modalContent, styles.articleModalContainer]}>
 				<ExitBar />
-				<ScrollView keyboardShouldPersistTaps={'handled'}>
-					{/* Author and Date */}
-					<Text style={styles.selectedArticleHeader}>
-						{this.props.selectedArticle.author +
-							'   ' +
-							this.props.selectedArticle.date.format('MM·DD·YY')}
-					</Text>
-					{/* Title */}
-					<Text style={styles.selectedArticleTitle}>
-						{this.props.selectedArticle.title}
-					</Text>
-					{/* Image */}
-					{this.props.selectedArticle.thumbnail
-						? <Image
+				{this.props.selectedArticle ? (
+					<ScrollView keyboardShouldPersistTaps={'handled'}>
+						{/* Author and Date */}
+						<Text style={styles.selectedArticleHeader}>
+							{this.props.selectedArticle.author +
+								'   ' +
+								this.props.selectedArticle.date.format('MM·DD·YY')}
+						</Text>
+						{/* Title */}
+						<Text style={styles.selectedArticleTitle}>
+							{this.props.selectedArticle.title}
+						</Text>
+						{/* Image */}
+						{this.props.selectedArticle.image ? (
+							<Image
 								style={styles.selectedArticleImage}
-								source={{ uri: this.props.selectedArticle.thumbnail.url }}
+								source={{ uri: this.props.selectedArticle.image.url }}
 								resizeMode={'cover'}
 							/>
-						: null}
-					<View style={SharedStyles.divider} />
-					{/* Content */}
-					<View style={styles.selectedArticleContent}>
-						<HTMLView
-							value={this.props.selectedArticle.content}
-							stylesheet={htmlStyles}
-						/>
+						) : null}
+						<View style={SharedStyles.divider} />
+						{/* Content */}
+						<View style={styles.selectedArticleContent}>
+							<HTMLView
+								value={this.props.selectedArticle.content}
+								stylesheet={htmlStyles}
+							/>
+						</View>
+					</ScrollView>
+				) : (
+					<View>
+						<ActivityIndicator animating={true} size={'large'} />
+						<View style={{ height: '70%' }} />
 					</View>
-				</ScrollView>
+				)}
 			</View>
 		);
 	}

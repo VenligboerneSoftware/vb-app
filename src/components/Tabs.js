@@ -16,17 +16,12 @@ export default class HomePage extends React.Component {
 		super(props);
 		this.state = {
 			// Initially, load the news page to start the articles loading
-			selectedTab: 'News'
+			selectedTab: 'Map'
 		};
 
 		global.changeTab = (tab, callback) => {
 			this.setState({ selectedTab: tab }, callback);
 		};
-	}
-
-	componentDidMount() {
-		// Load the posts on the Me page
-		this.setState({ selectedTab: 'Map' });
 	}
 
 	_setTab = tab => {
@@ -80,25 +75,31 @@ export default class HomePage extends React.Component {
 						icon: 'user',
 						component: <Profile />
 					}
-				].map(tab =>
+				].map(tab => (
 					<TabNavigator.Item
 						key={tab.key}
 						selected={tab.selected.indexOf(this.state.selectedTab) !== -1}
 						title={translate(tab.key)}
 						tabStyle={
-							tab.key === this.state.selectedTab
-								? styles.tabStyleSelected
-								: styles.tabStyleUnselected
+							tab.key === this.state.selectedTab ? (
+								styles.tabStyleSelected
+							) : (
+								styles.tabStyleUnselected
+							)
 						}
 						selectedTitleStyle={
-							tab.key === this.state.selectedTab
-								? styles.titleStyleSelected
-								: styles.titleStyleUnselected
+							tab.key === this.state.selectedTab ? (
+								styles.titleStyleSelected
+							) : (
+								styles.titleStyleUnselected
+							)
 						}
 						titleStyle={
-							tab.key === this.state.selectedTab
-								? styles.titleStyleSelected
-								: styles.titleStyleUnselected
+							tab.key === this.state.selectedTab ? (
+								styles.titleStyleSelected
+							) : (
+								styles.titleStyleUnselected
+							)
 						}
 						renderIcon={() => <FontAwesome name={tab.icon} size={30} />}
 						renderSelectedIcon={() => <FontAwesome name={tab.icon} size={30} />}
@@ -106,7 +107,7 @@ export default class HomePage extends React.Component {
 					>
 						{tab.component}
 					</TabNavigator.Item>
-				)}
+				))}
 			</TabNavigator>
 		);
 	}
