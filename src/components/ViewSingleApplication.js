@@ -128,7 +128,7 @@ export default class ViewSingleApplication extends React.Component {
 						<View style={SharedStyles.divider} />
 						<MapWithCircle
 							style={{ flex: 1 }}
-							exactLocation={this.props.post.exactLocation}
+							exactLocation={this.props.app.postData.exactLocation}
 							icon={this.props.app.postData.icon}
 							latitude={this.props.app.postData.latitude}
 							longitude={this.props.app.postData.longitude}
