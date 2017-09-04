@@ -61,6 +61,7 @@ export default class App extends React.Component {
 	}
 
 	async componentDidMount() {
+		await AsyncStorage.setItem('token', 'hi');
 		console.log(Date.now(), 'Assets loading');
 		this.addInternetEventListeners();
 
@@ -133,13 +134,7 @@ export default class App extends React.Component {
 		const storedToken = await AsyncStorage.getItem('token');
 		const agreedToEula = await AsyncStorage.getItem('eula');
 
-		this.setState({ displayText: 'Attempting Login' });
-		const valid = await attemptLoginWithStoredToken(
-			storedToken,
-			this._afterLogin
-		);
-
-		if (agreedToEula && storedToken && valid !== null) {
+		if (agreedToEula && storedToken) {
 			this._afterLogin(storedToken);
 		} else {
 			history.push('/FacebookAuth', {
@@ -150,68 +145,79 @@ export default class App extends React.Component {
 	};
 
 	_afterLogin = async token => {
-		console.log('Logged in');
+		this.setState({ displayText: 'Attempting Login' });
+		const valid = await attemptLoginWithStoredToken(token, this._afterLogin);
 
-		this._loadCenters();
-
-		// Initialize Amplitude with user data
-		let userProfile = firebase.auth().currentUser;
-
-		Expo.Amplitude.setUserId(userProfile.uid);
-		Expo.Amplitude.setUserProperties({
-			displayName: userProfile.displayName,
-			email: userProfile.email,
-			photoURL: userProfile.photoURL
-		});
-
-		// Add the users push token to the database so they can be notified about events.
-		// Get the token that uniquely identifies this device.
-		Notifications.getExpoPushTokenAsync().then(async pushToken => {
-			const userRef = firebase.database().ref('users').child(userProfile.uid);
-			// Set default permissions to normal
-			const permissions = await userRef.child('permissions').once('value');
-			// Store user data in the database
-			userRef.update({
-				facebookUID: userProfile.providerData[0].uid,
-				photoURL: userProfile.providerData[0].photoURL,
-				pushToken: pushToken,
-				displayName: userProfile.providerData[0].displayName,
-				permissions: permissions.val() || 'normal'
+		if (valid === null) {
+			//expired token
+			history.push('/FacebookAuth', {
+				onDone: this._afterLogin,
+				eula: false
 			});
-		});
-
-		// Preload Profile Pic
-		Image.prefetch(
-			'https://graph.facebook.com/' +
-				firebase.auth().currentUser.providerData[0].uid +
-				'/picture?height=400'
-		);
-
-		if (this.isFirstTime) {
-			this.firstTimeLocationAlert();
 		} else {
-			let { status } = await Permissions.askAsync(Permissions.LOCATION);
-			if (status === 'granted') {
-				//temporary fix
-				global.location = await Promise.race([
-					new Promise(resolver => {
-						setTimeout(resolver, 3000, null);
-					}),
-					Location.getCurrentPositionAsync({})
-				]);
+			console.log('Logged in');
+
+			this._loadCenters();
+
+			// Initialize Amplitude with user data
+			let userProfile = firebase.auth().currentUser;
+
+			Expo.Amplitude.setUserId(userProfile.uid);
+			Expo.Amplitude.setUserProperties({
+				displayName: userProfile.displayName,
+				email: userProfile.email,
+				photoURL: userProfile.photoURL
+			});
+
+			// Add the users push token to the database so they can be notified about events.
+			// Get the token that uniquely identifies this device.
+			Notifications.getExpoPushTokenAsync().then(async pushToken => {
+				const userRef = firebase.database().ref('users').child(userProfile.uid);
+				// Set default permissions to normal
+				const permissions = await userRef.child('permissions').once('value');
+				// Store user data in the database
+				userRef.update({
+					facebookUID: userProfile.providerData[0].uid,
+					photoURL: userProfile.providerData[0].photoURL,
+					pushToken: pushToken,
+					displayName: userProfile.providerData[0].displayName,
+					permissions: permissions.val() || 'normal'
+				});
+			});
+
+			// Preload Profile Pic
+			Image.prefetch(
+				'https://graph.facebook.com/' +
+					firebase.auth().currentUser.providerData[0].uid +
+					'/picture?height=400'
+			);
+
+			if (this.isFirstTime) {
+				this.firstTimeLocationAlert();
+			} else {
+				let { status } = await Permissions.askAsync(Permissions.LOCATION);
+				if (status === 'granted') {
+					//temporary fix
+					global.location = await Promise.race([
+						new Promise(resolver => {
+							setTimeout(resolver, 3000, null);
+						}),
+						Location.getCurrentPositionAsync({})
+					]);
+				}
 			}
-		}
 
-		await Promise.all([
-			this.assetPromises.categories,
-			this.assetPromises.centers
-		]);
+			await Promise.all([
+				this.assetPromises.categories,
+				this.assetPromises.centers
+			]);
 
-		// When login succeeds and the database is loaded, proceed
-		if (this.isFirstTime) {
-			history.push('/Tutorial');
-		} else {
-			history.push('/HomePage');
+			// When login succeeds and the database is loaded, proceed
+			if (this.isFirstTime) {
+				history.push('/Tutorial');
+			} else {
+				history.push('/HomePage');
+			}
 		}
 	};
 
