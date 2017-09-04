@@ -61,7 +61,6 @@ export default class App extends React.Component {
 	}
 
 	async componentDidMount() {
-		await AsyncStorage.setItem('token', 'hi');
 		console.log(Date.now(), 'Assets loading');
 		this.addInternetEventListeners();
 
@@ -148,13 +147,7 @@ export default class App extends React.Component {
 		this.setState({ displayText: 'Attempting Login' });
 		const valid = await attemptLoginWithStoredToken(token, this._afterLogin);
 
-		if (valid === null) {
-			//expired token
-			history.push('/FacebookAuth', {
-				onDone: this._afterLogin,
-				eula: false
-			});
-		} else {
+		if (valid !== null) {
 			console.log('Logged in');
 
 			this._loadCenters();
