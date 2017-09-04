@@ -27,25 +27,27 @@ export default class Menu extends React.Component {
 	}
 
 	_afterLogin = async token => {
-		await attemptLoginWithStoredToken(token, this._afterLogin);
+		const valid = await attemptLoginWithStoredToken(token, this._afterLogin);
 
-		let userProfile = firebase.auth().currentUser;
-		// Initialize Amplitude with user data
-		Expo.Amplitude.setUserId(userProfile.uid);
-		Expo.Amplitude.setUserProperties({
-			displayName: userProfile.displayName,
-			email: userProfile.email,
-			photoURL: userProfile.photoURL
-		});
+		if (valid !== null) {
+			let userProfile = firebase.auth().currentUser;
+			// Initialize Amplitude with user data
+			Expo.Amplitude.setUserId(userProfile.uid);
+			Expo.Amplitude.setUserProperties({
+				displayName: userProfile.displayName,
+				email: userProfile.email,
+				photoURL: userProfile.photoURL
+			});
 
-		// Preload Profile Pic
-		Image.prefetch(
-			'https://graph.facebook.com/' +
-				firebase.auth().currentUser.providerData[0].uid +
-				'/picture?height=400'
-		);
+			// Preload Profile Pic
+			Image.prefetch(
+				'https://graph.facebook.com/' +
+					firebase.auth().currentUser.providerData[0].uid +
+					'/picture?height=400'
+			);
 
-		history.push('/HomePage', {});
+			history.push('/HomePage', {});
+		}
 	};
 
 	_logout = async () => {
@@ -173,14 +175,15 @@ export default class Menu extends React.Component {
 							}
 						]}
 						scrollEnabled={true}
-						renderItem={({ item }) => (
+						renderItem={({ item }) =>
 							<View style={{ width: '100%' }}>
 								<TouchableOpacity onPress={item.onPress}>
-									<Text style={styles.menuText}>{translate(item.key)}</Text>
+									<Text style={styles.menuText}>
+										{translate(item.key)}
+									</Text>
 								</TouchableOpacity>
 								<View style={SharedStyles.divider} />
-							</View>
-						)}
+							</View>}
 					/>
 				</View>
 			</View>
