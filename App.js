@@ -119,7 +119,16 @@ export default class App extends React.Component {
 					onPress: async () => {
 						let { status } = await Permissions.askAsync(Permissions.LOCATION);
 						if (status === 'granted') {
-							global.location = await Location.getCurrentPositionAsync({});
+							//temporary fix
+							global.location = await Promise.race([
+								new Promise(resolver => {
+									setTimeout(resolver, 3000, null);
+								}),
+								Location.getCurrentPositionAsync({})
+							]).catch(e => {
+								console.log(e);
+								return null;
+							});
 						}
 					}
 				}
@@ -196,7 +205,10 @@ export default class App extends React.Component {
 							setTimeout(resolver, 3000, null);
 						}),
 						Location.getCurrentPositionAsync({})
-					]);
+					]).catch(e => {
+						console.log(e);
+						return null;
+					});
 				}
 			}
 

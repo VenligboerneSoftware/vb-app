@@ -66,7 +66,7 @@ export default class SearchLocation extends React.Component {
 						color: Colors.blue.dark
 					}
 				}}
-				currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
+				currentLocation={global.location ? true : false} // Will add a 'Current location' button at the top of the predefined places list
 				currentLocationLabel={translate('Current location')}
 				// Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
 				nearbyPlacesAPI={
