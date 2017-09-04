@@ -132,7 +132,14 @@ export default class App extends React.Component {
 		global.language = language;
 		const storedToken = await AsyncStorage.getItem('token');
 		const agreedToEula = await AsyncStorage.getItem('eula');
-		if (agreedToEula && storedToken) {
+
+		this.setState({ displayText: 'Attempting Login' });
+		const valid = await attemptLoginWithStoredToken(
+			storedToken,
+			this._afterLogin
+		);
+
+		if (agreedToEula && storedToken && valid !== null) {
 			this._afterLogin(storedToken);
 		} else {
 			history.push('/FacebookAuth', {
@@ -143,8 +150,6 @@ export default class App extends React.Component {
 	};
 
 	_afterLogin = async token => {
-		this.setState({ displayText: 'Attempting Login' });
-		await attemptLoginWithStoredToken(token, this._afterLogin);
 		console.log('Logged in');
 
 		this._loadCenters();
@@ -162,10 +167,7 @@ export default class App extends React.Component {
 		// Add the users push token to the database so they can be notified about events.
 		// Get the token that uniquely identifies this device.
 		Notifications.getExpoPushTokenAsync().then(async pushToken => {
-			const userRef = firebase
-				.database()
-				.ref('users')
-				.child(userProfile.uid);
+			const userRef = firebase.database().ref('users').child(userProfile.uid);
 			// Set default permissions to normal
 			const permissions = await userRef.child('permissions').once('value');
 			// Store user data in the database
@@ -322,9 +324,8 @@ export default class App extends React.Component {
 						<Switch>
 							<Route
 								path="/StartupPage"
-								render={() => (
-									<StartupPage displayText={this.state.displayText} />
-								)}
+								render={() =>
+									<StartupPage displayText={this.state.displayText} />}
 							/>
 							<Route path="/HomePage" component={HomePage} />
 							<Route path="/Tutorial" component={Tutorial} />

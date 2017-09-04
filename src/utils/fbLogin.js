@@ -37,5 +37,6 @@ export async function attemptLoginWithStoredToken(token, afterLogin) {
 				eula: !agreedToEula
 			});
 		});
+		return null;
 	});
 }
