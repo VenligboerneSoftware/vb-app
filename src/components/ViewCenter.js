@@ -60,39 +60,43 @@ export default class ViewCenter extends Component {
 					</Text>
 				</TouchableOpacity>
 
+				{/* Address */}
+				<View style={styles.dataRow}>
+					<FontAwesome style={styles.icon} name="home" size={40} />
+					<Text style={styles.label}>{this.props.center.address}</Text>
+				</View>
+
 				{/* Phone number */}
 				<View style={styles.dataRow}>
 					<FontAwesome style={styles.icon} name="phone" size={40} />
-					<Text style={styles.label}>
-						{this.props.center.phone}
-					</Text>
+					<Text style={styles.label}>{this.props.center.phone}</Text>
 				</View>
 
 				{/* Hours */}
-				{this.props.center.hours
-					? <View style={styles.dataRow}>
-							<Ionicons
-								style={styles.icon}
-								name="ios-information-circle-outline"
-								size={40}
-							/>
-							<View style={{ flex: 1 }}>
-								{[
-									'Monday',
-									'Tuesday',
-									'Wednesday',
-									'Thursday',
-									'Friday',
-									'Saturday',
-									'Sunday'
-								].map(day =>
-									<Text key={day} style={{ backgroundColor: 'transparent' }}>
-										{translate(day)}: {this.props.center.hours[day]}
-									</Text>
-								)}
-							</View>
+				{this.props.center.hours ? (
+					<View style={styles.dataRow}>
+						<Ionicons
+							style={styles.icon}
+							name="ios-information-circle-outline"
+							size={40}
+						/>
+						<View style={{ flex: 1 }}>
+							{[
+								'Monday',
+								'Tuesday',
+								'Wednesday',
+								'Thursday',
+								'Friday',
+								'Saturday',
+								'Sunday'
+							].map(day => (
+								<Text key={day} style={{ backgroundColor: 'transparent' }}>
+									{translate(day)}: {this.props.center.hours[day]}
+								</Text>
+							))}
 						</View>
-					: null}
+					</View>
+				) : null}
 
 				<View style={styles.buttonContainer}>
 					{/* Directions button */}
