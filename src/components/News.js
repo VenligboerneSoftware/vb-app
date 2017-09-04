@@ -82,7 +82,8 @@ export default class News extends React.Component {
 	_selectArticle = async item => {
 		// get article info for each article
 		global.setCurrentModal('/SingleNewsArticle', {
-			selectedArticle: null
+			selectedArticle: null,
+			disableExit: true
 		});
 		let url = 'http://www.venligboerne.dk/?json=get_post&slug=' + item.slug;
 		let article = await fetch(url);
@@ -94,7 +95,8 @@ export default class News extends React.Component {
 		content = content.replace(/<p><span id=\"more-[0-9]*\"><\/span><\/p>/g, '');
 		item.content = content;
 		global.setCurrentModal('/SingleNewsArticle', {
-			selectedArticle: item
+			selectedArticle: item,
+			disableExit: false
 		});
 	};
 

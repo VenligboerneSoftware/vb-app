@@ -31,9 +31,11 @@ export default class ModalRouter extends React.Component {
 				// whatever was viewed
 				const message = path
 					? `Showing Modal ${path}`
-					: `Hiding Modal ${this.state.path}`;
+					: this.state.path ? `Hiding Modal ${this.state.path}` : null;
 				console.log(message);
-				Expo.Amplitude.logEvent(message);
+				if (message) {
+					Expo.Amplitude.logEvent(message);
+				}
 				this.lastPromise = new Promise((resolve, reject) => {
 					this.setState({ path: path, props: props }, resolve);
 				});
