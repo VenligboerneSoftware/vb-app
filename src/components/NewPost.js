@@ -197,8 +197,11 @@ export default class NewPost extends React.Component {
 							exactLocation: true,
 							newPost: {
 								...this.state.newPost,
-								latitude: details.geometry.location.lat,
-								longitude: details.geometry.location.lng,
+								...this._addNoise(
+									details.geometry.location.lat,
+									details.geometry.location.lng,
+									3
+								),
 								// Current location has an undefined formatted_address, so set it
 								// to the description 'Current location' (firebase doesn't like undefined)
 								formatted_address:
