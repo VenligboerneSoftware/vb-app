@@ -30,7 +30,7 @@ export default class SingleNewsArticle extends React.Component {
 						<Text style={styles.selectedArticleHeader}>
 							{this.props.selectedArticle.author +
 								'   ' +
-								this.props.selectedArticle.date.format('MM·DD·YY')}
+								this.props.selectedArticle.date.format('DD·MM·YY')}
 						</Text>
 						{/* Title */}
 						<Text style={styles.selectedArticleTitle}>

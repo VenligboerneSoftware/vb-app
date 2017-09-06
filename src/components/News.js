@@ -115,7 +115,7 @@ export default class News extends React.Component {
 					<View style={styles.articleTitledatecontainer}>
 						{/* Date */}
 						<Text style={styles.articleDate}>
-							{item.date.format('MM·DD·YY')}
+							{item.date.format('DD·MM·YY')}
 						</Text>
 						{/* Title */}
 						<Text style={styles.articleTitle}>{item.title}</Text>
