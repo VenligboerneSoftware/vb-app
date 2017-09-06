@@ -67,5 +67,9 @@ export default {
 	modalContent: {
 		width: '100%',
 		height: '100%'
+	},
+	hyperlink: {
+		color: Colors.blue.dark,
+		textDecorationLine: 'underline'
 	}
 };

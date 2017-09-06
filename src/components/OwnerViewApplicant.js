@@ -16,11 +16,13 @@ import ApplicationStatus from './ApplicationStatus.js';
 import Colors from '../styles/Colors';
 import ExitBar from './ExitBar';
 import FacebookContactButton from './FacebookContactButton.js';
+import FlagButton from './FlagButton';
 import MapWithCircle from './MapWithCircle';
 import SharedStyles from '../styles/SharedStyles';
 import Time from './Time';
 import TitleAndIcon from './TitleAndIcon.js';
-import FlagButton from './FlagButton';
+
+import Hyperlink from 'react-native-hyperlink';
 
 export default class OwnerViewApplicant extends React.Component {
 	acceptApplicant = () => {
@@ -86,11 +88,12 @@ export default class OwnerViewApplicant extends React.Component {
 						</Text>
 
 						<View style={SharedStyles.divider} />
-
-						<Text style={SharedStyles.message}>
-							{translate('Response') + ': '}
-							{translateFreeform(this.props.application.message)}
-						</Text>
+						<Hyperlink linkDefault={true} linkStyle={SharedStyles.hyperlink}>
+							<Text style={SharedStyles.message}>
+								{translate('Response') + ': '}
+								{translateFreeform(this.props.application.message)}
+							</Text>
+						</Hyperlink>
 
 						<View style={SharedStyles.divider} />
 

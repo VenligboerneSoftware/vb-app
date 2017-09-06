@@ -36,6 +36,8 @@ import TitleAndIcon from './TitleAndIcon';
 import ViewApplications from './ViewApplications.js';
 import pushNotify from '../utils/pushNotify';
 
+import Hyperlink from 'react-native-hyperlink';
+
 export default class ViewPost extends Component {
 	constructor(props) {
 		super(props);
@@ -333,9 +335,14 @@ export default class ViewPost extends Component {
 								<View style={SharedStyles.divider} />
 
 								<View style={styles.dataRow}>
-									<Text style={styles.description}>
-										{translateFreeform(this.props.post.description)}
-									</Text>
+									<Hyperlink
+										linkDefault={true}
+										linkStyle={SharedStyles.hyperlink}
+									>
+										<Text style={styles.description}>
+											{translateFreeform(this.props.post.description)}
+										</Text>
+									</Hyperlink>
 								</View>
 
 								<View style={SharedStyles.divider} />

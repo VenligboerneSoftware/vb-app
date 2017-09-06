@@ -23,6 +23,8 @@ import Time from './Time';
 import TitleAndIcon from './TitleAndIcon.js';
 import pushNotify from '../utils/pushNotify';
 
+import Hyperlink from 'react-native-hyperlink';
+
 export default class ViewSingleApplication extends React.Component {
 	constructor(props) {
 		super(props);
@@ -112,17 +114,20 @@ export default class ViewSingleApplication extends React.Component {
 
 						<View style={SharedStyles.divider} />
 
-						<Text style={styles.description}>
-							{translate('Event Description') + ':'}{' '}
-							{translateFreeform(this.props.app.postData.description)}
-						</Text>
+						<Hyperlink linkDefault={true} linkStyle={SharedStyles.hyperlink}>
+							<Text style={styles.description}>
+								{translate('Event Description') + ':'}{' '}
+								{translateFreeform(this.props.app.postData.description)}
+							</Text>
+						</Hyperlink>
 
 						<View style={SharedStyles.divider} />
-
-						<Text style={SharedStyles.message}>
-							{translate('Your Reply') + ': '}
-							{translateFreeform(this.props.app.message)}
-						</Text>
+						<Hyperlink linkDefault={true} linkStyle={SharedStyles.hyperlink}>
+							<Text style={SharedStyles.message}>
+								{translate('Your Reply') + ': '}
+								{translateFreeform(this.props.app.message)}
+							</Text>
+						</Hyperlink>
 						<View style={SharedStyles.divider} />
 						<Time dates={this.props.app.postData.dates} />
 						<View style={SharedStyles.divider} />
