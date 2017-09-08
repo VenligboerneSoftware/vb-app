@@ -44,7 +44,8 @@ export default class ViewPost extends Component {
 		this.isOwner = this.props.post.owner === firebase.auth().currentUser.uid;
 		this.state = {
 			applyClicked: false,
-			disableExit: false
+			disableExit: false,
+			submittingApp: false
 		};
 		this.application = '';
 	}
@@ -157,7 +158,8 @@ export default class ViewPost extends Component {
 					[{ text: translate('Ok') }],
 					{ cancelable: false }
 				);
-			} else {
+			} else if (!this.state.submittingApp) {
+				this.setState({ submittingApp: true });
 				await this.submit();
 				goToApp(this.state.myApplicationKey);
 			}
